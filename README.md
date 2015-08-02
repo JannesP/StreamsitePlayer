@@ -1,2 +1,2 @@
 # StreamsitePlayer
-A remote controllable player for differenst stream sites.
+A remote controllable player for different streaming sites.
