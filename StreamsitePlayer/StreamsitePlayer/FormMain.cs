@@ -21,14 +21,16 @@ namespace StreamsitePlayer
         private const int PADDING = 5;
         private const int BUTTON_SIZE = 60;
         private int selectedSeries = 1;
-        List<Button> seriesButtons;
-        List<Button> episodeButtons;
+        private List<Button> seriesButtons;
+        private List<Button> episodeButtons;
+        private static Label labelCurrentlyLoadedS;
 
         StreamProvider currentProvider = null;
 
         public FormMain()
         {
             InitializeComponent();
+            labelCurrentlyLoadedS = labelCurrentlyLoaded;
             InitStreamProvider();
             seriesAnchor = comboBoxStreamingProvider;
         }
@@ -83,12 +85,33 @@ namespace StreamsitePlayer
         {
             if (currentProvider != null)
             {
-                int res = currentProvider.LoadSeries(textBoxSeriesExtension.Text);
+                this.Enabled = false;
+                string oldName = this.Text;
+                this.Text = "Working, please be patient ...";
+                int res = currentProvider.LoadSeries(textBoxSeriesExtension.Text, comboBoxStreamingProvider);
+                this.Text = oldName;
+                this.Enabled = true;
                 if (res == StreamProvider.RESULT_OK)
                 {
                     BuildUIForCurrentProvider();
                 }
             }
+        }
+
+        private static int currentlyLoaded = 0;
+        public static void SeriesOpenCallback(Episode episode)
+        {
+            if (episode == null)
+            {
+                currentlyLoaded = 0;
+                labelCurrentlyLoadedS.Visible = false;
+                return;
+            }
+            if (currentlyLoaded == 0)
+            {
+                labelCurrentlyLoadedS.Visible = true;
+            }
+            labelCurrentlyLoadedS.Text = "Loaded " + currentlyLoaded++ + " episodes. Last loaded: S" + episode.Series + "E" + episode.Number + " " + episode.Name;
         }
 
         private void BuildUIForCurrentProvider()
@@ -115,7 +138,6 @@ namespace StreamsitePlayer
             this.Controls.AddRange(episodeButtons.ToArray());   
             seriesButtons[selectedSeries - 1].Enabled = false;  //disable current series
             Button bottomButton = episodeButtons[episodeButtons.Count - 1];
-            Console.WriteLine(bottomButton.Text);
             int bottomY = bottomButton.Location.Y + bottomButton.Height + PADDING * 3;
             Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
             int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
@@ -151,7 +173,6 @@ namespace StreamsitePlayer
 
             int episodeCount = episodes.Count;
             int fittingInOneRow = (this.Size.Width - PADDING) / (BUTTON_SIZE + PADDING);
-            Console.WriteLine("fittingInOneRow: " + fittingInOneRow);
             for (int i = 0; i < episodeCount; i++)
             {
                 Button b = CreateNewButton((i + 1).ToString(), episodes[i].Name, tooltip);
@@ -177,12 +198,11 @@ namespace StreamsitePlayer
 
         private void OnEpisodeButtonClicked(object sender, EventArgs e)
         {
-            Console.WriteLine("EButton: " + ((Button)sender).Text);
+            
         }
 
         private void OnSeriesButtonClicked(object sender, EventArgs e)
         {
-            Console.WriteLine("SButton: " + ((Button)sender).Text);
             selectedSeries = int.Parse(((Button)sender).Text.Replace("S", ""));
             BuildUIForCurrentProvider();
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StreamsitePlayer.Streamsites.Providers
 {
@@ -84,8 +85,9 @@ namespace StreamsitePlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkNameExtension)
+        public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
         {
+            Util.RequestSimplifiedHtmlSite("http://bs.to/serie/Sword-Art-Online/1");
             return StreamProvider.RESULT_OK;
         }
     }

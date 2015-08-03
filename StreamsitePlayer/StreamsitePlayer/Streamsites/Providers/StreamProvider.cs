@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StreamsitePlayer.Streamsites
 {
@@ -16,7 +17,7 @@ namespace StreamsitePlayer.Streamsites
         /// Initilizes the class and requests all the series data.
         /// </summary>
         /// <param name="siteLinkNameExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
-        public abstract int LoadSeries(string siteLinkNameExtension);
+        public abstract int LoadSeries(string siteLinkNameExtension, Control threadAnchor);
         /// <summary>
         /// Requests the cound of episodes in the given series.
         /// </summary>

@@ -40,6 +40,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxStreamingSites = new System.Windows.Forms.ComboBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.labelCurrentlyLoaded = new System.Windows.Forms.Label();
             this.menuStripFormMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,11 +136,22 @@
             // 
             this.toolTip.AutomaticDelay = 100;
             // 
+            // labelCurrentlyLoaded
+            // 
+            this.labelCurrentlyLoaded.AutoSize = true;
+            this.labelCurrentlyLoaded.Location = new System.Drawing.Point(12, 73);
+            this.labelCurrentlyLoaded.Name = "labelCurrentlyLoaded";
+            this.labelCurrentlyLoaded.Size = new System.Drawing.Size(88, 13);
+            this.labelCurrentlyLoaded.TabIndex = 9;
+            this.labelCurrentlyLoaded.Text = "Currently loading:";
+            this.labelCurrentlyLoaded.Visible = false;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 283);
+            this.ClientSize = new System.Drawing.Size(459, 93);
+            this.Controls.Add(this.labelCurrentlyLoaded);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.comboBoxStreamingSites);
             this.Controls.Add(this.label1);
@@ -173,6 +185,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxStreamingSites;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label labelCurrentlyLoaded;
     }
 }
 
