@@ -90,5 +90,10 @@ namespace StreamsitePlayer.Streamsites.Providers
             Util.RequestSimplifiedHtmlSite("http://bs.to/serie/Sword-Art-Online/1");
             return StreamProvider.RESULT_OK;
         }
+
+        public override string GetSeriesName()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

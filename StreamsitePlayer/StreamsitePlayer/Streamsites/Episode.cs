@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace StreamsitePlayer.Streamsites
 {
-    class Episode
+    public class Episode
     {
         Dictionary<string, string> links = new Dictionary<string, string>();
 
-        public Episode(int series, int number, string name)
+        public Episode() { }
+
+        public Episode(int season, int number, string name)
         {
-            Series = series;
+            Season = season;
             Number = number;
             Name = name;
         }
@@ -28,17 +30,22 @@ namespace StreamsitePlayer.Streamsites
             return links[siteName];
         }
 
-        private int series;
-        public int Series
+        public Dictionary<string, string> GetAllAvailableLinks()
+        {
+            return links;
+        }
+
+        private int season;
+        public int Season
         {
             get
             {
-                return series;
+                return season;
             }
 
-            private set
+            set
             {
-                series = value;
+                season = value;
             }
         }
 
@@ -50,7 +57,7 @@ namespace StreamsitePlayer.Streamsites
                 return number;
             }
 
-            private set
+            set
             {
                 number = value;
             }
@@ -64,7 +71,7 @@ namespace StreamsitePlayer.Streamsites
                 return name;
             }
 
-            private set
+            set
             {
                 name = value;
             }

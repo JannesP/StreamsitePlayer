@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Streamsites.Sites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,5 +62,31 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         /// <returns>the number in seconds</returns>
         public abstract int GetRemainingWaitTime();
+        /// <summary>
+        /// Checks for the remaining time which has to be played.
+        /// </summary>
+        /// <returns>remaining play time in seconds</returns>
+        public abstract int GetRemainingPlayTime();
+        /// <summary>
+        /// Plays the video when it's ready.
+        /// </summary>
+        public abstract void PlayWhenReady();
+        /// <summary>
+        /// Maximizes the player.
+        /// </summary>
+        public abstract void Maximize();
+        /// <summary>
+        /// Returns the estimated wait time for the purpose of preloading the next episode.
+        /// </summary>
+        /// <returns>the estimated time in seconds</returns>
+        public abstract int GetEstimatedVlcWaitTime();
+        /// <summary>
+        /// Returns if the extraction of a direct link to the file is supported.
+        /// </summary>
+        public abstract bool IsVlcLinkSupported();
+        /// <summary>
+        /// Requests the vlc link. All results and updates are sent to the callback receiver !in another thread!.
+        /// </summary>
+        public abstract void RequestVlcLink(IVlcCallbackReceiver receiver, int requestId);
     }
 }

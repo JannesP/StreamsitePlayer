@@ -24,6 +24,7 @@ namespace StreamsitePlayer
         private List<Button> seriesButtons;
         private List<Button> episodeButtons;
         private static Label labelCurrentlyLoadedS;
+        private ISitePlayer player = null;
 
         StreamProvider currentProvider = null;
 
@@ -31,11 +32,19 @@ namespace StreamsitePlayer
         {
             InitializeComponent();
             labelCurrentlyLoadedS = labelCurrentlyLoaded;
-            InitStreamProvider();
+            InitStreamingProviders();
             seriesAnchor = comboBoxStreamingProvider;
+            LoadSettingValues(Program.settings);
         }
 
-        private void InitStreamProvider()
+        private void LoadSettingValues(Settings s)
+        {
+            checkBoxAutoplay.Checked = s.GetBool(Settings.AUTOPLAY);
+            numericUpDownSkipEnd.Value = s.GetNumber(Settings.SKIP_END);
+            numericUpDownSkipStart.Value = s.GetNumber(Settings.SKIP_BEGINNING);
+        }
+
+        private void InitStreamingProviders()
         {
             streamProviders = new List<string>();
             streamProviders.Add(BsToStreamProvider.NAME);
@@ -85,14 +94,16 @@ namespace StreamsitePlayer
         {
             if (currentProvider != null)
             {
+                this.player = null;
                 this.Enabled = false;
                 string oldName = this.Text;
                 this.Text = "Working, please be patient ...";
                 int res = currentProvider.LoadSeries(textBoxSeriesExtension.Text, comboBoxStreamingProvider);
                 this.Text = oldName;
                 this.Enabled = true;
-                if (res == StreamProvider.RESULT_OK)
+                if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
+                    if (currentProvider.GetSeriesCount() != 0) selectedSeries = 1;
                     BuildUIForCurrentProvider();
                 }
             }
@@ -111,7 +122,7 @@ namespace StreamsitePlayer
             {
                 labelCurrentlyLoadedS.Visible = true;
             }
-            labelCurrentlyLoadedS.Text = "Loaded " + currentlyLoaded++ + " episodes. Last loaded: S" + episode.Series + "E" + episode.Number + " " + episode.Name;
+            labelCurrentlyLoadedS.Text = "Loaded " + currentlyLoaded++ + " episodes. Last loaded: S" + episode.Season + "E" + episode.Number + " " + episode.Name;
         }
 
         private void BuildUIForCurrentProvider()
@@ -198,13 +209,42 @@ namespace StreamsitePlayer
 
         private void OnEpisodeButtonClicked(object sender, EventArgs e)
         {
-            
+            int episode = int.Parse(((Button)sender).Text);
+            if (player == null || player.IsDisposed)
+            {
+                player = new FormPlayerVlc();
+                player.Open(currentProvider);
+            }
+            player.Play(selectedSeries, episode);
         }
 
         private void OnSeriesButtonClicked(object sender, EventArgs e)
         {
             selectedSeries = int.Parse(((Button)sender).Text.Replace("S", ""));
             BuildUIForCurrentProvider();
+        }
+
+        private void checkBoxAutoplay_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings.WriteValue(Settings.AUTOPLAY, ((CheckBox)sender).Checked);
+            Program.settings.SaveFileSettings();
+        }
+
+        private void numericUpDownSkipEnd_ValueChanged(object sender, EventArgs e)
+        {
+            Program.settings.WriteValue(Settings.SKIP_END, (int)((NumericUpDown)sender).Value);
+            Program.settings.SaveFileSettings();
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.settings.SaveFileSettings();
+        }
+
+        private void numericUpDownSkipStart_ValueChanged(object sender, EventArgs e)
+        {
+            Program.settings.WriteValue(Settings.SKIP_BEGINNING, (int)((NumericUpDown)sender).Value);
+            Program.settings.SaveFileSettings();
         }
     }
 }

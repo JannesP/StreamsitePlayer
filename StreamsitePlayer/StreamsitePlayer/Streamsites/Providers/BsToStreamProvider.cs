@@ -14,29 +14,28 @@ namespace StreamsitePlayer.Streamsites.Providers
         public const string NAME = "bs.to";
         private const string URL_PRE = "http://bs.to/serie/";
         private const string STREAMCLOUD_SEARCH = "<a class=\"icon Streamcloud\" title=\"Streamcloud\"   href=\"";
-        private List<List<Episode>> series;
-        private int totalEpisodes = 0;
+        private List<List<Episode>> seasons;
 
         private string[] VALID_SITES = { StreamcloudStreamingSite.NAME };
 
-        public override int GetEpisodeCount(int series)
+        public override int GetEpisodeCount(int season)
         {
-            return this.series[series - 1].Count;
+            return this.seasons[season - 1].Count;
         }
 
-        public override string GetEpisodeLink(int series, int episode, string siteName)
+        public override string GetEpisodeLink(int season, int episode, string siteName)
         {
-            return this.series[series - 1][episode - 1].GetLink(siteName);
+            return this.seasons[season - 1][episode - 1].GetLink(siteName);
         }
 
-        public override List<Episode> GetEpisodeList(int series)
+        public override List<Episode> GetEpisodeList(int season)
         {
-            return this.series[series - 1];
+            return this.seasons[season - 1];
         }
 
-        public override string GetEpisodeName(int series, int episode)
+        public override string GetEpisodeName(int season, int episode)
         {
-            return this.series[series - 1][episode - 1].Name;
+            return this.seasons[season - 1][episode - 1].Name;
         }
 
         public override string GetLinkInstructions()
@@ -51,7 +50,7 @@ namespace StreamsitePlayer.Streamsites.Providers
 
         public override int GetSeriesCount()
         {
-            return this.series.Count;
+            return this.seasons.Count;
         }
 
         public override string[] GetValidStreamingSites()
@@ -61,16 +60,19 @@ namespace StreamsitePlayer.Streamsites.Providers
 
         public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
         {
+            seasons = Seriescache.ReadCachedSeries(siteLinkNameExtension);
+            if (seasons != null) return StreamProvider.RESULT_USE_CACHED;
+
             string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension);
-            totalEpisodes = 0;
             int seriesCount = ScanForSeriesCount(htmlEpisodeOverview, siteLinkNameExtension);
-            series = new List<List<Episode>>();
-            series.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
+            seasons = new List<List<Episode>>();
+            seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
             for (int i = 2; i <= seriesCount; i++)
             {
                 htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension + "/" + i);
-                series.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
+                seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
             }
+            Seriescache.CacheSeries(siteLinkNameExtension, seasons);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -87,7 +89,7 @@ namespace StreamsitePlayer.Streamsites.Providers
             return seriesCount - 1;
         }
 
-        private static List<Episode> ExtractEpisodesFromHtml(int seriesNumber, string html, string siteLinkNameExtension, Control threadAnchor)
+        private static List<Episode> ExtractEpisodesFromHtml(int seasonNumber, string html, string siteLinkNameExtension, Control threadAnchor)
         {
             List<Episode> episodes = new List<Episode>();
             int episodeNumber = 0;
@@ -95,11 +97,11 @@ namespace StreamsitePlayer.Streamsites.Providers
             while (index != -1)
             {
                 Episode e;
-                string searchString = "<td>" + ++episodeNumber + "</td><td><a href=\"serie/" + siteLinkNameExtension + "/" + seriesNumber;
+                string searchString = "<td>" + ++episodeNumber + "</td><td><a href=\"serie/" + siteLinkNameExtension + "/" + seasonNumber;
                 index = html.IndexOf(searchString, index);
                 if (index != -1)
                 {
-                    e = new Episode(seriesNumber, episodeNumber, Util.GetStringBetween(html, index, "<strong>", "</strong>"));
+                    e = new Episode(seasonNumber, episodeNumber, Util.GetStringBetween(html, index, "<strong>", "</strong>"));
                 }
                 else
                 {
@@ -118,6 +120,11 @@ namespace StreamsitePlayer.Streamsites.Providers
                 episodes.Add(e);
             }
             return episodes;
+        }
+
+        public override string GetSeriesName()
+        {
+            throw new NotImplementedException();
         }
     }
 }

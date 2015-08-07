@@ -41,7 +41,16 @@
             this.comboBoxStreamingSites = new System.Windows.Forms.ComboBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.labelCurrentlyLoaded = new System.Windows.Forms.Label();
+            this.checkBoxAutoplay = new System.Windows.Forms.CheckBox();
+            this.numericUpDownSkipEnd = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numericUpDownSkipStart = new System.Windows.Forms.NumericUpDown();
             this.menuStripFormMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripFormMain
@@ -75,6 +84,7 @@
             this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
             this.textBoxSeriesExtension.Size = new System.Drawing.Size(100, 20);
             this.textBoxSeriesExtension.TabIndex = 2;
+            this.textBoxSeriesExtension.Text = "Sword-Art-Online";
             // 
             // labelSeriesExtensionHelp
             // 
@@ -146,11 +156,99 @@
             this.labelCurrentlyLoaded.Text = "Currently loading:";
             this.labelCurrentlyLoaded.Visible = false;
             // 
+            // checkBoxAutoplay
+            // 
+            this.checkBoxAutoplay.AutoSize = true;
+            this.checkBoxAutoplay.Location = new System.Drawing.Point(380, 73);
+            this.checkBoxAutoplay.Name = "checkBoxAutoplay";
+            this.checkBoxAutoplay.Size = new System.Drawing.Size(67, 17);
+            this.checkBoxAutoplay.TabIndex = 10;
+            this.checkBoxAutoplay.Text = "Autoplay";
+            this.checkBoxAutoplay.UseVisualStyleBackColor = true;
+            this.checkBoxAutoplay.CheckedChanged += new System.EventHandler(this.checkBoxAutoplay_CheckedChanged);
+            // 
+            // numericUpDownSkipEnd
+            // 
+            this.numericUpDownSkipEnd.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownSkipEnd.Location = new System.Drawing.Point(380, 96);
+            this.numericUpDownSkipEnd.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.numericUpDownSkipEnd.Name = "numericUpDownSkipEnd";
+            this.numericUpDownSkipEnd.Size = new System.Drawing.Size(49, 20);
+            this.numericUpDownSkipEnd.TabIndex = 11;
+            this.numericUpDownSkipEnd.ValueChanged += new System.EventHandler(this.numericUpDownSkipEnd_ValueChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(325, 98);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Skip end";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(435, 98);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 13);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "s";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Enabled = false;
+            this.label5.Location = new System.Drawing.Point(435, 124);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(12, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "s";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Enabled = false;
+            this.label6.Location = new System.Drawing.Point(325, 124);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(51, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Skip start";
+            // 
+            // numericUpDownSkipStart
+            // 
+            this.numericUpDownSkipStart.Enabled = false;
+            this.numericUpDownSkipStart.Location = new System.Drawing.Point(380, 122);
+            this.numericUpDownSkipStart.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.numericUpDownSkipStart.Name = "numericUpDownSkipStart";
+            this.numericUpDownSkipStart.Size = new System.Drawing.Size(49, 20);
+            this.numericUpDownSkipStart.TabIndex = 14;
+            this.numericUpDownSkipStart.ValueChanged += new System.EventHandler(this.numericUpDownSkipStart_ValueChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 93);
+            this.ClientSize = new System.Drawing.Size(459, 156);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.numericUpDownSkipStart);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.numericUpDownSkipEnd);
+            this.Controls.Add(this.checkBoxAutoplay);
             this.Controls.Add(this.labelCurrentlyLoaded);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.comboBoxStreamingSites);
@@ -165,8 +263,11 @@
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.Text = "Serieswatcher";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.menuStripFormMain.ResumeLayout(false);
             this.menuStripFormMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -186,6 +287,13 @@
         private System.Windows.Forms.ComboBox comboBoxStreamingSites;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label labelCurrentlyLoaded;
+        private System.Windows.Forms.CheckBox checkBoxAutoplay;
+        private System.Windows.Forms.NumericUpDown numericUpDownSkipEnd;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown numericUpDownSkipStart;
     }
 }
 
