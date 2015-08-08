@@ -16,6 +16,7 @@
 				image: "--image--",
 				width: "100%",
 				aspectratio: "16:9",
+                autostart: true,
 				startparam: "start"
 			});
 		</script>
@@ -27,7 +28,7 @@
 			playerInstance.on('fullscreen', OnFullscreenChanged);
 			
 			function IsPlaying() {
-				return (playerInstance.getState() == playing);
+				return (playerInstance.getState() == "playing");
 			}
 			
 			function Maximized() {

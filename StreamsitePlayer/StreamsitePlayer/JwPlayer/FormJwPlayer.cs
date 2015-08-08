@@ -23,6 +23,7 @@ namespace StreamsitePlayer
         private int streamcloudWaitTime;
         private bool maximized = false;
         private JwPlayerControl jwPlayer;
+        private bool nextRequested = false;
 
         public FormJwPlayer()
         {
@@ -132,6 +133,7 @@ namespace StreamsitePlayer
 
         public void Next()
         {
+            nextRequested = true;
             currentEpisode = ++currentEpisode % streamProvider.GetEpisodeCount(currentSeason);
             if (currentEpisode == 1)
             {
@@ -173,6 +175,8 @@ namespace StreamsitePlayer
         private int validRequestId = int.MinValue;
         public void Play(int season, int episode)
         {
+            currentSeason = season;
+            currentEpisode = episode;
             string streamcloudLink = streamProvider.GetEpisodeLink(season, episode, StreamcloudStreamingSite.NAME);
             WebBrowser browser = new WebBrowser();
             browser.ScriptErrorsSuppressed = true;
@@ -203,7 +207,6 @@ namespace StreamsitePlayer
             }
             progressBarRequestingStatus.Maximum = max;
             progressBarRequestingStatus.Value = max - remainingTime;
-            labelRequestingStatus.Visible = true;
             string baseMsg = "Processing " + StreamcloudStreamingSite.NAME + " page";
             string pointsString = "";
             for (int i = 0; i < pointsOnMessage; i++)
@@ -224,6 +227,7 @@ namespace StreamsitePlayer
                 jwPlayer.Visible = true;
                 progressBarRequestingStatus.Visible = false;
                 labelRequestingStatus.Visible = false;
+                nextRequested = false;
 
             }
         }
@@ -240,16 +244,14 @@ namespace StreamsitePlayer
 
         private void CheckForAutoplay(long timeLeft)
         {
-            if (Autoplay)
+            if (Autoplay && !nextRequested)
             {
-                if (timeLeft <= 0)
+                if (timeLeft <= (0 + streamcloudWaitTime))
                 {
-                    Console.WriteLine("Next from CheckForAutoplay remainingMillis < 1000");
                     Next();
                 }
                 else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + streamcloudWaitTime)))
                 {
-                    Console.WriteLine("Next from CheckForAutoplay remainingMillis < (SkipEndSeconds * 1000)");
                     Next();
                 }
             }
