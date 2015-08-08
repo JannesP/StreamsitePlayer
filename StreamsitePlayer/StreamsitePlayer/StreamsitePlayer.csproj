@@ -66,6 +66,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JwPlayer\FormJwPlayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JwPlayer\FormJwPlayer.Designer.cs">
+      <DependentUpon>FormJwPlayer.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,11 @@
     <Compile Include="FormPlayerVlc.Designer.cs">
       <DependentUpon>FormPlayerVlc.cs</DependentUpon>
     </Compile>
+    <Compile Include="JwPlayer\JSUtil.cs" />
+    <Compile Include="JwPlayer\JwPlayerControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="JwPlayer\ScriptingInterface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Seriescache.cs" />
@@ -92,11 +103,15 @@
     <Compile Include="Streamsites\Episode.cs" />
     <Compile Include="Streamsites\Providers\BsToStreamProvider.cs" />
     <Compile Include="Streamsites\Providers\TestProvider.cs" />
+    <Compile Include="Streamsites\Sites\IJwCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\IVlcCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\StreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\StreamingSite.cs" />
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />
     <Compile Include="Util.cs" />
+    <EmbeddedResource Include="JwPlayer\FormJwPlayer.resx">
+      <DependentUpon>FormJwPlayer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,6 +131,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.manifest" />
+    <None Include="JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -129,6 +145,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\beelden.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\bekle.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\five.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\glow.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\roundster.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\seven.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\six.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\stormtrooper.css" />
+    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\vapor.css" />
+    <Content Include="JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

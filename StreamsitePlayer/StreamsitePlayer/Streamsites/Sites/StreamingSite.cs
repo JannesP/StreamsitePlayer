@@ -78,8 +78,8 @@ namespace StreamsitePlayer.Streamsites
         /// <summary>
         /// Returns the estimated wait time for the purpose of preloading the next episode.
         /// </summary>
-        /// <returns>the estimated time in seconds</returns>
-        public abstract int GetEstimatedVlcWaitTime();
+        /// <returns>the estimated time in ms</returns>
+        public abstract int GetEstimateWaitTime();
         /// <summary>
         /// Returns if the extraction of a direct link to the file is supported.
         /// </summary>
@@ -88,5 +88,13 @@ namespace StreamsitePlayer.Streamsites
         /// Requests the vlc link. All results and updates are sent to the callback receiver !in another thread!.
         /// </summary>
         public abstract void RequestVlcLink(IVlcCallbackReceiver receiver, int requestId);
+        /// <summary>
+        /// Returns if the extraction of the jw data is supported.
+        /// </summary>
+        public abstract bool IsJwLinkSupported();
+        /// <summary>
+        /// Requests the vlc link. All results and updates are sent to the callback receiver !in another thread!.
+        /// </summary>
+        public abstract void RequestJwData(IJwCallbackReceiver receiver, int requestId);
     }
 }

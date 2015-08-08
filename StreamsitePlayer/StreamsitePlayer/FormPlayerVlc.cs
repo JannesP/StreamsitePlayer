@@ -293,12 +293,12 @@ namespace StreamsitePlayer
         {
             get
             {
-                throw new NotImplementedException();
+                return Program.settings.GetNumber(Settings.SKIP_BEGINNING);
             }
 
             set
             {
-                throw new NotImplementedException();
+                Program.settings.WriteValue(Settings.SKIP_BEGINNING, value);
             }
         }
 
@@ -441,7 +441,7 @@ namespace StreamsitePlayer
         {
             if (requestId == validRequestId)
             {
-                vlc.Play(new Uri(link), "-tcp-caching=1000", "-udp-caching=1000", "-realrtsp-caching=1000");
+                vlc.Play(new Uri(link), "--tcp-caching=10000", "--udp-caching=10000", "--realrtsp-caching=10000", "--http-caching 10000");
                 progressBarRequestingStatus.Visible = false;
                 labelRequestingStatus.Visible = false;
             }

@@ -212,7 +212,7 @@ namespace StreamsitePlayer
             int episode = int.Parse(((Button)sender).Text);
             if (player == null || player.IsDisposed)
             {
-                player = new FormPlayerVlc();
+                player = new FormJwPlayer();
                 player.Open(currentProvider);
             }
             player.Play(selectedSeries, episode);
