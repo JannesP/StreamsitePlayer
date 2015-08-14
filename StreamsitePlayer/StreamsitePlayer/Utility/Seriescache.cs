@@ -20,20 +20,20 @@ namespace StreamsitePlayer
             }
         }
 
-        public static void CacheSeries(string name, List<List<Episode>> seasons)
+        public static void CacheSeries(string providerName, string seriesExtension, Series series)
         {
-            string filepath = CACHE_PATH + name + ".series";
+            string filepath = CACHE_PATH + providerName + "." + seriesExtension + ".series";
             if (File.Exists(filepath))
             {
                 File.Delete(filepath);
             }
             using (StreamWriter sw = new StreamWriter(File.Create(filepath)))
             {
-                sw.WriteLine("name." + name);
+                sw.WriteLine("seriesname." + series.Name);
 
-                for (int s = 0; s < seasons.Count; s++)
+                for (int s = 0; s < series.Count; s++)
                 {
-                    List<Episode> season = seasons[s];
+                    List<Episode> season = series[s];
                     sw.WriteLine("[Season " + (s + 1) + "]"); //[Season s]
                     foreach (Episode episode in season)
                     {
@@ -52,12 +52,12 @@ namespace StreamsitePlayer
             }
         }
 
-        public static List<List<Episode>> ReadCachedSeries(string name)
+        public static Series ReadCachedSeries(string providerName, string seriesExtension)
         {
-            string filepath = CACHE_PATH + name + ".series";
+            string filepath = CACHE_PATH + providerName + "." + seriesExtension + ".series";
             if (!File.Exists(filepath)) return null;
             List<List<Episode>> seasons = new List<List<Episode>>();
-
+            string seriesName = seriesExtension;
             using (StreamReader sr = new StreamReader(File.OpenRead(filepath)))
             {
                 Episode currEpisode = new Episode();
@@ -92,15 +92,14 @@ namespace StreamsitePlayer
                             string[] hostAndLink = parts[1].Split(new char[] { ' ' }, 2);
                             currEpisode.AddLink(hostAndLink[0], hostAndLink[1]);
                             break;
+                        case "seriesname":
+                            seriesName = parts[1];
+                            break;
                     }
                 }
             }
-
-            
-
-
-
-            return seasons;
+            Series series = new Series(seasons, seriesName);
+            return series;
         }
 
     }

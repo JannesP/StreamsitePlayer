@@ -17,7 +17,8 @@ namespace StreamsitePlayer
     {
         List<string> streamProviders;
 
-        private Control seriesAnchor;
+        private Control seriesAnchorX;
+        private Control seriesAnchorY;
         private const int PADDING = 5;
         private const int BUTTON_SIZE = 60;
         private int selectedSeries = 1;
@@ -33,7 +34,9 @@ namespace StreamsitePlayer
             InitializeComponent();
             labelCurrentlyLoadedS = labelCurrentlyLoaded;
             InitStreamingProviders();
-            seriesAnchor = comboBoxStreamingProvider;
+            seriesAnchorX = comboBoxStreamingProvider;
+            seriesAnchorY = numericUpDownSkipEnd;
+            this.comboBoxStreamingProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxStreamingProvider_SelectedIndexChanged);
             LoadSettingValues(Program.settings);
         }
 
@@ -42,12 +45,16 @@ namespace StreamsitePlayer
             checkBoxAutoplay.Checked = s.GetBool(Settings.AUTOPLAY);
             numericUpDownSkipEnd.Value = s.GetNumber(Settings.SKIP_END);
             numericUpDownSkipStart.Value = s.GetNumber(Settings.SKIP_BEGINNING);
+            comboBoxStreamingProvider.SelectedIndex = s.GetNumber(Settings.LAST_PROVIDER);
+            textBoxSeriesExtension.Text = s.GetString(Settings.LAST_SERIES);
         }
 
         private void InitStreamingProviders()
         {
             streamProviders = new List<string>();
             streamProviders.Add(BsToStreamProvider.NAME);
+            streamProviders.Add(RyuanimeStreamProvider.NAME);
+            streamProviders.Add(DubbedanimehdNetProvider.NAME);
             streamProviders.Add(TestProvider.NAME);
             comboBoxStreamingProvider.Items.Clear();
             comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
@@ -70,6 +77,10 @@ namespace StreamsitePlayer
                     return new BsToStreamProvider();
                 case TestProvider.NAME:
                     return new TestProvider();
+                case RyuanimeStreamProvider.NAME:
+                    return new RyuanimeStreamProvider();
+                case DubbedanimehdNetProvider.NAME:
+                    return new DubbedanimehdNetProvider();
                 default:
                     return null;
             }
@@ -77,6 +88,7 @@ namespace StreamsitePlayer
 
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Program.settings.WriteValue(Settings.LAST_PROVIDER, ((ComboBox)sender).SelectedIndex);
             currentProvider = CreateNewProvider(comboBoxStreamingProvider.SelectedItem.ToString());
             ReloadStreamingProviderInfo();
         }
@@ -133,23 +145,23 @@ namespace StreamsitePlayer
             {
                 foreach (Control c in seriesButtons)
                 {
-                    this.Controls.Remove(c);
+                    panelEpisodeButtons.Controls.Remove(c);
                 }
             }
             if (episodeButtons != null)
             {
                 foreach (Control c in episodeButtons)
                 {
-                    this.Controls.Remove(c);
+                    panelEpisodeButtons.Controls.Remove(c);
                 }
             }
             seriesButtons = BuildButtonsForSeries(tooltip); //add new buttons to the window
             episodeButtons = BuildButtonsForEpisodes(selectedSeries, tooltip);
-            this.Controls.AddRange(seriesButtons.ToArray());
-            this.Controls.AddRange(episodeButtons.ToArray());   
+            panelEpisodeButtons.Controls.AddRange(seriesButtons.ToArray());
+            panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
             seriesButtons[selectedSeries - 1].Enabled = false;  //disable current series
             Button bottomButton = episodeButtons[episodeButtons.Count - 1];
-            int bottomY = bottomButton.Location.Y + bottomButton.Height + PADDING * 3;
+            int bottomY = panelEpisodeButtons.Bounds.Y + panelEpisodeButtons.Bounds.Height;
             Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
             int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
             this.Height = bottomY + titleHeight;
@@ -157,8 +169,8 @@ namespace StreamsitePlayer
 
         private List<Button> BuildButtonsForSeries(ToolTip tooltip)
         {
-            int startX = seriesAnchor.Bounds.X;
-            int startY = seriesAnchor.Bounds.Y + seriesAnchor.Bounds.Height + PADDING;
+            int startX = 0;
+            int startY = 0;
 
             List<Button> buttons = new List<Button>();
 
@@ -176,10 +188,11 @@ namespace StreamsitePlayer
 
         private List<Button> BuildButtonsForEpisodes(int series, ToolTip tooltip)
         {
-            int startX = seriesAnchor.Bounds.X;
-            int startY = seriesAnchor.Bounds.Y + seriesAnchor.Bounds.Height + PADDING * 2 + BUTTON_SIZE;
-
             List<Button> buttons = new List<Button>();
+            if (seriesButtons.Count == 0) return buttons;
+            int startX = seriesButtons[seriesButtons.Count - 1].Bounds.X;
+            int startY = seriesButtons[seriesButtons.Count - 1].Bounds.Y + seriesButtons[seriesButtons.Count - 1].Bounds.Height + PADDING;
+            
             List<Episode> episodes = currentProvider.GetEpisodeList(series);
 
             int episodeCount = episodes.Count;
@@ -245,6 +258,11 @@ namespace StreamsitePlayer
         {
             Program.settings.WriteValue(Settings.SKIP_BEGINNING, (int)((NumericUpDown)sender).Value);
             Program.settings.SaveFileSettings();
+        }
+
+        private void textBoxSeriesExtension_TextChanged(object sender, EventArgs e)
+        {
+            Program.settings.WriteValue(Settings.LAST_SERIES, ((TextBox)sender).Text);
         }
     }
 }

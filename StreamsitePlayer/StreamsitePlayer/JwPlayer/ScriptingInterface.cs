@@ -14,6 +14,9 @@ namespace StreamsitePlayer.JwPlayer
             void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal);
             void OnPlaybackComplete();
             void OnFullscreenChanged(bool newState);
+            void OnError(string message);
+            void OnStartupError(string message);
+            void OnReady();
         }
         
         public IJwEventListener receiver = null;
@@ -24,7 +27,7 @@ namespace StreamsitePlayer.JwPlayer
 
         public void Log(string message)
         {
-            Console.WriteLine("Javascript: " + message);
+            Logger.Log("JwPlayerJS", message);
         }
 
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
@@ -43,11 +46,35 @@ namespace StreamsitePlayer.JwPlayer
             }
         }
 
+        public void OnReady()
+        {
+            if (receiver != null)
+            {
+                receiver.OnReady();
+            }
+        }
+
         public void OnPlaybackComplete()
         {
             if (receiver != null)
             {
                 receiver.OnPlaybackComplete();
+            }
+        }
+
+        public void OnError(string errorMessage)
+        {
+            if (receiver != null)
+            {
+                receiver.OnError(errorMessage);
+            }
+        }
+
+        public void OnSetupError(string errorMessage)
+        {
+            if (receiver != null)
+            {
+                receiver.OnStartupError(errorMessage);
             }
         }
 

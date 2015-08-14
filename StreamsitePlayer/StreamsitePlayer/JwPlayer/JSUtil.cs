@@ -37,13 +37,19 @@ namespace StreamsitePlayer.JwPlayer
             return JSUtil.browser.Document.InvokeScript(functionName);
         }
 
-        public static object ExecuteFunction(string functionName, object[] args)
+        public static object ExecuteFunction(string functionName, params object[] args)
         {
             IsBrowserReady();
             return JSUtil.browser.Document.InvokeScript(functionName, args);
         }
 
-        public static long ExecuteFunctionForLong(string functionName, object[] args)
+        public static long ExecuteFunctionForLong(string functionName)
+        {
+            IsBrowserReady();
+            return ResolveLong(JSUtil.browser.Document.InvokeScript(functionName));
+        }
+
+        public static long ExecuteFunctionForLong(string functionName, params object[] args)
         {
             IsBrowserReady();
             return ResolveLong(JSUtil.browser.Document.InvokeScript(functionName, args));
@@ -55,7 +61,7 @@ namespace StreamsitePlayer.JwPlayer
             return ResolveBool(JSUtil.browser.Document.InvokeScript(functionName));
         }
 
-        public static bool ExecuteFunctionForBool(string functionName, object[] args)
+        public static bool ExecuteFunctionForBool(string functionName, params object[] args)
         {
             IsBrowserReady();
             return ResolveBool(JSUtil.browser.Document.InvokeScript(functionName, args));

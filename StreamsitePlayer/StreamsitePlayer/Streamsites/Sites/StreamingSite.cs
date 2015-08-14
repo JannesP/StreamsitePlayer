@@ -13,6 +13,22 @@ namespace StreamsitePlayer.Streamsites
         private WebBrowser targetBrowser;
         private string link;
 
+        public static StreamingSite CreateStreamingSite(string name, WebBrowser targetBrowser, string link)
+        {
+            switch (name)
+            {
+                case StreamcloudStreamingSite.NAME:
+                    return new StreamcloudStreamingSite(targetBrowser, link);
+                case RyuanimeStreamingSite.NAME:
+                    return new RyuanimeStreamingSite(targetBrowser, link);
+                case DubbedanimehdNetStreamingSite.NAME:
+                    return new DubbedanimehdNetStreamingSite(targetBrowser, link);
+                default:
+                    Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
+                    return null;
+            }
+        }
+
         /// <summary>
         /// Initializes a new StreamingSite with the given link.
         /// It will automatically process until it can play the video.
@@ -23,7 +39,6 @@ namespace StreamsitePlayer.Streamsites
         {
             this.targetBrowser = targetBrowser;
             this.link = link;
-            targetBrowser.Navigate(link);
         }
 
         public WebBrowser GetTargetBrowser()
@@ -80,14 +95,6 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         /// <returns>the estimated time in ms</returns>
         public abstract int GetEstimateWaitTime();
-        /// <summary>
-        /// Returns if the extraction of a direct link to the file is supported.
-        /// </summary>
-        public abstract bool IsVlcLinkSupported();
-        /// <summary>
-        /// Requests the vlc link. All results and updates are sent to the callback receiver !in another thread!.
-        /// </summary>
-        public abstract void RequestVlcLink(IVlcCallbackReceiver receiver, int requestId);
         /// <summary>
         /// Returns if the extraction of the jw data is supported.
         /// </summary>

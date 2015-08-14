@@ -14,6 +14,7 @@ namespace StreamsitePlayer.Streamsites
         public const int RESULT_NET_FAILED = -1;
         public const int RESULT_SERIES_MISSING = -2;
 
+        protected Series series;
         /// <summary>
         /// Initilizes the class and requests all the series data.
         /// </summary>
@@ -24,18 +25,27 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         /// <param name="season">the number of the series !1-based!</param>
         /// <returns>the number of episodes</returns>
-        public abstract int GetEpisodeCount(int season);
+        public int GetEpisodeCount(int season)
+        {
+            return this.series[season - 1].Count;
+        }
         /// <summary>
         /// Requests an a list of all episodes contained in the series.
         /// </summary>
         /// <param name="season">the number of the series !1-based!</param>
         /// <returns>a list of all episodes included in the series</returns>
-        public abstract List<Episode> GetEpisodeList(int season);
+        public List<Episode> GetEpisodeList(int season)
+        {
+            return this.series[season - 1];
+        }
         /// <summary>
         /// Requests the count of series of the series on the StreamProvider.
         /// </summary>
         /// <returns>the count of series</returns>
-        public abstract int GetSeriesCount();
+        public int GetSeriesCount()
+        {
+            return this.series.Count;
+        }
         /// <summary>
         /// Request the episode name from the StreamProvider.
         /// Note: for many request just use <see cref="GetEpisodeList(int)"/>
@@ -43,7 +53,10 @@ namespace StreamsitePlayer.Streamsites
         /// <param name="season">1-based number of the series</param>
         /// <param name="episode">1-based number of the episode</param>
         /// <returns>the episode name</returns>
-        public abstract string GetEpisodeName(int season, int episode);
+        public string GetEpisodeName(int season, int episode)
+        {
+            return this.series[season - 1][episode - 1].Name;
+        }
         /// <summary>
         /// Request the episode name from the StreamProvider.
         /// Note: for many request just use <see cref="GetEpisodeList(int)"/>
@@ -52,7 +65,10 @@ namespace StreamsitePlayer.Streamsites
         /// <param name="episode">1-based number of the episode</param>
         /// <param name="siteName">the provider name const StreamingSite.Site.???</param>
         /// <returns>the episode link</returns>
-        public abstract string GetEpisodeLink(int season, int episode, string siteName);
+        public string GetEpisodeLink(int season, int episode, string siteName)
+        {
+            return this.series[season - 1][episode - 1].GetLink(siteName);
+        }
         /// <summary>
         /// Request the site name which is displayed to the user.
         /// </summary>
@@ -72,7 +88,10 @@ namespace StreamsitePlayer.Streamsites
         /// Returns the series name which can be displayed.
         /// </summary>
         /// <returns>the name of the series</returns>
-        public abstract string GetSeriesName();
+        public string GetSeriesName()
+        {
+            return series.Name;
+        }
 
     }
 }

@@ -33,6 +33,8 @@ namespace StreamsitePlayer
         {
             this.labelRequestingStatus = new System.Windows.Forms.Label();
             this.progressBarRequestingStatus = new System.Windows.Forms.ProgressBar();
+            this.progressBarLoadingNext = new System.Windows.Forms.ProgressBar();
+            this.labelEpisode = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelRequestingStatus
@@ -53,11 +55,37 @@ namespace StreamsitePlayer
             this.progressBarRequestingStatus.Size = new System.Drawing.Size(921, 23);
             this.progressBarRequestingStatus.TabIndex = 6;
             // 
+            // progressBarLoadingNext
+            // 
+            this.progressBarLoadingNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.progressBarLoadingNext.Location = new System.Drawing.Point(12, 456);
+            this.progressBarLoadingNext.Name = "progressBarLoadingNext";
+            this.progressBarLoadingNext.Size = new System.Drawing.Size(104, 10);
+            this.progressBarLoadingNext.TabIndex = 8;
+            this.progressBarLoadingNext.Visible = false;
+            // 
+            // labelEpisode
+            // 
+            this.labelEpisode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelEpisode.AutoSize = true;
+            this.labelEpisode.BackColor = System.Drawing.Color.Black;
+            this.labelEpisode.Font = new System.Drawing.Font("Microsoft Sans Serif", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelEpisode.ForeColor = System.Drawing.Color.White;
+            this.labelEpisode.Location = new System.Drawing.Point(228, 9);
+            this.labelEpisode.Name = "labelEpisode";
+            this.labelEpisode.Size = new System.Drawing.Size(480, 108);
+            this.labelEpisode.TabIndex = 9;
+            this.labelEpisode.Text = "Episode X";
+            this.labelEpisode.Visible = false;
+            // 
             // FormJwPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 478);
+            this.Controls.Add(this.labelEpisode);
+            this.Controls.Add(this.progressBarLoadingNext);
             this.Controls.Add(this.labelRequestingStatus);
             this.Controls.Add(this.progressBarRequestingStatus);
             this.KeyPreview = true;
@@ -73,5 +101,7 @@ namespace StreamsitePlayer
 
         private System.Windows.Forms.Label labelRequestingStatus;
         private System.Windows.Forms.ProgressBar progressBarRequestingStatus;
+        private System.Windows.Forms.ProgressBar progressBarLoadingNext;
+        private System.Windows.Forms.Label labelEpisode;
     }
 }

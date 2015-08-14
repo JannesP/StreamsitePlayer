@@ -3,6 +3,13 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <script type="text/javascript">
+            window.onerror = function(msg, file, line){
+                window.external.Log("error: " + msg + "\n" + "file: " + file + "\n" + "line: " + line);
+            }
+        </script>
+
 		<script type="text/javascript" src="jwplayer/jwplayer.js"></script>
 		<script type="text/javascript">jwplayer.key="brtm4UPVPkavg6wYzjRl3RufI+x0oquEsWZ8RA==";</script>
 	</head>
@@ -12,12 +19,10 @@
 		<script type="text/javascript">
 			jwplayer("myvideo").setup({
 				provider: "http",
-				file: "--file--",
-				image: "--image--",
+				--insertion--,
 				width: "100%",
 				aspectratio: "16:9",
-                autostart: true,
-				startparam: "start"
+                autostart: true
 			});
 		</script>
 		
@@ -25,26 +30,41 @@
 			playerInstance = jwplayer("myvideo");
 			playerInstance.on('time', OnPlaylocationChanged);
 			playerInstance.on('complete', OnComplete);
+			playerInstance.on('ready', OnReady);
 			playerInstance.on('fullscreen', OnFullscreenChanged);
-			
+			playerInstance.on('error', OnError);
+			playerInstance.on('setupError', OnSetupError);
+
+			function OnReady(event) {
+			    window.external.OnReady();
+			}
+
 			function IsPlaying() {
 				return (playerInstance.getState() == "playing");
 			}
 			
+			function GetPosition() {
+			    return playerInstance.getPosition();
+			}
+
+			function SetPosition(position) {
+			    return playerInstance.seek(position);
+			}
+
 			function Maximized() {
 				return playerInstance.getFullscreen();
 			}
 			
 			function Play() {
-				playerInstance.Play(true);
+				playerInstance.play(true);
 			}
 			
 			function Pause() {
-				playerInstance.Play(false);
+				playerInstance.pause(true);
 			}
 			
 			function PlayPause() {
-				playerInstance.Play();
+				playerInstance.play();
 			}
 			
 			function OnPlaylocationChanged(event) {
@@ -58,11 +78,19 @@
 			function OnFullscreenChanged(event) {
 				window.external.OnFullscreenChanged(event.fullscreen);
 			}
+
+			function OnError(event) {
+			    window.external.OnError(event.message);
+			}
+
+			function OnSetupError(event) {
+			    window.external.OnSetupError(event.message);
+			}
 			
 			function ClickOnFullscreen() {
 				elements = document.getElementsByClassName("jw-icon-fullscreen");
 				for (i = 0; i < elements.length; i++) {
-					elements[i].Click();
+					elements[i].click();
 				}
 			}
 		</script>

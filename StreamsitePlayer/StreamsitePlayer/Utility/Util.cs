@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,9 +55,17 @@ namespace StreamsitePlayer
         {
             int firstIndex = stringToSearch.IndexOf(first, startIndex) + first.Length;
             if ((firstIndex - first.Length) == -1) return "";
-            int secondIndex = stringToSearch.IndexOf(second, firstIndex);
+            int secondIndex = stringToSearch.IndexOf(second, firstIndex + 1);
             if (secondIndex == -1) return "";
             return stringToSearch.Substring(firstIndex, secondIndex - firstIndex);
+        }
+
+        public static bool CheckWriteAccess(string path)
+        {
+            PermissionSet permissionSet = new PermissionSet(PermissionState.None);
+            FileIOPermission writePermission = new FileIOPermission(FileIOPermissionAccess.Write | FileIOPermissionAccess.Append, path);
+            permissionSet.AddPermission(writePermission);
+            return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
         }
 
     }

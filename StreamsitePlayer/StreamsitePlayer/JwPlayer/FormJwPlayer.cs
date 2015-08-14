@@ -24,6 +24,7 @@ namespace StreamsitePlayer
         private bool maximized = false;
         private JwPlayerControl jwPlayer;
         private bool nextRequested = false;
+        private long lastPosition = 0;
 
         public FormJwPlayer()
         {
@@ -38,6 +39,7 @@ namespace StreamsitePlayer
             
             JSUtil.init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
+            base.Controls.SetChildIndex(jwPlayer, 10);
 
             this.Size = new Size(964, 576);
         }
@@ -173,86 +175,169 @@ namespace StreamsitePlayer
 
         private int playNextId = 0;
         private int validRequestId = int.MinValue;
+        private long nextPlayTime = 0;
         public void Play(int season, int episode)
         {
             currentSeason = season;
             currentEpisode = episode;
-            string streamcloudLink = streamProvider.GetEpisodeLink(season, episode, StreamcloudStreamingSite.NAME);
+            string episodeLink = streamProvider.GetEpisodeLink(season, episode, streamProvider.GetValidStreamingSites()[0]);
             WebBrowser browser = new WebBrowser();
             browser.ScriptErrorsSuppressed = true;
-            StreamcloudStreamingSite streamcloud = new StreamcloudStreamingSite(browser, streamcloudLink);
-            streamcloudWaitTime = streamcloud.GetEstimateWaitTime();
-            streamcloud.RequestJwData(this, ++validRequestId);
+            StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], browser, episodeLink);
+            streamcloudWaitTime = site.GetEstimateWaitTime();
+            site.RequestJwData(this, ++validRequestId);
             playNextId = validRequestId;
         }
 
-        private int pointsOnMessage = 1;
-        public void JwLinkStatusUpdate(int remainingTime, int max, int rqeuestId)
+        public void RestartStream()
         {
-            bool isPlaying;
-            try
-            {
-                isPlaying = IsPlaying;
-            } catch { isPlaying = false; }
-            if (!isPlaying)
-            {
-                jwPlayer.Visible = false;
-                progressBarRequestingStatus.Visible = true;
-                labelRequestingStatus.Visible = true;
-            } else
-            {
-                jwPlayer.Visible = true;
-                progressBarRequestingStatus.Visible = false;
-                labelRequestingStatus.Visible = false;
-            }
-            progressBarRequestingStatus.Maximum = max;
-            progressBarRequestingStatus.Value = max - remainingTime;
-            string baseMsg = "Processing " + StreamcloudStreamingSite.NAME + " page";
-            string pointsString = "";
-            for (int i = 0; i < pointsOnMessage; i++)
-            {
-                pointsString += " .";
-            }
-            pointsOnMessage = ++pointsOnMessage % 5;
-            labelRequestingStatus.Text = baseMsg + pointsString;
-
+            nextPlayTime = lastPosition;
+            Play(currentSeason, currentEpisode);
         }
 
-        public void ReceiveJwLinks(string filePath, string imagePath, int requestId)
+        private int pointsOnMessage = 1;
+        public void JwLinkStatusUpdate(int remainingTime, int max, int requestId)
         {
             if (requestId == playNextId)
             {
-                jwPlayer.Play(filePath, imagePath);
+                bool isPlaying;
+                try
+                {
+                    isPlaying = IsPlaying;
+                }
+                catch { isPlaying = false; }
+                if (!isPlaying)
+                {
+                    jwPlayer.Visible = false;
+                    progressBarRequestingStatus.Visible = true;
+                    labelRequestingStatus.Visible = true;
+                    progressBarLoadingNext.Visible = false;
+                }
+                else
+                {
+                    jwPlayer.Visible = true;
+                    progressBarRequestingStatus.Visible = false;
+                    labelRequestingStatus.Visible = false;
+                    progressBarLoadingNext.Visible = true;
+                }
+                progressBarRequestingStatus.Maximum = max;
+                progressBarRequestingStatus.Value = max - remainingTime;
+                progressBarLoadingNext.Maximum = max;
+                progressBarLoadingNext.Value = max - remainingTime;
+                string baseMsg = "Processing " + streamProvider.GetValidStreamingSites()[0] + " page";
+                string pointsString = "";
+                for (int i = 0; i < pointsOnMessage; i++)
+                {
+                    pointsString += " .";
+                }
+                pointsOnMessage = ++pointsOnMessage % 5;
+                labelRequestingStatus.Text = baseMsg + pointsString;
+            }
+        }
+
+        public void ReceiveJwLinks(string insertion, int requestId)
+        {
+            if (requestId == playNextId)
+            {
+                Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+                jwPlayer.Play(insertion);
                 jwPlayer.ClickOnFullscreen();
                 jwPlayer.Visible = true;
+                
                 progressBarRequestingStatus.Visible = false;
                 labelRequestingStatus.Visible = false;
+                progressBarLoadingNext.Visible = false;
+                this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
                 nextRequested = false;
 
+                UpdateLabelEpisode();
             }
+        }
+
+        private const long LABEL_EPISODE_DISPLAY_TIME = 7;
+        private const long LABEL_EPISODE_FADING_TIME = 3;
+        private long displayTimeLabelEpisode = 0;
+        private void UpdateLabelEpisode()
+        {
+            if (displayTimeLabelEpisode == 0L) displayTimeLabelEpisode = DateTime.Now.Ticks;
+
+            if ((DateTime.Now.Ticks - displayTimeLabelEpisode) > TimeSpan.TicksPerSecond * LABEL_EPISODE_DISPLAY_TIME)
+            {
+                displayTimeLabelEpisode = 0L;
+                if (labelEpisode.InvokeRequired)
+                {
+                    labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Visible = false));
+                }
+                if (labelEpisode.InvokeRequired)
+                {
+                    labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Text = "Episode X"));
+                }
+                return;
+            }
+
+            Color c = labelEpisode.ForeColor;
+            long timeDisplayed = (DateTime.Now.Ticks - displayTimeLabelEpisode);
+            long timeFullDisplay = TimeSpan.TicksPerSecond * (LABEL_EPISODE_DISPLAY_TIME - LABEL_EPISODE_FADING_TIME);
+            long timeFading = timeDisplayed - timeFullDisplay;
+            long timeTotalFading = TimeSpan.TicksPerSecond * LABEL_EPISODE_FADING_TIME;
+
+            /*if (timeFading > 0L)
+            {
+                int newAlpha = (int)(((double)(timeTotalFading - timeFading) / (double)timeTotalFading) * 255d);
+                if (newAlpha > 255) newAlpha = 255;
+                c = Color.FromArgb(newAlpha, c);
+                Console.WriteLine("A: " + newAlpha);
+                Console.WriteLine("Time left: " + (timeTotalFading - timeFading));
+            }
+            else
+            {
+                c = Color.FromArgb(255, c);
+            }*/ //TODO implement a transparent label. This is currently too much effort for a little effect.
+
+            if (labelEpisode.InvokeRequired)
+            {
+                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.ForeColor = c));
+            }
+            if (labelEpisode.InvokeRequired)
+            {
+                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Visible = true));
+            }
+            if (labelEpisode.InvokeRequired)
+            {
+                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Text = "Episode " + currentEpisode));
+            }
+
+            System.Threading.Timer t = new System.Threading.Timer((state) => UpdateLabelEpisode(), null, 490, -1);
         }
 
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
         {
+            lastPosition = timePlayed;
             CheckForAutoplay(timeLeft);
         }
 
+        bool nextFullscreen = false;
         public void OnPlaybackComplete()
         {
+            nextFullscreen = Maximized;
             CheckForAutoplay(0);
         }
 
         private void CheckForAutoplay(long timeLeft)
         {
-            if (Autoplay && !nextRequested)
+            if (Autoplay)
             {
-                if (timeLeft <= (0 + streamcloudWaitTime))
+                if (timeLeft <= 1000) jwPlayer.Pause();
+                if (!nextRequested)
                 {
-                    Next();
-                }
-                else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + streamcloudWaitTime)))
-                {
-                    Next();
+                    if (timeLeft <= (1000 + streamcloudWaitTime))
+                    {
+                        Next();
+                    }
+                    else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + streamcloudWaitTime)))
+                    {
+                        Next();
+                    }
                 }
             }
         }
@@ -270,6 +355,21 @@ namespace StreamsitePlayer
                     this.Maximized = false;
                     break;
             }
+        }
+
+        public void OnError(string message)
+        {
+            Logger.Log("JwPlayerJS", "OnError: " + message);
+        }
+
+        public void OnStartupError(string message)
+        {
+            Logger.Log("JwPlayerJS", "OnStartupError: " + message);
+        }
+
+        public void OnReady()
+        {
+            jwPlayer.Maximized = nextFullscreen;
         }
     }
 }

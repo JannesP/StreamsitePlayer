@@ -48,6 +48,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownSkipStart = new System.Windows.Forms.NumericUpDown();
+            this.panelEpisodeButtons = new System.Windows.Forms.Panel();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -59,7 +60,7 @@
             this.fileToolStripMenuItem});
             this.menuStripFormMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripFormMain.Name = "menuStripFormMain";
-            this.menuStripFormMain.Size = new System.Drawing.Size(459, 24);
+            this.menuStripFormMain.Size = new System.Drawing.Size(627, 24);
             this.menuStripFormMain.TabIndex = 1;
             this.menuStripFormMain.Text = "menuStripFormMain";
             // 
@@ -80,11 +81,13 @@
             // 
             // textBoxSeriesExtension
             // 
+            this.textBoxSeriesExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSeriesExtension.Location = new System.Drawing.Point(139, 46);
             this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
-            this.textBoxSeriesExtension.Size = new System.Drawing.Size(100, 20);
+            this.textBoxSeriesExtension.Size = new System.Drawing.Size(271, 20);
             this.textBoxSeriesExtension.TabIndex = 2;
-            this.textBoxSeriesExtension.Text = "Sword-Art-Online";
+            this.textBoxSeriesExtension.TextChanged += new System.EventHandler(this.textBoxSeriesExtension_TextChanged);
             // 
             // labelSeriesExtensionHelp
             // 
@@ -103,11 +106,11 @@
             this.comboBoxStreamingProvider.Name = "comboBoxStreamingProvider";
             this.comboBoxStreamingProvider.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingProvider.TabIndex = 4;
-            this.comboBoxStreamingProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxStreamingProvider_SelectedIndexChanged);
             // 
             // buttonOpenSeries
             // 
-            this.buttonOpenSeries.Location = new System.Drawing.Point(245, 45);
+            this.buttonOpenSeries.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOpenSeries.Location = new System.Drawing.Point(416, 45);
             this.buttonOpenSeries.Name = "buttonOpenSeries";
             this.buttonOpenSeries.Size = new System.Drawing.Size(75, 23);
             this.buttonOpenSeries.TabIndex = 5;
@@ -126,8 +129,9 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(326, 28);
+            this.label2.Location = new System.Drawing.Point(497, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
             this.label2.TabIndex = 8;
@@ -135,9 +139,10 @@
             // 
             // comboBoxStreamingSites
             // 
+            this.comboBoxStreamingSites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStreamingSites.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStreamingSites.FormattingEnabled = true;
-            this.comboBoxStreamingSites.Location = new System.Drawing.Point(326, 45);
+            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 45);
             this.comboBoxStreamingSites.Name = "comboBoxStreamingSites";
             this.comboBoxStreamingSites.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingSites.TabIndex = 7;
@@ -158,8 +163,9 @@
             // 
             // checkBoxAutoplay
             // 
+            this.checkBoxAutoplay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxAutoplay.AutoSize = true;
-            this.checkBoxAutoplay.Location = new System.Drawing.Point(380, 73);
+            this.checkBoxAutoplay.Location = new System.Drawing.Point(551, 72);
             this.checkBoxAutoplay.Name = "checkBoxAutoplay";
             this.checkBoxAutoplay.Size = new System.Drawing.Size(67, 17);
             this.checkBoxAutoplay.TabIndex = 10;
@@ -169,12 +175,13 @@
             // 
             // numericUpDownSkipEnd
             // 
+            this.numericUpDownSkipEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numericUpDownSkipEnd.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDownSkipEnd.Location = new System.Drawing.Point(380, 96);
+            this.numericUpDownSkipEnd.Location = new System.Drawing.Point(475, 71);
             this.numericUpDownSkipEnd.Maximum = new decimal(new int[] {
             600,
             0,
@@ -187,8 +194,9 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(325, 98);
+            this.label3.Location = new System.Drawing.Point(420, 73);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 12;
@@ -196,8 +204,9 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(435, 98);
+            this.label4.Location = new System.Drawing.Point(530, 73);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 13;
@@ -205,9 +214,10 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Enabled = false;
-            this.label5.Location = new System.Drawing.Point(435, 124);
+            this.label5.Location = new System.Drawing.Point(404, 73);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 13);
             this.label5.TabIndex = 16;
@@ -215,9 +225,10 @@
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Enabled = false;
-            this.label6.Location = new System.Drawing.Point(325, 124);
+            this.label6.Location = new System.Drawing.Point(294, 73);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 15;
@@ -225,8 +236,9 @@
             // 
             // numericUpDownSkipStart
             // 
+            this.numericUpDownSkipStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numericUpDownSkipStart.Enabled = false;
-            this.numericUpDownSkipStart.Location = new System.Drawing.Point(380, 122);
+            this.numericUpDownSkipStart.Location = new System.Drawing.Point(349, 71);
             this.numericUpDownSkipStart.Maximum = new decimal(new int[] {
             600,
             0,
@@ -237,11 +249,25 @@
             this.numericUpDownSkipStart.TabIndex = 14;
             this.numericUpDownSkipStart.ValueChanged += new System.EventHandler(this.numericUpDownSkipStart_ValueChanged);
             // 
+            // panelEpisodeButtons
+            // 
+            this.panelEpisodeButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelEpisodeButtons.AutoScroll = true;
+            this.panelEpisodeButtons.Location = new System.Drawing.Point(12, 95);
+            this.panelEpisodeButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.panelEpisodeButtons.MinimumSize = new System.Drawing.Size(588, 177);
+            this.panelEpisodeButtons.Name = "panelEpisodeButtons";
+            this.panelEpisodeButtons.Size = new System.Drawing.Size(606, 280);
+            this.panelEpisodeButtons.TabIndex = 17;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 156);
+            this.ClientSize = new System.Drawing.Size(627, 387);
+            this.Controls.Add(this.panelEpisodeButtons);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.numericUpDownSkipStart);
@@ -258,9 +284,9 @@
             this.Controls.Add(this.labelSeriesExtensionHelp);
             this.Controls.Add(this.textBoxSeriesExtension);
             this.Controls.Add(this.menuStripFormMain);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStripFormMain;
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(625, 323);
             this.Name = "FormMain";
             this.Text = "Serieswatcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -294,6 +320,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numericUpDownSkipStart;
+        private System.Windows.Forms.Panel panelEpisodeButtons;
     }
 }
 

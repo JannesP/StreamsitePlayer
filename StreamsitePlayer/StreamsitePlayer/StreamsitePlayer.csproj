@@ -52,18 +52,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vlc.DotNet.Core, Version=2.1.62.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=x86">
-      <HintPath>..\packages\Vlc.DotNet.Core.2.1.62\lib\net45\x86\Vlc.DotNet.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Vlc.DotNet.Core.Interops, Version=2.1.62.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=x86">
-      <HintPath>..\packages\Vlc.DotNet.Core.Interops.2.1.62\lib\net45\x86\Vlc.DotNet.Core.Interops.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Vlc.DotNet.Forms, Version=2.1.62.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=x86">
-      <HintPath>..\packages\Vlc.DotNet.Forms.2.1.62\lib\net45\x86\Vlc.DotNet.Forms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JwPlayer\FormJwPlayer.cs">
@@ -84,12 +72,6 @@
     <Compile Include="FormPlayerBrowser.Designer.cs">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPlayerVlc.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormPlayerVlc.Designer.cs">
-      <DependentUpon>FormPlayerVlc.cs</DependentUpon>
-    </Compile>
     <Compile Include="JwPlayer\JSUtil.cs" />
     <Compile Include="JwPlayer\JwPlayerControl.cs">
       <SubType>Component</SubType>
@@ -97,18 +79,23 @@
     <Compile Include="JwPlayer\ScriptingInterface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Seriescache.cs" />
+    <Compile Include="Streamsites\Providers\DubbedanimehdNetProvider.cs" />
+    <Compile Include="Streamsites\Providers\RyuanimeStreamProvider.cs" />
+    <Compile Include="Streamsites\Series.cs" />
+    <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />
+    <Compile Include="Utility\Seriescache.cs" />
     <Compile Include="ISitePlayer.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Utility\Settings.cs" />
     <Compile Include="Streamsites\Episode.cs" />
     <Compile Include="Streamsites\Providers\BsToStreamProvider.cs" />
     <Compile Include="Streamsites\Providers\TestProvider.cs" />
     <Compile Include="Streamsites\Sites\IJwCallbackReceiver.cs" />
-    <Compile Include="Streamsites\Sites\IVlcCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\StreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\StreamingSite.cs" />
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Utility\Util.cs" />
+    <Compile Include="Utility\Logger.cs" />
     <EmbeddedResource Include="JwPlayer\FormJwPlayer.resx">
       <DependentUpon>FormJwPlayer.cs</DependentUpon>
     </EmbeddedResource>
@@ -117,9 +104,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormPlayerBrowser.resx">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormPlayerVlc.resx">
-      <DependentUpon>FormPlayerVlc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -132,7 +116,6 @@
     </Compile>
     <None Include="app.manifest" />
     <None Include="JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
