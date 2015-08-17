@@ -55,6 +55,12 @@ namespace StreamsitePlayer.JwPlayer
             return ResolveLong(JSUtil.browser.Document.InvokeScript(functionName, args));
         }
 
+        internal static double ExecuteFunctionForDouble(string functionName)
+        {
+            IsBrowserReady();
+            return ResolveDouble(JSUtil.browser.Document.InvokeScript(functionName));
+        }
+
         public static bool ExecuteFunctionForBool(string functionName)
         {
             IsBrowserReady();
@@ -80,6 +86,11 @@ namespace StreamsitePlayer.JwPlayer
         private static long ResolveLong(object sysComObject)
         {
             return (long)sysComObject;
+        }
+
+        private static double ResolveDouble(object sysComObject)
+        {
+            return (double)sysComObject;
         }
 
         private static bool ResolveBool(object sysComObject)

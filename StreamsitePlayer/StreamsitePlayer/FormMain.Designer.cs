@@ -216,7 +216,6 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Enabled = false;
             this.label5.Location = new System.Drawing.Point(404, 73);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 13);
@@ -227,7 +226,6 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Enabled = false;
             this.label6.Location = new System.Drawing.Point(294, 73);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(51, 13);
@@ -237,7 +235,11 @@
             // numericUpDownSkipStart
             // 
             this.numericUpDownSkipStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDownSkipStart.Enabled = false;
+            this.numericUpDownSkipStart.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             this.numericUpDownSkipStart.Location = new System.Drawing.Point(349, 71);
             this.numericUpDownSkipStart.Maximum = new decimal(new int[] {
             600,
