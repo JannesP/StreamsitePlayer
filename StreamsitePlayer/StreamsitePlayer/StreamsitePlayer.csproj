@@ -130,19 +130,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\beelden.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\bekle.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\five.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\glow.css" />
     <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
     <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
     <Content Include="JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\roundster.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\seven.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\six.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\stormtrooper.css" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\css skins\vapor.css" />
     <Content Include="JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
