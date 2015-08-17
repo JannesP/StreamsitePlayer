@@ -13,6 +13,7 @@ namespace StreamsitePlayer
         public const string SKIP_BEGINNING = "skipBeginning";
         public const string LAST_SERIES = "lastSeries";
         public const string LAST_PROVIDER = "lastProvider";
+        public const string JW_KEY = "jwKey";
 
         private static class Defaults
         {
@@ -25,6 +26,7 @@ namespace StreamsitePlayer
                 defaults.Add(SKIP_BEGINNING, "0");
                 defaults.Add(LAST_SERIES, "");
                 defaults.Add(LAST_PROVIDER, "0");
+                defaults.Add(JW_KEY, "");
             }
 
             public static string GetValue(string key)
@@ -61,7 +63,7 @@ namespace StreamsitePlayer
             string[] fileLines = File.ReadAllLines(FILE_NAME, Encoding.UTF8);
             foreach (string line in fileLines)
             {
-                string[] splitResult = line.Split(new char[] { '=', ' ' });
+                string[] splitResult = line.Split(new char[] { '=' }, 2);
                 if (splitResult.Length != 2)
                 {
                     continue;

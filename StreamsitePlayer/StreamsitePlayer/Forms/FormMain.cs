@@ -1,4 +1,5 @@
-﻿using StreamsitePlayer.Streamsites;
+﻿using StreamsitePlayer.Forms;
+using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Providers;
 using StreamsitePlayer.Streamsites.Sites;
 using System;
@@ -66,7 +67,8 @@ namespace StreamsitePlayer
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("coming soon!");
+            Form formSettings = new FormSettings(this);
+            formSettings.Show();
         }
 
         private StreamProvider CreateNewProvider(string name)

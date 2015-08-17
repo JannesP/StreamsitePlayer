@@ -120,6 +120,7 @@ namespace StreamsitePlayer.JwPlayer
             string curDir = Directory.GetCurrentDirectory();
             string html = File.ReadAllText(JW_SITE_PATH);
             html = html.Replace("--insertion--", insertion);
+            html = html.Replace("--key--", Program.settings.GetString(Settings.JW_KEY));
             DisplayHtml(html); //blocks until the site is laoded!
             Play();
         }

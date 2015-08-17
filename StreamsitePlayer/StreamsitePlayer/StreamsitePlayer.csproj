@@ -54,22 +54,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSettings.Designer.cs">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="JwPlayer\FormJwPlayer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="JwPlayer\FormJwPlayer.Designer.cs">
       <DependentUpon>FormJwPlayer.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPlayerBrowser.cs">
+    <Compile Include="Forms\FormPlayerBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormPlayerBrowser.Designer.cs">
+    <Compile Include="Forms\FormPlayerBrowser.Designer.cs">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="JwPlayer\JSUtil.cs" />
@@ -83,7 +89,7 @@
     <Compile Include="Streamsites\Providers\RyuanimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
-    <Compile Include="Streamsites\Sites\RyuanimeStreamProvider.cs" />
+    <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />
     <Compile Include="Utility\Seriescache.cs" />
     <Compile Include="ISitePlayer.cs" />
     <Compile Include="Utility\Settings.cs" />
@@ -96,13 +102,16 @@
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />
     <Compile Include="Utility\Util.cs" />
     <Compile Include="Utility\Logger.cs" />
+    <EmbeddedResource Include="Forms\FormSettings.resx">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="JwPlayer\FormJwPlayer.resx">
       <DependentUpon>FormJwPlayer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormPlayerBrowser.resx">
+    <EmbeddedResource Include="Forms\FormPlayerBrowser.resx">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
