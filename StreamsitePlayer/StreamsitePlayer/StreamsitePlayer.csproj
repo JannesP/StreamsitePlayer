@@ -83,7 +83,7 @@
     <Compile Include="Streamsites\Providers\RyuanimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
-    <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\RyuanimeStreamProvider.cs" />
     <Compile Include="Utility\Seriescache.cs" />
     <Compile Include="ISitePlayer.cs" />
     <Compile Include="Utility\Settings.cs" />
