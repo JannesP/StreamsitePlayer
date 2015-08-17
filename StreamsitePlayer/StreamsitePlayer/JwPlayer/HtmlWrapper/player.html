@@ -27,15 +27,15 @@
 		</script>
 		
 		<script type="text/javascript">
+			var isOnReadyFired = false;
 			playerInstance = jwplayer("myvideo");
 			playerInstance.on('time', OnPlaylocationChanged);
 			playerInstance.on('complete', OnComplete);
-			playerInstance.on('ready', OnReady);
 			playerInstance.on('fullscreen', OnFullscreenChanged);
 			playerInstance.on('error', OnError);
 			playerInstance.on('setupError', OnSetupError);
 
-			function OnReady(event) {
+			function OnReady() {
 			    window.external.OnReady();
 			}
 
@@ -66,8 +66,16 @@
 			function PlayPause() {
 				playerInstance.play();
 			}
+
+			function GetLength() {
+			    return playerInstance.getDuration();
+			}
 			
 			function OnPlaylocationChanged(event) {
+				if (!isOnReadyFired && playerInstance.getDuration() != 0) {
+					isOnReadyFired = true;
+					OnReady();
+				}
 				window.external.OnPlaylocationChanged(event.position * 1000, (event.duration - event.position) * 1000, event.duration * 1000);
 			}
 			
@@ -90,7 +98,14 @@
 			function ClickOnFullscreen() {
 				elements = document.getElementsByClassName("jw-icon-fullscreen");
 				for (i = 0; i < elements.length; i++) {
-					elements[i].click();
+					var mousedown = document.createEvent("MouseEvent");
+					mousedown.initMouseEvent('mousedown', true, false, window, {}, 0, 0, 0, 0, false, false, false, false, 0, elements[i]);
+					var mouseup = document.createEvent("MouseEvent");
+					mouseup.initMouseEvent('mouseup', true, false, window, {}, 0, 0, 0, 0, false, false, false, false, 0, elements[i]);
+				    window.external.Log("Fireing mousedown event on: " + elements[i].outerHTML);
+					elements[i].dispatchEvent(mousedown);
+					window.external.Log("Fireing mouseup event on: " + elements[i].outerHTML);
+					elements[i].dispatchEvent(mouseup);
 				}
 			}
 		</script>

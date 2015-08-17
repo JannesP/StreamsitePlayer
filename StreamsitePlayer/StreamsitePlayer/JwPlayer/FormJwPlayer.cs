@@ -240,8 +240,8 @@ namespace StreamsitePlayer
             if (requestId == playNextId)
             {
                 Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+                nextFullscreen = jwPlayer.Maximized;
                 jwPlayer.Play(insertion);
-                jwPlayer.ClickOnFullscreen();
                 jwPlayer.Visible = true;
                 
                 progressBarRequestingStatus.Visible = false;
@@ -369,7 +369,21 @@ namespace StreamsitePlayer
 
         public void OnReady()
         {
+            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + jwPlayer.Position + "\n\tLength: " + jwPlayer.Length);
+            CheckForLateStart();
             jwPlayer.Maximized = nextFullscreen;
+        }
+
+        private void CheckForLateStart()
+        {
+            int skipSeconds = Program.settings.GetNumber(Settings.SKIP_BEGINNING);
+            if (skipSeconds != 0)
+            {
+                if (jwPlayer.Length > (skipSeconds * 1000))
+                {
+                    jwPlayer.Position = skipSeconds * 1000;
+                }
+            }
         }
     }
 }
