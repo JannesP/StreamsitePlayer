@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace StreamsitePlayer
 {
-    class Settings
+    public static class Settings
     {
         public const string AUTOPLAY = "autoplay";
         public const string SKIP_END = "skipEnd";
@@ -56,17 +57,16 @@ namespace StreamsitePlayer
         private const string FILE_NAME = "settings.ini";
 
 
-        public Settings()
+        static Settings()
         {
             if (!File.Exists(FILE_NAME))
             {
                 File.Create(FILE_NAME).Close();
             }
             LoadFileSettings();
-            initialized = true;
         }
 
-        private void LoadFileSettings()
+        private static void LoadFileSettings()
         {
             string[] fileLines = File.ReadAllLines(FILE_NAME, Encoding.UTF8);
             foreach (string line in fileLines)
@@ -83,29 +83,35 @@ namespace StreamsitePlayer
             }
         }
 
-        public void SaveFileSettings()
+        public static void SaveFileSettings()
         {
+            Logger.Log("FILEIO", "Generating savefile lines ...");
             long startTime = DateTime.Now.Ticks;
             string[] lines = GetSaveFileLines();
-            File.WriteAllLines(FILE_NAME, lines, Encoding.UTF8);
-            double msTaken = (double)(DateTime.Now.Ticks - startTime) / 10000d;
+            Logger.Log("FILEIO", "Creating IO thread ...");
+            Thread savingThread = new Thread(new ThreadStart(() =>
+            {
+                File.WriteAllLines(FILE_NAME, lines, Encoding.UTF8);
+                double msTaken = (double)(DateTime.Now.Ticks - startTime) / 10000d;
+                Logger.Log("FILEIO", "Done saving settings async after " + msTaken + "ms!");
+            }));
+            savingThread.Start();
         }
 
 
-        private Dictionary<string, string> settings = new Dictionary<string, string>();
-        public bool initialized = false;
+        private static Dictionary<string, string> settings = new Dictionary<string, string>();
 
-        public void WriteValue(string key, int value)
+        public static void WriteValue(string key, int value)
         {
             WriteValue(key, value.ToString());
         }
 
-        public void WriteValue(string key, bool value)
+        public static void WriteValue(string key, bool value)
         {
             WriteValue(key, value.ToString());
         }
 
-        public void WriteValue(string key, string value)
+        public static void WriteValue(string key, string value)
         {
             if (settings.ContainsKey(key))
             {
@@ -120,7 +126,7 @@ namespace StreamsitePlayer
             }
         }
 
-        public bool GetBool(string key)
+        public static bool GetBool(string key)
         {
             bool res = false;
             bool succeeded = bool.TryParse(GetString(key), out res);
@@ -135,7 +141,7 @@ namespace StreamsitePlayer
             }
         }
 
-        public string GetString(string key)
+        public static string GetString(string key)
         {
             string result = "";
             bool foundVal = settings.TryGetValue(key, out result);
@@ -150,7 +156,7 @@ namespace StreamsitePlayer
             }
         }
 
-        public int GetNumber(string key)
+        public static int GetNumber(string key)
         {
             int res = -1;
             bool succeeded = int.TryParse(GetString(key), out res);
@@ -165,12 +171,12 @@ namespace StreamsitePlayer
             }
         }
 
-        public void RestoreDefault(string key)
+        public static void RestoreDefault(string key)
         {
             WriteValue(key, Defaults.GetValue(key));
         }
 
-        public string[] GetSaveFileLines()
+        public static string[] GetSaveFileLines()
         {
             string[] result = new string[settings.Count];
             for (int i = 0; i < settings.Count; i++)

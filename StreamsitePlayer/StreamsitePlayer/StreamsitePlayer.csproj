@@ -60,10 +60,10 @@
     <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="JwPlayer\FormJwPlayer.cs">
+    <Compile Include="Player\JwPlayer\FormJwPlayer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="JwPlayer\FormJwPlayer.Designer.cs">
+    <Compile Include="Player\JwPlayer\FormJwPlayer.Designer.cs">
       <DependentUpon>FormJwPlayer.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormMain.cs">
@@ -78,11 +78,11 @@
     <Compile Include="Forms\FormPlayerBrowser.Designer.cs">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="JwPlayer\JSUtil.cs" />
-    <Compile Include="JwPlayer\JwPlayerControl.cs">
+    <Compile Include="Player\JwPlayer\JSUtil.cs" />
+    <Compile Include="Player\JwPlayer\JwPlayerControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="JwPlayer\ScriptingInterface.cs" />
+    <Compile Include="Player\JwPlayer\ScriptingInterface.cs" />
     <Compile Include="Player\EpisodeChangeEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,7 +106,7 @@
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="JwPlayer\FormJwPlayer.resx">
+    <EmbeddedResource Include="Player\JwPlayer\FormJwPlayer.resx">
       <DependentUpon>FormJwPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
@@ -125,7 +125,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
+    <None Include="Player\JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -140,11 +140,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
-    <Content Include="JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
-    <Content Include="JwPlayer\HtmlWrapper\player.html" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

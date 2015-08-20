@@ -59,12 +59,13 @@ namespace StreamsitePlayer
         {
             get
             {
-                return Program.settings.GetBool(Settings.AUTOPLAY);
+                return Settings.GetBool(Settings.AUTOPLAY);
             }
 
             set
             {
-                Program.settings.WriteValue(Settings.AUTOPLAY, value);
+                Settings.WriteValue(Settings.AUTOPLAY, value);
+                Settings.SaveFileSettings();
             }
         }
 
@@ -122,12 +123,13 @@ namespace StreamsitePlayer
         {
             get
             {
-                return Program.settings.GetNumber(Settings.SKIP_END);
+                return Settings.GetNumber(Settings.SKIP_END);
             }
 
             set
             {
-                Program.settings.WriteValue(Settings.SKIP_END, value);
+                Settings.WriteValue(Settings.SKIP_END, value);
+                Settings.SaveFileSettings();
             }
         }
 
@@ -135,12 +137,13 @@ namespace StreamsitePlayer
         {
             get
             {
-                return Program.settings.GetNumber(Settings.SKIP_BEGINNING);
+                return Settings.GetNumber(Settings.SKIP_BEGINNING);
             }
 
             set
             {
-                Program.settings.WriteValue(Settings.SKIP_BEGINNING, value);
+                Settings.WriteValue(Settings.SKIP_BEGINNING, value);
+                Settings.SaveFileSettings();
             }
         }
 
@@ -388,7 +391,7 @@ namespace StreamsitePlayer
 
         private void CheckForLateStart()
         {
-            int skipSeconds = Program.settings.GetNumber(Settings.SKIP_BEGINNING);
+            int skipSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING);
             if (skipSeconds != 0)
             {
                 if (jwPlayer.Length > (skipSeconds * 1000))

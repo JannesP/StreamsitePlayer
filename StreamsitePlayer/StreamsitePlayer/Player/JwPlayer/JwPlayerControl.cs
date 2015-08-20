@@ -19,6 +19,8 @@ namespace StreamsitePlayer.JwPlayer
             base.Location = new System.Drawing.Point(0, 0);
             base.Name = "jwPlayer";
             base.NewWindow += JwPlayerControl_NewWindow;
+            base.AllowWebBrowserDrop = false;
+            base.IsWebBrowserContextMenuEnabled = false;
         }
 
         private void JwPlayerControl_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
@@ -120,7 +122,7 @@ namespace StreamsitePlayer.JwPlayer
             string curDir = Directory.GetCurrentDirectory();
             string html = File.ReadAllText(JW_SITE_PATH);
             html = html.Replace("--insertion--", insertion);
-            html = html.Replace("--key--", Program.settings.GetString(Settings.JW_KEY));
+            html = html.Replace("--key--", Settings.GetString(Settings.JW_KEY));
             DisplayHtml(html); //blocks until the site is laoded!
             Play();
         }

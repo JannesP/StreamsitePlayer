@@ -23,6 +23,7 @@ namespace StreamsitePlayer.Forms
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Settings.SaveFileSettings();
             parent.Enabled = true;
             parent.Focus();
         }
@@ -30,7 +31,7 @@ namespace StreamsitePlayer.Forms
         private void FormSettings_Shown(object sender, EventArgs e)
         {
             parent.Enabled = false;
-            string jwKey = Program.settings.GetString(Settings.JW_KEY);
+            string jwKey = Settings.GetString(Settings.JW_KEY);
             textBoxJwKey.Text = jwKey;
             textBoxJwKey.TextChanged += textBoxJwKey_TextChanged;
             this.Focus();
@@ -38,7 +39,7 @@ namespace StreamsitePlayer.Forms
 
         private void textBoxJwKey_TextChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.JW_KEY, ((TextBox)sender).Text);
+            Settings.WriteValue(Settings.JW_KEY, ((TextBox)sender).Text);
         }
     }
 }

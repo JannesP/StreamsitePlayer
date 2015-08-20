@@ -37,17 +37,18 @@ namespace StreamsitePlayer
             InitStreamingProviders();
             seriesAnchorX = comboBoxStreamingProvider;
             seriesAnchorY = numericUpDownSkipEnd;
+            panelEpisodeButtons.Focus();
             this.comboBoxStreamingProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxStreamingProvider_SelectedIndexChanged);
-            LoadSettingValues(Program.settings);
+            LoadSettingValues();
         }
 
-        private void LoadSettingValues(Settings s)
+        private void LoadSettingValues()
         {
-            checkBoxAutoplay.Checked = s.GetBool(Settings.AUTOPLAY);
-            numericUpDownSkipEnd.Value = s.GetNumber(Settings.SKIP_END);
-            numericUpDownSkipStart.Value = s.GetNumber(Settings.SKIP_BEGINNING);
-            comboBoxStreamingProvider.SelectedIndex = s.GetNumber(Settings.LAST_PROVIDER);
-            textBoxSeriesExtension.Text = s.GetString(Settings.LAST_SERIES);
+            checkBoxAutoplay.Checked = Settings.GetBool(Settings.AUTOPLAY);
+            numericUpDownSkipEnd.Value = Settings.GetNumber(Settings.SKIP_END);
+            numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
+            comboBoxStreamingProvider.SelectedIndex = Settings.GetNumber(Settings.LAST_PROVIDER);
+            textBoxSeriesExtension.Text = Settings.GetString(Settings.LAST_SERIES);
         }
 
         private void InitStreamingProviders()
@@ -246,10 +247,10 @@ namespace StreamsitePlayer
 
         private void HighlightCurrentEpisode()
         {
-            int episode = Program.settings.GetNumber(Settings.LAST_PLAYED_EPISODE);
-            int season = Program.settings.GetNumber(Settings.LAST_PLAYED_SEASON);
-            string series = Program.settings.GetString(Settings.LAST_PLAYED_SERIES);
-            string provider = Program.settings.GetString(Settings.LAST_PLAYED_PROVIDER);
+            int episode = Settings.GetNumber(Settings.LAST_PLAYED_EPISODE);
+            int season = Settings.GetNumber(Settings.LAST_PLAYED_SEASON);
+            string series = Settings.GetString(Settings.LAST_PLAYED_SERIES);
+            string provider = Settings.GetString(Settings.LAST_PLAYED_PROVIDER);
 
             if (episode == -1 || season == -1 || series.Equals("") || provider.Equals("")) return;
 
@@ -281,10 +282,11 @@ namespace StreamsitePlayer
 
         private void Player_EpisodeChange(object source, Player.EpisodeChangeEventArgs e)
         {
-            Program.settings.WriteValue(Settings.LAST_PLAYED_EPISODE, e.NewEpisode.Number);
-            Program.settings.WriteValue(Settings.LAST_PLAYED_SEASON, e.NewEpisode.Season);
-            Program.settings.WriteValue(Settings.LAST_PLAYED_PROVIDER, currentProvider.GetReadableSiteName());
-            Program.settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
+            Settings.WriteValue(Settings.LAST_PLAYED_EPISODE, e.NewEpisode.Number);
+            Settings.WriteValue(Settings.LAST_PLAYED_SEASON, e.NewEpisode.Season);
+            Settings.WriteValue(Settings.LAST_PLAYED_PROVIDER, currentProvider.GetReadableSiteName());
+            Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
+            Settings.SaveFileSettings();
 
             HighlightCurrentEpisode();
         }
@@ -297,25 +299,25 @@ namespace StreamsitePlayer
 
         private void checkBoxAutoplay_CheckedChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.AUTOPLAY, ((CheckBox)sender).Checked);
-            Program.settings.SaveFileSettings();
+            Settings.WriteValue(Settings.AUTOPLAY, ((CheckBox)sender).Checked);
+            Settings.SaveFileSettings();
         }
 
         private void numericUpDownSkipEnd_ValueChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.SKIP_END, (int)((NumericUpDown)sender).Value);
-            Program.settings.SaveFileSettings();
+            Settings.WriteValue(Settings.SKIP_END, (int)((NumericUpDown)sender).Value);
+            Settings.SaveFileSettings();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Program.settings.SaveFileSettings();
+            Settings.SaveFileSettings();
         }
 
         private void numericUpDownSkipStart_ValueChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.SKIP_BEGINNING, (int)((NumericUpDown)sender).Value);
-            Program.settings.SaveFileSettings();
+            Settings.WriteValue(Settings.SKIP_BEGINNING, (int)((NumericUpDown)sender).Value);
+            Settings.SaveFileSettings();
         }
 
         private void textBoxSeriesExtension_TextChanged(object sender, EventArgs e)

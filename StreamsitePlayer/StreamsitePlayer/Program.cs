@@ -17,8 +17,6 @@ namespace StreamsitePlayer
         private const int IE11 = 0x2AF8; //7000
         private const int IEEDGE = 0x2AF9; //7000
 
-        public static Settings settings;
-
 
         /// <summary>
         /// The main entry point for the application.
@@ -28,7 +26,6 @@ namespace StreamsitePlayer
         {
             Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             SetWebBrowserVersion();
-            settings = new Settings();
 
             Application.ThreadException += Application_ThreadException; //catch all exceptions because of a bug in the VlcControl code.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
