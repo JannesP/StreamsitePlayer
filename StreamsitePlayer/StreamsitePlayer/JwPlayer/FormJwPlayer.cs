@@ -11,11 +11,14 @@ using System.Windows.Forms;
 using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Sites;
 using StreamsitePlayer.JwPlayer;
+using StreamsitePlayer.Player;
 
 namespace StreamsitePlayer
 {
     public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener
     {
+        public event OnEpisodeChangeHandler EpisodeChange;
+
         private const string JW_SITE_PATH = "jwplayer/player.html";
         StreamProvider streamProvider;
         private int currentEpisode;
@@ -25,11 +28,11 @@ namespace StreamsitePlayer
         private JwPlayerControl jwPlayer;
         private bool nextRequested = false;
         private long lastPosition = 0;
+        
 
         public FormJwPlayer()
         {
             InitializeComponent();
-
             jwPlayer = new JwPlayerControl();
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
@@ -42,6 +45,14 @@ namespace StreamsitePlayer
             base.Controls.SetChildIndex(jwPlayer, 10);
 
             this.Size = new Size(964, 576);
+        }
+
+        protected virtual void OnEpisodeChange(EpisodeChangeEventArgs e)
+        {
+            if (EpisodeChange != null)
+            {
+                EpisodeChange(this, e);
+            }
         }
 
         public bool Autoplay
@@ -187,6 +198,7 @@ namespace StreamsitePlayer
             streamcloudWaitTime = site.GetEstimateWaitTime();
             site.RequestJwData(this, ++validRequestId);
             playNextId = validRequestId;
+            OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
         }
 
         public void RestartStream()

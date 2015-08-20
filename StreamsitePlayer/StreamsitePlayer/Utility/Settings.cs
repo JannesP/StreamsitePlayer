@@ -13,6 +13,10 @@ namespace StreamsitePlayer
         public const string SKIP_BEGINNING = "skipBeginning";
         public const string LAST_SERIES = "lastSeries";
         public const string LAST_PROVIDER = "lastProvider";
+        public const string LAST_PLAYED_SERIES = "lastPlayedSeries";
+        public const string LAST_PLAYED_PROVIDER = "lastPlayedProvider";
+        public const string LAST_PLAYED_EPISODE = "lastPlayedEpisode";
+        public const string LAST_PLAYED_SEASON = "lastPlayedSeason";
         public const string JW_KEY = "jwKey";
 
         private static class Defaults
@@ -27,6 +31,10 @@ namespace StreamsitePlayer
                 defaults.Add(LAST_SERIES, "");
                 defaults.Add(LAST_PROVIDER, "0");
                 defaults.Add(JW_KEY, "");
+                defaults.Add(LAST_PLAYED_EPISODE, "-1");
+                defaults.Add(LAST_PLAYED_SEASON, "-1");
+                defaults.Add(LAST_PLAYED_SERIES, "");
+                defaults.Add(LAST_PLAYED_PROVIDER, "");
             }
 
             public static string GetValue(string key)

@@ -83,6 +83,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="JwPlayer\ScriptingInterface.cs" />
+    <Compile Include="Player\EpisodeChangeEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Streamsites\Providers\DubbedanimehdNetProvider.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />
     <Compile Include="Utility\Seriescache.cs" />
-    <Compile Include="ISitePlayer.cs" />
+    <Compile Include="Player\ISitePlayer.cs" />
     <Compile Include="Utility\Settings.cs" />
     <Compile Include="Streamsites\Episode.cs" />
     <Compile Include="Streamsites\Providers\BsToStreamProvider.cs" />

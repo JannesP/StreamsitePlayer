@@ -22,7 +22,7 @@ namespace StreamsitePlayer
         private Control seriesAnchorY;
         private const int PADDING = 5;
         private const int BUTTON_SIZE = 60;
-        private int selectedSeries = 1;
+        private int selectedSeason = 1;
         private List<Button> seriesButtons;
         private List<Button> episodeButtons;
         private static Label labelCurrentlyLoadedS;
@@ -56,7 +56,9 @@ namespace StreamsitePlayer
             streamProviders.Add(BsToStreamProvider.NAME);
             streamProviders.Add(RyuanimeStreamProvider.NAME);
             streamProviders.Add(DubbedanimehdNetProvider.NAME);
+#if DEBUG
             streamProviders.Add(TestProvider.NAME);
+#endif
             comboBoxStreamingProvider.Items.Clear();
             comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
             if (comboBoxStreamingProvider.Items.Count != 0)
@@ -90,7 +92,6 @@ namespace StreamsitePlayer
 
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.LAST_PROVIDER, ((ComboBox)sender).SelectedIndex);
             currentProvider = CreateNewProvider(comboBoxStreamingProvider.SelectedItem.ToString());
             ReloadStreamingProviderInfo();
         }
@@ -117,10 +118,11 @@ namespace StreamsitePlayer
                 this.Enabled = true;
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
-                    if (currentProvider.GetSeriesCount() != 0) selectedSeries = 1;
+                    if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
                     BuildUIForCurrentProvider();
                 }
             }
+            panelEpisodeButtons.Focus();
         }
 
         private static int currentlyLoaded = 0;
@@ -139,15 +141,14 @@ namespace StreamsitePlayer
             labelCurrentlyLoadedS.Text = "Loaded " + currentlyLoaded++ + " episodes. Last loaded: S" + episode.Season + "E" + episode.Number + " " + episode.Name;
         }
 
-        private void BuildUIForCurrentProvider()
+        private void ClearEpisodePanel()
         {
-            ToolTip tooltip = new ToolTip();
-            tooltip.InitialDelay = 100;
             if (seriesButtons != null) //remove old buttons from the window
             {
                 foreach (Control c in seriesButtons)
                 {
                     panelEpisodeButtons.Controls.Remove(c);
+                    c.Dispose();
                 }
             }
             if (episodeButtons != null)
@@ -155,18 +156,27 @@ namespace StreamsitePlayer
                 foreach (Control c in episodeButtons)
                 {
                     panelEpisodeButtons.Controls.Remove(c);
+                    c.Dispose();
                 }
             }
+        }
+
+        private void BuildUIForCurrentProvider()
+        {
+            ToolTip tooltip = new ToolTip();
+            tooltip.InitialDelay = 100;
+            ClearEpisodePanel();
             seriesButtons = BuildButtonsForSeries(tooltip); //add new buttons to the window
-            episodeButtons = BuildButtonsForEpisodes(selectedSeries, tooltip);
+            episodeButtons = BuildButtonsForEpisodes(selectedSeason, tooltip);
             panelEpisodeButtons.Controls.AddRange(seriesButtons.ToArray());
             panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
-            seriesButtons[selectedSeries - 1].Enabled = false;  //disable current series
+            seriesButtons[selectedSeason - 1].Enabled = false;  //disable current series
             Button bottomButton = episodeButtons[episodeButtons.Count - 1];
             int bottomY = panelEpisodeButtons.Bounds.Y + panelEpisodeButtons.Bounds.Height;
             Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
             int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
             this.Height = bottomY + titleHeight;
+            HighlightCurrentEpisode();
         }
 
         private List<Button> BuildButtonsForSeries(ToolTip tooltip)
@@ -229,13 +239,59 @@ namespace StreamsitePlayer
             {
                 player = new FormJwPlayer();
                 player.Open(currentProvider);
+                player.EpisodeChange += Player_EpisodeChange;
             }
-            player.Play(selectedSeries, episode);
+            player.Play(selectedSeason, episode);
+        }
+
+        private void HighlightCurrentEpisode()
+        {
+            int episode = Program.settings.GetNumber(Settings.LAST_PLAYED_EPISODE);
+            int season = Program.settings.GetNumber(Settings.LAST_PLAYED_SEASON);
+            string series = Program.settings.GetString(Settings.LAST_PLAYED_SERIES);
+            string provider = Program.settings.GetString(Settings.LAST_PLAYED_PROVIDER);
+
+            if (episode == -1 || season == -1 || series.Equals("") || provider.Equals("")) return;
+
+            if (series == currentProvider.GetLinkExtension() && provider == currentProvider.GetReadableSiteName())
+            {
+                season = season == 0 ? 1 : season;  //if season == 0 -> season = 1
+                if (season != selectedSeason)
+                {
+                    selectedSeason = season == 0 ? 1 : season;
+                    BuildUIForCurrentProvider();
+                    return;
+                }
+
+                foreach (Button b in episodeButtons)
+                {
+                    int buttonEpisode = int.Parse(b.Text);
+                    if (buttonEpisode == episode)
+                    {
+                        b.ForeColor = Color.FromArgb(255, 0, 255);
+                    }
+                    else
+                    {
+                        b.ForeColor = Color.Black;
+                    }
+                }
+            }
+            
+        }
+
+        private void Player_EpisodeChange(object source, Player.EpisodeChangeEventArgs e)
+        {
+            Program.settings.WriteValue(Settings.LAST_PLAYED_EPISODE, e.NewEpisode.Number);
+            Program.settings.WriteValue(Settings.LAST_PLAYED_SEASON, e.NewEpisode.Season);
+            Program.settings.WriteValue(Settings.LAST_PLAYED_PROVIDER, currentProvider.GetReadableSiteName());
+            Program.settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
+
+            HighlightCurrentEpisode();
         }
 
         private void OnSeriesButtonClicked(object sender, EventArgs e)
         {
-            selectedSeries = int.Parse(((Button)sender).Text.Replace("S", ""));
+            selectedSeason = int.Parse(((Button)sender).Text.Replace("S", ""));
             BuildUIForCurrentProvider();
         }
 
@@ -264,7 +320,16 @@ namespace StreamsitePlayer
 
         private void textBoxSeriesExtension_TextChanged(object sender, EventArgs e)
         {
-            Program.settings.WriteValue(Settings.LAST_SERIES, ((TextBox)sender).Text);
+        }
+
+        private void buttonOpenProviderSite_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(currentProvider.GetWebsiteLink());
+        }
+
+        private void PanelFocus_Click(object sender, EventArgs e)
+        {
+            panelEpisodeButtons.Focus();
         }
     }
 }

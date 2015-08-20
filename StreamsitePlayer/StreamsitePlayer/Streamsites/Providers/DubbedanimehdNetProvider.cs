@@ -30,17 +30,18 @@ namespace StreamsitePlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
+        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
         {
-            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkNameExtension);
+            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension);
+            base.siteLinkExtension = siteLinkExtension;
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension);
+            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
-            seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkNameExtension));
+            seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "wp-post-image\" alt=\"", "\" />");
             base.series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkNameExtension, base.series);
+            Seriescache.CacheSeries(NAME, siteLinkExtension, base.series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -69,6 +70,11 @@ namespace StreamsitePlayer.Streamsites.Providers
             }
             
             return episodes;
+        }
+
+        public override string GetWebsiteLink()
+        {
+            return "http://www.dubbedanimehd.net/dubbed-anime";
         }
     }
 }

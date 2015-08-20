@@ -32,17 +32,18 @@ namespace StreamsitePlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
+        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
         {
-            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkNameExtension);
+            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension);
+            base.siteLinkExtension = siteLinkExtension;
             if (seasons != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension);
+            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
             seasons = new List<List<Episode>>();
-            seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkNameExtension));
+            seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "<h1> ", "</h1>");
             base.series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkNameExtension, series);
+            Seriescache.CacheSeries(NAME, siteLinkExtension, series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -71,6 +72,11 @@ namespace StreamsitePlayer.Streamsites.Providers
                 else break;
             }
             return episodes;
+        }
+
+        public override string GetWebsiteLink()
+        {
+            return "http://www.ryuanime.com/animelist.php";
         }
     }
 }

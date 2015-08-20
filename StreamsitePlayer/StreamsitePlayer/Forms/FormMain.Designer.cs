@@ -49,6 +49,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownSkipStart = new System.Windows.Forms.NumericUpDown();
             this.panelEpisodeButtons = new System.Windows.Forms.Panel();
+            this.buttonOpenProviderSite = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -75,7 +76,7 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -83,26 +84,27 @@
             // 
             this.textBoxSeriesExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSeriesExtension.Location = new System.Drawing.Point(139, 46);
+            this.textBoxSeriesExtension.Location = new System.Drawing.Point(196, 46);
             this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
-            this.textBoxSeriesExtension.Size = new System.Drawing.Size(271, 20);
+            this.textBoxSeriesExtension.Size = new System.Drawing.Size(214, 20);
             this.textBoxSeriesExtension.TabIndex = 2;
             this.textBoxSeriesExtension.TextChanged += new System.EventHandler(this.textBoxSeriesExtension_TextChanged);
             // 
             // labelSeriesExtensionHelp
             // 
             this.labelSeriesExtensionHelp.AutoSize = true;
-            this.labelSeriesExtensionHelp.Location = new System.Drawing.Point(139, 27);
+            this.labelSeriesExtensionHelp.Location = new System.Drawing.Point(193, 28);
             this.labelSeriesExtensionHelp.Name = "labelSeriesExtensionHelp";
             this.labelSeriesExtensionHelp.Size = new System.Drawing.Size(29, 13);
             this.labelSeriesExtensionHelp.TabIndex = 3;
             this.labelSeriesExtensionHelp.Text = "Help";
+            this.labelSeriesExtensionHelp.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // comboBoxStreamingProvider
             // 
             this.comboBoxStreamingProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStreamingProvider.FormattingEnabled = true;
-            this.comboBoxStreamingProvider.Location = new System.Drawing.Point(12, 45);
+            this.comboBoxStreamingProvider.Location = new System.Drawing.Point(15, 44);
             this.comboBoxStreamingProvider.Name = "comboBoxStreamingProvider";
             this.comboBoxStreamingProvider.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingProvider.TabIndex = 4;
@@ -126,23 +128,25 @@
             this.label1.Size = new System.Drawing.Size(81, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "Streamprovider:";
+            this.label1.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(497, 28);
+            this.label2.Location = new System.Drawing.Point(494, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "Streaming site:";
+            this.label2.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // comboBoxStreamingSites
             // 
             this.comboBoxStreamingSites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStreamingSites.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStreamingSites.FormattingEnabled = true;
-            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 45);
+            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 46);
             this.comboBoxStreamingSites.Name = "comboBoxStreamingSites";
             this.comboBoxStreamingSites.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingSites.TabIndex = 7;
@@ -160,6 +164,7 @@
             this.labelCurrentlyLoaded.TabIndex = 9;
             this.labelCurrentlyLoaded.Text = "Currently loading:";
             this.labelCurrentlyLoaded.Visible = false;
+            this.labelCurrentlyLoaded.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // checkBoxAutoplay
             // 
@@ -201,6 +206,7 @@
             this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Skip end";
+            this.label3.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // label4
             // 
@@ -211,16 +217,18 @@
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 13;
             this.label4.Text = "s";
+            this.label4.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(404, 73);
+            this.label5.Location = new System.Drawing.Point(402, 73);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 13);
             this.label5.TabIndex = 16;
             this.label5.Text = "s";
+            this.label5.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // label6
             // 
@@ -231,6 +239,7 @@
             this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 15;
             this.label6.Text = "Skip start";
+            this.label6.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // numericUpDownSkipStart
             // 
@@ -263,12 +272,24 @@
             this.panelEpisodeButtons.Name = "panelEpisodeButtons";
             this.panelEpisodeButtons.Size = new System.Drawing.Size(606, 280);
             this.panelEpisodeButtons.TabIndex = 17;
+            this.panelEpisodeButtons.Click += new System.EventHandler(this.PanelFocus_Click);
+            // 
+            // buttonOpenProviderSite
+            // 
+            this.buttonOpenProviderSite.Location = new System.Drawing.Point(139, 43);
+            this.buttonOpenProviderSite.Name = "buttonOpenProviderSite";
+            this.buttonOpenProviderSite.Size = new System.Drawing.Size(51, 23);
+            this.buttonOpenProviderSite.TabIndex = 18;
+            this.buttonOpenProviderSite.Text = "Browse";
+            this.buttonOpenProviderSite.UseVisualStyleBackColor = true;
+            this.buttonOpenProviderSite.Click += new System.EventHandler(this.buttonOpenProviderSite_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 387);
+            this.Controls.Add(this.buttonOpenProviderSite);
             this.Controls.Add(this.panelEpisodeButtons);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label6);
@@ -292,6 +313,7 @@
             this.Name = "FormMain";
             this.Text = "Serieswatcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
+            this.Click += new System.EventHandler(this.PanelFocus_Click);
             this.menuStripFormMain.ResumeLayout(false);
             this.menuStripFormMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).EndInit();
@@ -323,6 +345,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numericUpDownSkipStart;
         private System.Windows.Forms.Panel panelEpisodeButtons;
+        private System.Windows.Forms.Button buttonOpenProviderSite;
     }
 }
 

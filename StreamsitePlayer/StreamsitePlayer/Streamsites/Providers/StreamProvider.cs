@@ -15,11 +15,20 @@ namespace StreamsitePlayer.Streamsites
         public const int RESULT_SERIES_MISSING = -2;
 
         protected Series series;
+        protected string siteLinkExtension = "";
+        /// <summary>
+        /// Returns the linkExtension which was passed in the constructor.
+        /// </summary>
+        /// <returns>the link extension</returns>
+        public string GetLinkExtension()
+        {
+            return siteLinkExtension;
+        }
         /// <summary>
         /// Initilizes the class and requests all the series data.
         /// </summary>
-        /// <param name="siteLinkNameExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
-        public abstract int LoadSeries(string siteLinkNameExtension, Control threadAnchor);
+        /// <param name="siteLinkExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
+        public abstract int LoadSeries(string siteLinkExtension, Control threadAnchor);
         /// <summary>
         /// Requests the cound of episodes in the given series.
         /// </summary>
@@ -37,6 +46,10 @@ namespace StreamsitePlayer.Streamsites
         public List<Episode> GetEpisodeList(int season)
         {
             return this.series[season - 1];
+        }
+        public Episode GetEpisode(int season, int episode)
+        {
+            return this.series[season - 1][episode - 1];
         }
         /// <summary>
         /// Requests the count of series of the series on the StreamProvider.
@@ -92,6 +105,11 @@ namespace StreamsitePlayer.Streamsites
         {
             return series.Name;
         }
+        /// <summary>
+        /// Returns the browsable link to the provider. Usually the search page or something.
+        /// </summary>
+        /// <returns>The website link.</returns>
+        public abstract string GetWebsiteLink();
 
     }
 }

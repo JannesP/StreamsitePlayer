@@ -51,6 +51,11 @@ namespace StreamsitePlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
+        public override string GetWebsiteLink()
+        {
+            return "https://www.google.com/";
+        }
+
         public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
         {
             return StreamProvider.RESULT_OK;

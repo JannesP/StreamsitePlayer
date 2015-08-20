@@ -32,23 +32,24 @@ namespace StreamsitePlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
+        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
         {
-            series = Seriescache.ReadCachedSeries(NAME, siteLinkNameExtension);
+            series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension);
+            base.siteLinkExtension = siteLinkExtension;
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension);
-            int seriesCount = ScanForSeriesCount(htmlEpisodeOverview, siteLinkNameExtension);
+            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
+            int seriesCount = ScanForSeriesCount(htmlEpisodeOverview, siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
-            seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
+            seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             for (int i = 2; i <= seriesCount; i++)
             {
-                htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkNameExtension + "/" + i);
-                seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkNameExtension, threadAnchor));
+                htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension + "/" + i);
+                seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "<h2>", "<");
             series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkNameExtension, series);
+            Seriescache.CacheSeries(NAME, siteLinkExtension, series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -96,6 +97,11 @@ namespace StreamsitePlayer.Streamsites.Providers
                 episodes.Add(e);
             }
             return episodes;
+        }
+
+        public override string GetWebsiteLink()
+        {
+            return "http://bs.to/andere-serien";
         }
     }
 }

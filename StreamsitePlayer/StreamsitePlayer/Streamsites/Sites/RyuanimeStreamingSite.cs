@@ -19,7 +19,7 @@ namespace StreamsitePlayer.Streamsites.Sites
 
         
 
-        public const string NAME = "Ryianime";
+        public const string NAME = "Ryuanime";
 
         public override int GetEstimateWaitTime()
         {
@@ -111,7 +111,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             }
 
         }
-
         
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {

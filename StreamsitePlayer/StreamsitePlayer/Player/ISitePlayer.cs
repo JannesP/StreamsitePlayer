@@ -1,4 +1,5 @@
-﻿using StreamsitePlayer.Streamsites;
+﻿using StreamsitePlayer.Player;
+using StreamsitePlayer.Streamsites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,17 @@ namespace StreamsitePlayer
 {
     interface ISitePlayer
     {
-        void Open(StreamProvider streamProvider);
+        event OnEpisodeChangeHandler EpisodeChange;
 
+        void Open(StreamProvider streamProvider);
         void Play();
         void Play(int season, int episode);
         void Pause();
         void Close();
         void Next();
         void Previous();
+        
+
 
         bool IsDisposed
         {
