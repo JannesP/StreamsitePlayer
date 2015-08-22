@@ -32,8 +32,18 @@
 			playerInstance.on('time', OnPlaylocationChanged);
 			playerInstance.on('complete', OnComplete);
 			playerInstance.on('fullscreen', OnFullscreenChanged);
+			playerInstance.on('mute', OnMuteChange);
+			playerInstance.on('volume', OnVolumeChange);
 			playerInstance.on('error', OnError);
 			playerInstance.on('setupError', OnSetupError);
+
+			function OnVolumeChange(event) {
+			    window.external.OnVolumeChange(event.volume);
+			}
+
+			function OnMuteChange(event) {
+			    window.external.OnMuteChange(event.mute);
+			}
 
 			function OnReady() {
 			    window.external.OnReady();
@@ -61,6 +71,22 @@
 			
 			function Pause() {
 				playerInstance.pause(true);
+			}
+
+			function SetMute(mute) {
+			    playerInstance.setMute(mute);
+			}
+
+			function IsMuted() {
+			    return playerInstance.getMute();
+			}
+
+			function SetVolume(volume) {
+			    return playerInstance.setVolume(volume);
+			}
+
+			function GetVolume() {
+			    return playerInstance.getVolume();
 			}
 			
 			function PlayPause() {

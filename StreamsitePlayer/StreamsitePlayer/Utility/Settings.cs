@@ -19,6 +19,8 @@ namespace StreamsitePlayer
         public const string LAST_PLAYED_EPISODE = "lastPlayedEpisode";
         public const string LAST_PLAYED_SEASON = "lastPlayedSeason";
         public const string JW_KEY = "jwKey";
+        public const string VOLUME = "volume";
+        public const string MUTED = "muted";
 
         private static class Defaults
         {
@@ -36,6 +38,8 @@ namespace StreamsitePlayer
                 defaults.Add(LAST_PLAYED_SEASON, "-1");
                 defaults.Add(LAST_PLAYED_SERIES, "");
                 defaults.Add(LAST_PLAYED_PROVIDER, "");
+                defaults.Add(VOLUME, "100");
+                defaults.Add(MUTED, "false");
             }
 
             public static string GetValue(string key)

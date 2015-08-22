@@ -17,6 +17,8 @@ namespace StreamsitePlayer.JwPlayer
             void OnError(string message);
             void OnStartupError(string message);
             void OnReady();
+            void OnVolumeChange(int newVolume);
+            void OnMuteChange(bool muted);
         }
         
         public IJwEventListener receiver = null;
@@ -75,6 +77,22 @@ namespace StreamsitePlayer.JwPlayer
             if (receiver != null)
             {
                 receiver.OnStartupError(errorMessage);
+            }
+        }
+
+        public void OnVolumeChange(int newVolume)
+        {
+            if (receiver != null)
+            {
+                receiver.OnVolumeChange(newVolume);
+            }
+        }
+
+        public void OnMuteChange(bool muted)
+        {
+            if (receiver != null)
+            {
+                receiver.OnMuteChange(muted);
             }
         }
 

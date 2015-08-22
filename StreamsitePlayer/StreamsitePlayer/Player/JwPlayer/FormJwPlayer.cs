@@ -386,6 +386,8 @@ namespace StreamsitePlayer
         {
             Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + jwPlayer.Position + "\n\tLength: " + jwPlayer.Length);
             CheckForLateStart();
+            jwPlayer.Volume = Settings.GetNumber(Settings.VOLUME);
+            jwPlayer.Muted = Settings.GetBool(Settings.MUTED);
             jwPlayer.Maximized = nextFullscreen;
         }
 
@@ -399,6 +401,16 @@ namespace StreamsitePlayer
                     jwPlayer.Position = skipSeconds * 1000;
                 }
             }
+        }
+
+        public void OnVolumeChange(int newVolume)
+        {
+            Settings.WriteValue(Settings.VOLUME, newVolume);
+        }
+
+        public void OnMuteChange(bool muted)
+        {
+            Settings.WriteValue(Settings.MUTED, muted);
         }
     }
 }

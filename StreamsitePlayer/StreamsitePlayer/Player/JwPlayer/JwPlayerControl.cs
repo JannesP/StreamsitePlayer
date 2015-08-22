@@ -117,6 +117,30 @@ namespace StreamsitePlayer.JwPlayer
             }
         }
 
+        public int Volume
+        {
+            get
+            {
+                return JSUtil.ExecuteFunctionForInt("GetVolume");
+            }
+            set
+            {
+                JSUtil.ExecuteFunction("SetVolume", value);
+            }
+        }
+
+        public bool Muted
+        {
+            get
+            {
+                return JSUtil.ExecuteFunctionForBool("GetMuted");
+            }
+            set
+            {
+                JSUtil.ExecuteFunction("SetMute", value);
+            }
+        }
+
         public void Play(string insertion)
         {
             string curDir = Directory.GetCurrentDirectory();

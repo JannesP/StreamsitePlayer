@@ -55,6 +55,18 @@ namespace StreamsitePlayer.JwPlayer
             return ResolveLong(JSUtil.browser.Document.InvokeScript(functionName, args));
         }
 
+        public static int ExecuteFunctionForInt(string functionName, params object[] args)
+        {
+            IsBrowserReady();
+            return ResolveInt(JSUtil.browser.Document.InvokeScript(functionName, args));
+        }
+
+        public static int ExecuteFunctionForInt(string functionName)
+        {
+            IsBrowserReady();
+            return ResolveInt(JSUtil.browser.Document.InvokeScript(functionName));
+        }
+
         internal static double ExecuteFunctionForDouble(string functionName)
         {
             IsBrowserReady();
