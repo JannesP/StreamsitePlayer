@@ -35,7 +35,7 @@ namespace StreamsitePlayer
             SetWebBrowserVersion();
             DisableWebbrowserClick();
 
-            Application.ThreadException += Application_ThreadException; //catch all exceptions because of a bug in the VlcControl code.
+            Application.ThreadException += Application_ThreadException; //catch all exceptions to log them all.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
@@ -47,11 +47,15 @@ namespace StreamsitePlayer
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
+            DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dr == DialogResult.Yes) Application.Exit();
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + e.Exception.StackTrace);
+            DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dr == DialogResult.Yes) Application.Exit();
         }
 
         private static void DisableWebbrowserClick()
