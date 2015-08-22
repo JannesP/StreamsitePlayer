@@ -91,7 +91,9 @@ namespace StreamsitePlayer
             public void Log(string prefix, string message)
             {
                 string logLine = CreateTimeString() + ": " + prefix + "\t" + message + "\n";
+#if DEBUG
                 Console.Write(logLine);
+#endif
                 //write to file
                 Thread t = new Thread(() => WriteToFile(logLine));
                 t.Start();
