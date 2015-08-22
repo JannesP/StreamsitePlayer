@@ -46,14 +46,12 @@ namespace StreamsitePlayer
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject is ArgumentException) Console.WriteLine("Caught exception!");
-            else Logger.Log("Exception!", ((Exception)e.ExceptionObject).GetType().ToString() + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
+            Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            if (e.Exception is ArgumentException) Console.WriteLine("Caught exception!");
-            else Logger.Log("Exception!", e.Exception.GetType().ToString() + "\n\t" + e.Exception.StackTrace);
+            Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + e.Exception.StackTrace);
         }
 
         private static void DisableWebbrowserClick()
