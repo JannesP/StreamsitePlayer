@@ -38,7 +38,13 @@ namespace StreamsitePlayer.Streamsites
         public StreamingSite(WebBrowser targetBrowser, string link)
         {
             this.targetBrowser = targetBrowser;
+            this.targetBrowser.NewWindow += TargetBrowser_NewWindow;
             this.link = link;
+        }
+
+        private void TargetBrowser_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
         }
 
         public WebBrowser GetTargetBrowser()
