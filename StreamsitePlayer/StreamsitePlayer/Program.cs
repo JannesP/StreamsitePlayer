@@ -13,16 +13,16 @@ namespace StreamsitePlayer
     {
         [DllImport("urlmon.dll")]
         [return: MarshalAs(UnmanagedType.Error)]
-        private static extern int CoInternetSetFeatureEnabled(int FeatureEntry, [MarshalAs(UnmanagedType.U4)] int dwFlags, bool fEnable);   //see https://msdn.microsoft.com/en-us/library/ms537168%28v=vs.85%29.aspx
+        private static extern int CoInternetSetFeatureEnabled(int FeatureEntry, [MarshalAs(UnmanagedType.U4)] int dwFlags, bool fEnable);   //doc: https://msdn.microsoft.com/en-us/library/ms537168%28v=vs.85%29.aspx
         private const int FEATURE_DISABLE_NAVIGATION_SOUNDS = 21;
         private const int SET_FEATURE_ON_PROCESS = 0x00000002;
 
-        private const int IE7 = 0x1B58; //7000
-        private const int IE8 = 0x1F40; //7000
-        private const int IE9 = 0x2328; //7000
-        private const int IE10 = 0x2710; //0x2710
-        private const int IE11 = 0x2AF8; //7000
-        private const int IEEDGE = 0x2AF9; //7000
+        private const int IE7 = 0x1B58;
+        private const int IE8 = 0x1F40;
+        private const int IE9 = 0x2328;
+        private const int IE10 = 0x2710;
+        private const int IE11 = 0x2AF8;
+        private const int IEEDGE = 0x2AF9;
 
 
         /// <summary>
