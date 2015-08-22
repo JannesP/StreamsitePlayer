@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,6 +11,12 @@ namespace StreamsitePlayer
 {
     static class Program
     {
+        [DllImport("urlmon.dll")]
+        [return: MarshalAs(UnmanagedType.Error)]
+        private static extern int CoInternetSetFeatureEnabled(int FeatureEntry, [MarshalAs(UnmanagedType.U4)] int dwFlags, bool fEnable);   //see https://msdn.microsoft.com/en-us/library/ms537168%28v=vs.85%29.aspx
+        private const int FEATURE_DISABLE_NAVIGATION_SOUNDS = 21;
+        private const int SET_FEATURE_ON_PROCESS = 0x00000002;
+
         private const int IE7 = 0x1B58; //7000
         private const int IE8 = 0x1F40; //7000
         private const int IE9 = 0x2328; //7000
@@ -26,6 +33,7 @@ namespace StreamsitePlayer
         {
             Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             SetWebBrowserVersion();
+            DisableWebbrowserClick();
 
             Application.ThreadException += Application_ThreadException; //catch all exceptions because of a bug in the VlcControl code.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -39,13 +47,26 @@ namespace StreamsitePlayer
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is ArgumentException) Console.WriteLine("Caught exception!");
-            else Logger.Log("Exception!", ((Exception)e.ExceptionObject).Message + "\n" + ((Exception)e.ExceptionObject).StackTrace);
+            else Logger.Log("Exception!", ((Exception)e.ExceptionObject).GetType().ToString() + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             if (e.Exception is ArgumentException) Console.WriteLine("Caught exception!");
-            else Logger.Log("Exception!", e.Exception.Message + "\n" + e.Exception.StackTrace);
+            else Logger.Log("Exception!", e.Exception.GetType().ToString() + "\n\t" + e.Exception.StackTrace);
+        }
+
+        private static void DisableWebbrowserClick()
+        {
+            int res = CoInternetSetFeatureEnabled(FEATURE_DISABLE_NAVIGATION_SOUNDS, SET_FEATURE_ON_PROCESS, true);
+            if (res == 0)
+            {
+                Logger.Log("PREINIT", "Turning off browser click off succeeded.");
+            }
+            else
+            {
+                Logger.Log("PREINIT_ERROR", "Turning off browser click off FAILED!");
+            }
         }
 
         private static void SetWebBrowserVersion()
@@ -60,7 +81,7 @@ namespace StreamsitePlayer
                 //If user't have priviledges to access registry 
                 if (Regkey == null)
                 {
-                    MessageBox.Show("Application Settings Failed - Address Not found");
+                    Logger.Log("PREINIT", "Error opening regkey for setting the webbrowser version! (" + @"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION" + ")");
                     return;
                 }
                 Regkey.SetValue(Process.GetCurrentProcess().ProcessName + ".exe", unchecked(IE11), RegistryValueKind.DWord); //0x2AF9 = edge : 0x2AF8 = IE11 see https://msdn.microsoft.com/en-us/library/ee330730.aspx#browser_emulation
@@ -69,8 +90,7 @@ namespace StreamsitePlayer
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Application Settings Failed");
-                MessageBox.Show(ex.Message);
+                Logger.Log("PREINIT", "Failed setting reg value for webbrowser version.\n" + ex.GetType().ToString() + "\n\t" + ex.StackTrace);
             }
             finally
             {
