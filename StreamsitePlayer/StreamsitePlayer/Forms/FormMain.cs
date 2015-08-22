@@ -49,6 +49,13 @@ namespace StreamsitePlayer
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
             comboBoxStreamingProvider.SelectedIndex = Settings.GetNumber(Settings.LAST_PROVIDER);
             textBoxSeriesExtension.Text = Settings.GetString(Settings.LAST_SERIES);
+
+            //Add event listeners after the loaded settings got set to avoid saving of the same settings
+            checkBoxAutoplay.CheckedChanged += checkBoxAutoplay_CheckedChanged;
+            numericUpDownSkipEnd.ValueChanged += numericUpDownSkipEnd_ValueChanged;
+            numericUpDownSkipStart.ValueChanged += numericUpDownSkipStart_ValueChanged;
+            comboBoxStreamingProvider.SelectedIndexChanged += comboBoxStreamingProvider_SelectedIndexChanged;
+            textBoxSeriesExtension.TextChanged += textBoxSeriesExtension_TextChanged;
         }
 
         private void InitStreamingProviders()

@@ -88,7 +88,6 @@
             this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
             this.textBoxSeriesExtension.Size = new System.Drawing.Size(214, 20);
             this.textBoxSeriesExtension.TabIndex = 2;
-            this.textBoxSeriesExtension.TextChanged += new System.EventHandler(this.textBoxSeriesExtension_TextChanged);
             // 
             // labelSeriesExtensionHelp
             // 
@@ -176,7 +175,6 @@
             this.checkBoxAutoplay.TabIndex = 10;
             this.checkBoxAutoplay.Text = "Autoplay";
             this.checkBoxAutoplay.UseVisualStyleBackColor = true;
-            this.checkBoxAutoplay.CheckedChanged += new System.EventHandler(this.checkBoxAutoplay_CheckedChanged);
             // 
             // numericUpDownSkipEnd
             // 
@@ -195,7 +193,6 @@
             this.numericUpDownSkipEnd.Name = "numericUpDownSkipEnd";
             this.numericUpDownSkipEnd.Size = new System.Drawing.Size(49, 20);
             this.numericUpDownSkipEnd.TabIndex = 11;
-            this.numericUpDownSkipEnd.ValueChanged += new System.EventHandler(this.numericUpDownSkipEnd_ValueChanged);
             // 
             // label3
             // 
@@ -258,7 +255,6 @@
             this.numericUpDownSkipStart.Name = "numericUpDownSkipStart";
             this.numericUpDownSkipStart.Size = new System.Drawing.Size(49, 20);
             this.numericUpDownSkipStart.TabIndex = 14;
-            this.numericUpDownSkipStart.ValueChanged += new System.EventHandler(this.numericUpDownSkipStart_ValueChanged);
             // 
             // panelEpisodeButtons
             // 
