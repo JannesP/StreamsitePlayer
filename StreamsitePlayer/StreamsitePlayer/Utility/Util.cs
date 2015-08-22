@@ -68,5 +68,10 @@ namespace StreamsitePlayer
             return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
         }
 
+        public static void OpenLinkInDefaultBrowser(string link)
+        {
+            System.Diagnostics.Process.Start(link);
+        }
+
     }
 }

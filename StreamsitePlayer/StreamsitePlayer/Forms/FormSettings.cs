@@ -33,13 +33,22 @@ namespace StreamsitePlayer.Forms
             parent.Enabled = false;
             string jwKey = Settings.GetString(Settings.JW_KEY);
             textBoxJwKey.Text = jwKey;
-            textBoxJwKey.TextChanged += textBoxJwKey_TextChanged;
             this.Focus();
         }
 
-        private void textBoxJwKey_TextChanged(object sender, EventArgs e)
+        private void linkLabelJwKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Settings.WriteValue(Settings.JW_KEY, ((TextBox)sender).Text);
+            Util.OpenLinkInDefaultBrowser("http://www.jwplayer.com/pricing/");
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            base.Close();
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            Settings.WriteValue(Settings.JW_KEY, textBoxJwKey.Text);
         }
     }
 }

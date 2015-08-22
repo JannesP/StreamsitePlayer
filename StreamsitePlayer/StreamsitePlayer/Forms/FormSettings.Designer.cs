@@ -30,6 +30,9 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxJwKey = new System.Windows.Forms.TextBox();
+            this.linkLabelJwKey = new System.Windows.Forms.LinkLabel();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -47,14 +50,49 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxJwKey.Location = new System.Drawing.Point(91, 12);
             this.textBoxJwKey.Name = "textBoxJwKey";
-            this.textBoxJwKey.Size = new System.Drawing.Size(500, 20);
+            this.textBoxJwKey.Size = new System.Drawing.Size(399, 20);
             this.textBoxJwKey.TabIndex = 1;
+            // 
+            // linkLabelJwKey
+            // 
+            this.linkLabelJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabelJwKey.AutoSize = true;
+            this.linkLabelJwKey.Location = new System.Drawing.Point(496, 12);
+            this.linkLabelJwKey.Name = "linkLabelJwKey";
+            this.linkLabelJwKey.Size = new System.Drawing.Size(84, 13);
+            this.linkLabelJwKey.TabIndex = 2;
+            this.linkLabelJwKey.TabStop = true;
+            this.linkLabelJwKey.Text = "Get one for free!";
+            this.linkLabelJwKey.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelJwKey_LinkClicked);
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(498, 40);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.TabIndex = 3;
+            this.buttonSave.Text = "Save";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Location = new System.Drawing.Point(415, 40);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.TabIndex = 4;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(603, 271);
+            this.ClientSize = new System.Drawing.Size(585, 75);
+            this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.buttonSave);
+            this.Controls.Add(this.linkLabelJwKey);
             this.Controls.Add(this.textBoxJwKey);
             this.Controls.Add(this.label1);
             this.Name = "FormSettings";
@@ -70,5 +108,8 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxJwKey;
+        private System.Windows.Forms.LinkLabel linkLabelJwKey;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonCancel;
     }
 }

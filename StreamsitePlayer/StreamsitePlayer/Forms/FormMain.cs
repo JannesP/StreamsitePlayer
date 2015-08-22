@@ -214,10 +214,16 @@ namespace StreamsitePlayer
             {
                 Button b = CreateNewButton((i + 1).ToString(), episodes[i].Name, tooltip);
                 b.Location = new Point(startX + (PADDING + BUTTON_SIZE) * (i % fittingInOneRow), startY + (i / fittingInOneRow) * (PADDING + BUTTON_SIZE));
+                b.GotFocus += Button_GotFocus;
                 b.Click += this.OnEpisodeButtonClicked;
                 buttons.Add(b);
             }
             return buttons;
+        }
+
+        private void Button_GotFocus(object sender, EventArgs e)
+        {
+            panelEpisodeButtons.Focus();
         }
 
         private Button CreateNewButton(string text, string tooltipText, ToolTip tip)
@@ -269,7 +275,11 @@ namespace StreamsitePlayer
                     int buttonEpisode = int.Parse(b.Text);
                     if (buttonEpisode == episode)
                     {
+                        panelEpisodeButtons.AutoScroll = true;
+                        panelEpisodeButtons.SetAutoScrollMargin(0, BUTTON_SIZE * 2 + PADDING);
                         b.ForeColor = Color.FromArgb(255, 0, 255);
+                        b.Focus();
+                        panelEpisodeButtons.ScrollControlIntoView(b);
                     }
                     else
                     {
@@ -326,7 +336,7 @@ namespace StreamsitePlayer
 
         private void buttonOpenProviderSite_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(currentProvider.GetWebsiteLink());
+            Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
         }
 
         private void PanelFocus_Click(object sender, EventArgs e)
