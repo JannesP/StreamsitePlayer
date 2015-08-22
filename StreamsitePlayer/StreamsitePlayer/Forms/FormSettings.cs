@@ -23,7 +23,6 @@ namespace StreamsitePlayer.Forms
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.SaveFileSettings();
             parent.Enabled = true;
             parent.Focus();
         }
@@ -49,6 +48,8 @@ namespace StreamsitePlayer.Forms
         private void buttonSave_Click(object sender, EventArgs e)
         {
             Settings.WriteValue(Settings.JW_KEY, textBoxJwKey.Text);
+            Settings.SaveFileSettings();
+            base.Close();
         }
     }
 }
