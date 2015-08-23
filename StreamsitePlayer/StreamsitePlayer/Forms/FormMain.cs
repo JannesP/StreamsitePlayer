@@ -1,15 +1,12 @@
 ﻿using StreamsitePlayer.Forms;
 using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Providers;
-using StreamsitePlayer.Streamsites.Sites;
+using StreamsitePlayer.Utility;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace StreamsitePlayer
@@ -39,6 +36,7 @@ namespace StreamsitePlayer
             seriesAnchorY = numericUpDownSkipEnd;
             panelEpisodeButtons.Focus();
             this.comboBoxStreamingProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxStreamingProvider_SelectedIndexChanged);
+            VersionChecker.VersionChecked += VersionChecker_VersionChecked;
             LoadSettingValues();
         }
 
@@ -349,6 +347,44 @@ namespace StreamsitePlayer
         private void PanelFocus_Click(object sender, EventArgs e)
         {
             panelEpisodeButtons.Focus();
+        }
+
+        private void githubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Util.OpenLinkInDefaultBrowser("https://github.com/JannesP/StreamsitePlayer");
+        }
+
+        private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            checkForUpdateToolStripMenuItem.Enabled = false;
+            VersionChecker.CheckForUpdateAsync();
+        }
+
+        private void VersionChecker_VersionChecked(VersionChecker.VersionCheckedEventArgs e)
+        {
+            if (e.ErrorOccured)
+            {
+                MessageBox.Show("Failed to check for version. Details are in the newest log file.", "Failed update check!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Program.VERSION + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dr == DialogResult.Yes)
+                {
+                    Process.Start(Path.Combine(Environment.CurrentDirectory, "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id);
+                    Application.Exit();
+                    return;
+                }
+            }
+            checkForUpdateToolStripMenuItem.Enabled = true;
+        }
+
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+#if !DEBUG
+            checkForUpdateToolStripMenuItem.Enabled = false;
+            VersionChecker.CheckForUpdateAsync();
+#endif
         }
     }
 }
