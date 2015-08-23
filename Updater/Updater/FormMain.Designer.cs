@@ -33,7 +33,6 @@
             this.labelSpeed = new System.Windows.Forms.Label();
             this.labelStatus = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.richTextBoxChangelog = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // progressBarDownload
@@ -77,31 +76,19 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(423, 265);
+            this.buttonCancel.Location = new System.Drawing.Point(423, 72);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
-            // richTextBoxChangelog
-            // 
-            this.richTextBoxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxChangelog.Enabled = false;
-            this.richTextBoxChangelog.Location = new System.Drawing.Point(12, 72);
-            this.richTextBoxChangelog.Name = "richTextBoxChangelog";
-            this.richTextBoxChangelog.Size = new System.Drawing.Size(405, 216);
-            this.richTextBoxChangelog.TabIndex = 5;
-            this.richTextBoxChangelog.Text = "";
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(510, 300);
-            this.Controls.Add(this.richTextBoxChangelog);
+            this.ClientSize = new System.Drawing.Size(510, 107);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.labelSpeed);
@@ -109,9 +96,10 @@
             this.Controls.Add(this.progressBarDownload);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(297, 204);
+            this.MinimumSize = new System.Drawing.Size(297, 145);
             this.Name = "FormMain";
             this.Text = "StreamsitePlayer Updater";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,7 +112,6 @@
         private System.Windows.Forms.Label labelSpeed;
         private System.Windows.Forms.Label labelStatus;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.RichTextBox richTextBoxChangelog;
     }
 }
 
