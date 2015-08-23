@@ -30,8 +30,8 @@ namespace StreamsitePlayer.Forms
         private void FormSettings_Shown(object sender, EventArgs e)
         {
             parent.Enabled = false;
-            string jwKey = Settings.GetString(Settings.JW_KEY);
-            textBoxJwKey.Text = jwKey;
+            textBoxJwKey.Text = Settings.GetString(Settings.JW_KEY);
+            checkBoxAutoUpdate.Checked = Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES);
             this.Focus();
         }
 
@@ -48,6 +48,7 @@ namespace StreamsitePlayer.Forms
         private void buttonSave_Click(object sender, EventArgs e)
         {
             Settings.WriteValue(Settings.JW_KEY, textBoxJwKey.Text);
+            Settings.WriteValue(Settings.AUTOCHECK_FOR_UPDATES, checkBoxAutoUpdate.Checked);
             Settings.SaveFileSettings();
             base.Close();
         }

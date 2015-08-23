@@ -21,6 +21,7 @@ namespace StreamsitePlayer
         public const string JW_KEY = "jwKey";
         public const string VOLUME = "volume";
         public const string MUTED = "muted";
+        public const string AUTOCHECK_FOR_UPDATES = "updateCheckAtStartup";
 
         private static class Defaults
         {
@@ -40,6 +41,7 @@ namespace StreamsitePlayer
                 defaults.Add(LAST_PLAYED_PROVIDER, "");
                 defaults.Add(VOLUME, "100");
                 defaults.Add(MUTED, "false");
+                defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
             }
 
             public static string GetValue(string key)

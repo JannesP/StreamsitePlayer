@@ -371,7 +371,7 @@ namespace StreamsitePlayer
                 DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Program.VERSION + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dr == DialogResult.Yes)
                 {
-                    Process.Start(Path.Combine(Environment.CurrentDirectory, "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id);
+                    Process.Start(Path.Combine(Environment.CurrentDirectory, "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id + " -ver=" + e.NewVersion);
                     Application.Exit();
                     return;
                 }
@@ -382,9 +382,17 @@ namespace StreamsitePlayer
         private void FormMain_Shown(object sender, EventArgs e)
         {
 #if !DEBUG
-            checkForUpdateToolStripMenuItem.Enabled = false;
-            VersionChecker.CheckForUpdateAsync();
+            if (Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES))
+            {
+                checkForUpdateToolStripMenuItem.Enabled = false;
+                VersionChecker.CheckForUpdateAsync();
+            }
 #endif
+        }
+
+        private void versionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("You are currently using version " + Program.VERSION + "!", "Version " + Program.VERSION, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

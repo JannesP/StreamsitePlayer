@@ -39,6 +39,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon-Player.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -141,6 +144,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icon-Player.ico" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
@@ -148,6 +152,10 @@
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper\player.html" "$(TargetDir)JwPlayer\player.html" /Y
+xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper\jwplayer" "$(TargetDir)JwPlayer\jwplayer" /E /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

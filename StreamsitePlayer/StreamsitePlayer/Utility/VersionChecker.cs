@@ -9,8 +9,8 @@ namespace StreamsitePlayer.Utility
 {
     static class VersionChecker
     {
-        public const string REMOTE_VERSION_PATH = "http://127.0.0.1:6112/streamsiteplayer/newest.ver";
-        public const string REMOTE_CHANGELOG_PATH = "http://127.0.0.1:6112/streamsiteplayer/newest.changelog";
+        public const string REMOTE_VERSION_PATH = "http://62.75.142.161/streamplayer/newest.ver";
+        public const string REMOTE_CHANGELOG_PATH = "http://62.75.142.161/streamplayer/newest.changelog";
 
         public delegate void OnVersionCheckedEventHandler(VersionCheckedEventArgs e);
         public static event OnVersionCheckedEventHandler VersionChecked;

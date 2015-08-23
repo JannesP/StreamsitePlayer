@@ -31,6 +31,7 @@ namespace StreamsitePlayer
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormJwPlayer));
             this.labelRequestingStatus = new System.Windows.Forms.Label();
             this.progressBarRequestingStatus = new System.Windows.Forms.ProgressBar();
             this.progressBarLoadingNext = new System.Windows.Forms.ProgressBar();
@@ -88,6 +89,7 @@ namespace StreamsitePlayer
             this.Controls.Add(this.progressBarLoadingNext);
             this.Controls.Add(this.labelRequestingStatus);
             this.Controls.Add(this.progressBarRequestingStatus);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "FormJwPlayer";
             this.Text = "FormJwPlayer";

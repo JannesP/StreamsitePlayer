@@ -16,11 +16,12 @@ namespace Updater
 {
     public partial class FormMain : Form
     {
-        public const string REMOTE_FILE_PATH = "http://127.0.0.1:6112/streamsiteplayer/newest.zip"; //has to be changed
+        public static string REMOTE_FILE_PATH = "http://62.75.142.161/streamplayer/newest.zip"; //has to be changed
         public const string CACHE_DIR = "updatecache";
         public const string CACHE_FILE = CACHE_DIR + @"\cache.zip";
         public const string DECOMPRESS_DIR = CACHE_DIR + @"\decompressed";
         public const string EXECUTABLE = "StreamsitePlayer.exe";
+        public static string VERSION = "";
 
         private string cacheDir;
         private string cacheFile;

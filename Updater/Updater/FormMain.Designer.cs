@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.progressBarDownload = new System.Windows.Forms.ProgressBar();
             this.labelDownloaded = new System.Windows.Forms.Label();
             this.labelSpeed = new System.Windows.Forms.Label();
@@ -94,6 +95,7 @@
             this.Controls.Add(this.labelSpeed);
             this.Controls.Add(this.labelDownloaded);
             this.Controls.Add(this.progressBarDownload);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(297, 145);

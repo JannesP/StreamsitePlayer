@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSettings));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxJwKey = new System.Windows.Forms.TextBox();
             this.linkLabelJwKey = new System.Windows.Forms.LinkLabel();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.checkBoxAutoUpdate = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -87,18 +89,33 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // checkBoxAutoUpdate
+            // 
+            this.checkBoxAutoUpdate.AutoSize = true;
+            this.checkBoxAutoUpdate.Checked = true;
+            this.checkBoxAutoUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAutoUpdate.Location = new System.Drawing.Point(15, 38);
+            this.checkBoxAutoUpdate.Name = "checkBoxAutoUpdate";
+            this.checkBoxAutoUpdate.Size = new System.Drawing.Size(166, 17);
+            this.checkBoxAutoUpdate.TabIndex = 5;
+            this.checkBoxAutoUpdate.Text = "Check for updates at startup?";
+            this.checkBoxAutoUpdate.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(585, 75);
+            this.Controls.Add(this.checkBoxAutoUpdate);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.linkLabelJwKey);
             this.Controls.Add(this.textBoxJwKey);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormSettings";
-            this.Text = "FormSettings";
+            this.ShowIcon = false;
+            this.Text = "SeriesPlayer Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSettings_FormClosing);
             this.Shown += new System.EventHandler(this.FormSettings_Shown);
             this.ResumeLayout(false);
@@ -113,5 +130,6 @@
         private System.Windows.Forms.LinkLabel linkLabelJwKey;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.CheckBox checkBoxAutoUpdate;
     }
 }
