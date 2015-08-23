@@ -72,10 +72,10 @@
     <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormPlayerBrowser.cs">
+    <Compile Include="Player\FormPlayerBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormPlayerBrowser.Designer.cs">
+    <Compile Include="Player\FormPlayerBrowser.Designer.cs">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Player\JwPlayer\JSUtil.cs" />
@@ -103,6 +103,7 @@
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />
     <Compile Include="Utility\Util.cs" />
     <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\VersionChecker.cs" />
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
@@ -112,7 +113,7 @@
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPlayerBrowser.resx">
+    <EmbeddedResource Include="Player\FormPlayerBrowser.resx">
       <DependentUpon>FormPlayerBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
