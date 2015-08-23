@@ -60,6 +60,10 @@ namespace StreamsitePlayer.Utility
                     webClientChangelog.DownloadStringAsync(new Uri(REMOTE_CHANGELOG_PATH));
                 }
             }
+            else
+            {
+                OnVersionChecked(new VersionCheckedEventArgs("", "", false, false));
+            }
         }
 
         private static void WebClientChangelog_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)

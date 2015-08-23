@@ -153,8 +153,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper\player.html" "$(TargetDir)JwPlayer\player.html" /Y
-xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper\jwplayer" "$(TargetDir)JwPlayer\jwplayer" /E /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
