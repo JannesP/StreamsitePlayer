@@ -37,7 +37,11 @@ namespace Updater
                     {
                         long startTime = DateTime.Now.Ticks;
                         Logger.Log("ARGS", "Found pid to wait for (\"" + arg + "\". Waiting for it to exit ...");
-                        Process.GetProcessById(pid).WaitForExit();
+                        Process p = Process.GetProcessById(pid);
+                        if (p != null)
+                        {
+                            p.WaitForExit();
+                        }
                         Logger.Log("ARGS", "Waited " + (DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond + "ms for the PID " + pid + "to exit.");
                     }
                     else
