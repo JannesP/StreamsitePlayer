@@ -24,7 +24,7 @@ namespace StreamsitePlayer
         private const int IE11 = 0x2AF8;
         private const int IEEDGE = 0x2AF9;
 
-        public const string VERSION = "1.0.0b";
+        public const string VERSION = "1.0.1b";
 
 
         /// <summary>
