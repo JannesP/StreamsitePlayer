@@ -253,6 +253,7 @@ namespace StreamsitePlayer
                 player.Open(currentProvider);
                 player.EpisodeChange += Player_EpisodeChange;
             }
+            
             player.Play(selectedSeason, episode);
         }
 
@@ -283,7 +284,10 @@ namespace StreamsitePlayer
                         panelEpisodeButtons.AutoScroll = true;
                         panelEpisodeButtons.SetAutoScrollMargin(0, BUTTON_SIZE * 2 + PADDING);
                         b.ForeColor = Color.FromArgb(255, 0, 255);
-                        b.Focus();
+                        if (player == null)
+                        {
+                            b.Focus();
+                        }
                         panelEpisodeButtons.ScrollControlIntoView(b);
                     }
                     else
