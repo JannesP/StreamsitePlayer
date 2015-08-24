@@ -23,9 +23,11 @@ namespace StreamsitePlayer.JwPlayer
             base.IsWebBrowserContextMenuEnabled = false;
         }
 
+        public readonly float AspectRatio = 16F / 9F;
+
         private void JwPlayerControl_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
+            e.Cancel = true;    //disable any popups
         }
 
         public bool IsPlaying
