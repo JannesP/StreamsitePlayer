@@ -17,8 +17,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             this.link = link;
         }
 
-
-
         public const string NAME = "dubbedanimehd";
 
         public override int GetEstimateWaitTime()
@@ -86,19 +84,23 @@ namespace StreamsitePlayer.Streamsites.Sites
 
             if (!iFrameNavigated)
             {
+                Logger.Log("SITE_REQUEST_DAHD", "Loaded Source. Searching for IFrame.");
                 string htmlText = GetTargetBrowser().DocumentText;
 
                 string iFrameSearch = "<iframe id='video' src='";
                 string iframeUrl = Util.GetStringBetween(htmlText, 0, iFrameSearch, "'");
+                Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
                 GetTargetBrowser().Navigate(iframeUrl);
                 iFrameNavigated = true;
                 iFrameUrl = iframeUrl;
             }
             else if (iFrameNavigated && browser.Url.AbsolutePath.Equals(new Uri(iFrameUrl).AbsolutePath))
             {
+                Logger.Log("SITE_REQUEST_DAHD", "Loaded IFrame. Searching for file.");
                 string html = GetTargetBrowser().DocumentText;
                 string file = Util.GetStringBetween(html, 0, "file: '", "'");
                 string insertion = "file:\"" + file + "\"";   //file:"http://.../"
+                Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
                 receiver.ReceiveJwLinks(insertion, requestId);
                 GetTargetBrowser().Dispose();
             }
@@ -110,6 +112,7 @@ namespace StreamsitePlayer.Streamsites.Sites
         {
             this.receiver = receiver;
             this.requestId = requestId;
+            Logger.Log("SITE_REQUEST_DAHD", "Navigating borwser to: " + this.link);
             GetTargetBrowser().Navigate(this.link);
         }
     }
