@@ -276,60 +276,47 @@ namespace StreamsitePlayer
             }
         }
 
-        private const long LABEL_EPISODE_DISPLAY_TIME = 7;
-        private const long LABEL_EPISODE_FADING_TIME = 3;
-        private long displayTimeLabelEpisode = 0;
+        private const long LABEL_EPISODE_DISPLAY_TIME = 7000;
         private void UpdateLabelEpisode()
         {
-            if (displayTimeLabelEpisode == 0L) displayTimeLabelEpisode = DateTime.Now.Ticks;
-
-            if ((DateTime.Now.Ticks - displayTimeLabelEpisode) > TimeSpan.TicksPerSecond * LABEL_EPISODE_DISPLAY_TIME)
+            if (labelEpisode.InvokeRequired)
             {
-                displayTimeLabelEpisode = 0L;
-                if (labelEpisode.InvokeRequired)
+                labelEpisode.Invoke((MethodInvoker)(() =>
                 {
-                    labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Visible = false));
-                }
-                if (labelEpisode.InvokeRequired)
-                {
-                    labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Text = "Episode X"));
-                }
-                return;
-            }
-
-            Color c = labelEpisode.ForeColor;
-            long timeDisplayed = (DateTime.Now.Ticks - displayTimeLabelEpisode);
-            long timeFullDisplay = TimeSpan.TicksPerSecond * (LABEL_EPISODE_DISPLAY_TIME - LABEL_EPISODE_FADING_TIME);
-            long timeFading = timeDisplayed - timeFullDisplay;
-            long timeTotalFading = TimeSpan.TicksPerSecond * LABEL_EPISODE_FADING_TIME;
-
-            /*if (timeFading > 0L)
-            {
-                int newAlpha = (int)(((double)(timeTotalFading - timeFading) / (double)timeTotalFading) * 255d);
-                if (newAlpha > 255) newAlpha = 255;
-                c = Color.FromArgb(newAlpha, c);
-                Console.WriteLine("A: " + newAlpha);
-                Console.WriteLine("Time left: " + (timeTotalFading - timeFading));
+                    labelEpisode.Visible = true;
+                    labelEpisode.Text = "Episode " + currentEpisode;
+                }));
             }
             else
             {
-                c = Color.FromArgb(255, c);
-            }*/ //TODO implement a transparent label. This is currently too much effort for a little effect.
-
-            if (labelEpisode.InvokeRequired)
-            {
-                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.ForeColor = c));
-            }
-            if (labelEpisode.InvokeRequired)
-            {
-                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Visible = true));
-            }
-            if (labelEpisode.InvokeRequired)
-            {
-                labelEpisode.Invoke((MethodInvoker)(() => labelEpisode.Text = "Episode " + currentEpisode));
+                labelEpisode.Visible = true;
+                labelEpisode.Text = "Episode " + currentEpisode;
             }
 
-            System.Threading.Timer t = new System.Threading.Timer((state) => UpdateLabelEpisode(), null, 490, -1);
+            System.Threading.Timer t = new System.Threading.Timer((state) => HideLabelEpisode(), null, LABEL_EPISODE_DISPLAY_TIME, -1);
+        }
+
+        private void HideLabelEpisode()
+        {
+            if (labelEpisode.InvokeRequired)
+            {
+                labelEpisode.Invoke((MethodInvoker)(() =>
+                {
+                    if (!labelEpisode.IsDisposed)
+                    {
+                        labelEpisode.Visible = false;
+                        labelEpisode.Text = "Episode X";
+                    }
+                }));
+            }
+            else
+            {
+                if (!labelEpisode.IsDisposed)
+                {
+                    labelEpisode.Visible = false;
+                    labelEpisode.Text = "Episode X";
+                }
+            }
         }
 
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
