@@ -33,6 +33,8 @@ namespace StreamsitePlayer
         public FormJwPlayer()
         {
             InitializeComponent();
+            oldClientSize = this.ClientSize;
+            this.Resize += FormJwPlayer_Resize;
             jwPlayer = new JwPlayerControl();
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
@@ -92,6 +94,7 @@ namespace StreamsitePlayer
                 if (value == this.maximized) return;
                 if (value)
                 {
+                    this.Resize -= FormJwPlayer_Resize;
                     this.maximized = true;
                     this.TopMost = true;
 
@@ -100,16 +103,17 @@ namespace StreamsitePlayer
 
                     this.FormBorderStyle = FormBorderStyle.None;
                     Screen screen = Screen.FromControl(this);
-                    
 
                     this.Location = screen.Bounds.Location;
                     this.Size = screen.Bounds.Size;
 
                     this.Activate();
                     jwPlayer.Focus();
+                    this.Resize += FormJwPlayer_Resize;
                 }
                 else
                 {
+                    this.Resize -= FormJwPlayer_Resize;
                     this.FormBorderStyle = this.normalFormBorderStyle;
                     this.DesktopBounds = oldBounds;
 
@@ -117,6 +121,7 @@ namespace StreamsitePlayer
                     this.Activate();
                     jwPlayer.Focus();
                     this.maximized = false;
+                    this.Resize += FormJwPlayer_Resize;
                 }
             }
         }
@@ -413,6 +418,17 @@ namespace StreamsitePlayer
         public void OnMuteChange(bool muted)
         {
             Settings.WriteValue(Settings.MUTED, muted);
+        }
+
+        private Size oldClientSize;
+        private void FormJwPlayer_Resize(object sender, EventArgs e)
+        {
+            int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
+            int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
+            
+            this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
+
+            oldClientSize = this.ClientSize;
         }
     }
 }

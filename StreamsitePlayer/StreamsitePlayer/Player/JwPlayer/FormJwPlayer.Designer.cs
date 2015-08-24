@@ -93,7 +93,7 @@ namespace StreamsitePlayer
             this.KeyPreview = true;
             this.Name = "FormJwPlayer";
             this.Text = "FormJwPlayer";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormJwPlayer_KeyDown);
+            this.Resize += new System.EventHandler(this.FormJwPlayer_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
