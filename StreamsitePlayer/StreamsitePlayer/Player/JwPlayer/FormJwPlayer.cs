@@ -40,7 +40,7 @@ namespace StreamsitePlayer
             jwPlayer.ScriptErrorsSuppressed = true;
             jwPlayer.ScrollBarsEnabled = false;
             
-            JSUtil.init(ref jwPlayer);
+            JSUtil.Init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
 
@@ -79,8 +79,7 @@ namespace StreamsitePlayer
 
 
         private FormBorderStyle normalFormBorderStyle;
-        private Point oldLocation;
-        private Size oldSize;
+        private Rectangle oldBounds;
         public bool Maximized
         {
             get
@@ -96,24 +95,27 @@ namespace StreamsitePlayer
                     this.maximized = true;
                     this.TopMost = true;
 
+                    this.oldBounds = this.DesktopBounds;
                     this.normalFormBorderStyle = this.FormBorderStyle;
+
                     this.FormBorderStyle = FormBorderStyle.None;
-
                     Screen screen = Screen.FromControl(this);
-                    this.oldLocation = this.Location;
-                    this.Location = screen.Bounds.Location;
+                    
 
-                    this.oldSize = this.Size;
+                    this.Location = screen.Bounds.Location;
                     this.Size = screen.Bounds.Size;
+
+                    this.Activate();
+                    jwPlayer.Focus();
                 }
                 else
                 {
                     this.FormBorderStyle = this.normalFormBorderStyle;
-                    this.Location = this.oldLocation;
-                    this.Size = this.oldSize;
+                    this.DesktopBounds = oldBounds;
+
                     this.TopMost = false;
                     this.Activate();
-
+                    jwPlayer.Focus();
                     this.maximized = false;
                 }
             }
