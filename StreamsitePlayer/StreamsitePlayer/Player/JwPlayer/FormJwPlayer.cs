@@ -35,18 +35,26 @@ namespace StreamsitePlayer
             InitializeComponent();
             oldClientSize = this.ClientSize;
             this.Resize += FormJwPlayer_Resize;
+            
             jwPlayer = new JwPlayerControl();
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
             jwPlayer.ObjectForScripting = si;
             jwPlayer.ScriptErrorsSuppressed = true;
             jwPlayer.ScrollBarsEnabled = false;
-            
+
             JSUtil.Init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
 
+            this.GotFocus += FormJwPlayer_GotFocus;
+
             this.Size = new Size(964, 576);
+        }
+
+        private void FormJwPlayer_GotFocus(object sender, EventArgs e)
+        {
+            jwPlayer.Focus();
         }
 
         protected virtual void OnEpisodeChange(EpisodeChangeEventArgs e)
@@ -265,6 +273,7 @@ namespace StreamsitePlayer
                 nextFullscreen = jwPlayer.Maximized;
                 jwPlayer.Play(insertion);
                 jwPlayer.Visible = true;
+                jwPlayer.Focus();
                 
                 progressBarRequestingStatus.Visible = false;
                 labelRequestingStatus.Visible = false;
@@ -383,6 +392,7 @@ namespace StreamsitePlayer
             jwPlayer.Volume = Settings.GetNumber(Settings.VOLUME);
             jwPlayer.Muted = Settings.GetBool(Settings.MUTED);
             jwPlayer.Maximized = nextFullscreen;
+            jwPlayer.Focus();
         }
 
         private void CheckForLateStart()

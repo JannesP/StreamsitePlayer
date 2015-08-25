@@ -11,13 +11,14 @@
         </script>
 
 		<script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+        <link rel="stylesheet" type="text/css" href="jwplayer/jwskinchanges.css" />
 		<script type="text/javascript">jwplayer.key="--key--";</script>
 	</head>
 
 	<body style="background-color: black;">
-		<div id="myvideo">Loading the player...</div>
+		<div id="myvideo" tabindex="0" style="outline: 0;">Loading the player...</div>
 		<script type="text/javascript">
-			jwplayer("myvideo").setup({
+            jwplayer("myvideo").setup({
 				provider: "http",
 				--insertion--,
 				width: "100%",
@@ -133,6 +134,15 @@
 					window.external.Log("Fireing mouseup event on: " + elements[i].outerHTML);
 					elements[i].dispatchEvent(mouseup);
 				}
+			}
+
+			function Focus() {
+			    var element = document.getElementById('myvideo');
+			    if (element != null) {
+			        element.focus();
+			    } else {
+			        window.external.Log("Couldn't focus the div 'myvideo'!");
+			    }
 			}
 		</script>
 		

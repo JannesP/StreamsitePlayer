@@ -143,6 +143,16 @@ namespace StreamsitePlayer.JwPlayer
             }
         }
 
+        public new void Focus()
+        {
+            base.Focus();
+            try
+            {
+                JSUtil.ExecuteFunction("Focus");
+            }
+            catch { }
+        }
+
         public void Play(string insertion)
         {
             string curDir = Directory.GetCurrentDirectory();

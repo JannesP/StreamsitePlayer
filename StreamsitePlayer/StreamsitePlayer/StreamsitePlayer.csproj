@@ -148,6 +148,7 @@
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
+    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
