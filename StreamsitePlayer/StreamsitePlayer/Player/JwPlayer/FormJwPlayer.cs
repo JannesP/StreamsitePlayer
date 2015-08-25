@@ -285,6 +285,7 @@ namespace StreamsitePlayer
             }
         }
 
+        System.Threading.Timer timerLabelEpisodeHiding;
         private const long LABEL_EPISODE_DISPLAY_TIME = 7000;
         private void UpdateLabelEpisode()
         {
@@ -302,17 +303,22 @@ namespace StreamsitePlayer
                 labelEpisode.Text = "Episode " + currentEpisode;
             }
 
-            System.Threading.Timer t = new System.Threading.Timer((state) => HideLabelEpisode(), null, LABEL_EPISODE_DISPLAY_TIME, -1);
+            Logger.Log("LABEL_EPISODE_HIDING", "Timer set for HideLabelEpisode() to " + LABEL_EPISODE_DISPLAY_TIME + "ms");
+            timerLabelEpisodeHiding = new System.Threading.Timer((state) => HideLabelEpisode(), null, LABEL_EPISODE_DISPLAY_TIME, -1);
         }
 
         private void HideLabelEpisode()
         {
+            Logger.Log("LABEL_EPISODE_HIDING", "HideLabelEpisode() called.");
             if (labelEpisode.InvokeRequired)
             {
+                Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.InvokeRequired true");
                 labelEpisode.Invoke((MethodInvoker)(() =>
                 {
+                    Logger.Log("LABEL_EPISODE_HIDING", "invoke successful");
                     if (!labelEpisode.IsDisposed)
                     {
+                        Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.IsDisposed false, hiding label");
                         labelEpisode.Visible = false;
                         labelEpisode.Text = "Episode X";
                     }
@@ -320,8 +326,10 @@ namespace StreamsitePlayer
             }
             else
             {
+                Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.InvokeRequired false");
                 if (!labelEpisode.IsDisposed)
                 {
+                    Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.IsDisposed false, hiding label");
                     labelEpisode.Visible = false;
                     labelEpisode.Text = "Episode X";
                 }
