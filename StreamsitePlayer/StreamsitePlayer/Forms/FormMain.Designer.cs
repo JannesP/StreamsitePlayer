@@ -379,7 +379,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripFormMain;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(625, 323);
+            this.MinimumSize = new System.Drawing.Size(643, 323);
             this.Name = "FormMain";
             this.Text = "SeriesPlayer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
