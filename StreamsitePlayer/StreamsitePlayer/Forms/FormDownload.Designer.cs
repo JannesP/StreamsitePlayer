@@ -51,9 +51,9 @@
             this.listBoxDownloadQueue = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.labelLinkRequest = new System.Windows.Forms.Label();
+            this.buttonRemoveSelected = new System.Windows.Forms.Button();
             this.stateProgressBarLinkRequest = new StreamsitePlayer.Forms.StateProgressBar();
             this.stateProgressBarCurrentFile = new StreamsitePlayer.Forms.StateProgressBar();
-            this.buttonRemoveSelected = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxEpisodes
@@ -280,25 +280,6 @@
             this.labelLinkRequest.Text = "LinkRequest:";
             this.labelLinkRequest.Visible = false;
             // 
-            // stateProgressBarLinkRequest
-            // 
-            this.stateProgressBarLinkRequest.CurrentState = StreamsitePlayer.Forms.StateProgressBar.State.NORMAL;
-            this.stateProgressBarLinkRequest.Location = new System.Drawing.Point(611, 323);
-            this.stateProgressBarLinkRequest.Name = "stateProgressBarLinkRequest";
-            this.stateProgressBarLinkRequest.Size = new System.Drawing.Size(116, 13);
-            this.stateProgressBarLinkRequest.TabIndex = 28;
-            this.stateProgressBarLinkRequest.Visible = false;
-            // 
-            // stateProgressBarCurrentFile
-            // 
-            this.stateProgressBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.stateProgressBarCurrentFile.CurrentState = StreamsitePlayer.Forms.StateProgressBar.State.NORMAL;
-            this.stateProgressBarCurrentFile.Location = new System.Drawing.Point(86, 323);
-            this.stateProgressBarCurrentFile.Name = "stateProgressBarCurrentFile";
-            this.stateProgressBarCurrentFile.Size = new System.Drawing.Size(519, 23);
-            this.stateProgressBarCurrentFile.TabIndex = 16;
-            // 
             // buttonRemoveSelected
             // 
             this.buttonRemoveSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -309,6 +290,23 @@
             this.buttonRemoveSelected.Text = "Remove Selected";
             this.buttonRemoveSelected.UseVisualStyleBackColor = true;
             this.buttonRemoveSelected.Click += new System.EventHandler(this.buttonRemoveSelected_Click);
+            // 
+            // stateProgressBarLinkRequest
+            // 
+            this.stateProgressBarLinkRequest.Location = new System.Drawing.Point(611, 323);
+            this.stateProgressBarLinkRequest.Name = "stateProgressBarLinkRequest";
+            this.stateProgressBarLinkRequest.Size = new System.Drawing.Size(116, 13);
+            this.stateProgressBarLinkRequest.TabIndex = 28;
+            this.stateProgressBarLinkRequest.Visible = false;
+            // 
+            // stateProgressBarCurrentFile
+            // 
+            this.stateProgressBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.stateProgressBarCurrentFile.Location = new System.Drawing.Point(86, 323);
+            this.stateProgressBarCurrentFile.Name = "stateProgressBarCurrentFile";
+            this.stateProgressBarCurrentFile.Size = new System.Drawing.Size(519, 23);
+            this.stateProgressBarCurrentFile.TabIndex = 16;
             // 
             // FormDownload
             // 
@@ -342,7 +340,7 @@
             this.Controls.Add(this.listBoxEpisodes);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormDownload";
-            this.Text = "FormDownload";
+            this.Text = "StreamDownload";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormDownload_FormClosing);
             this.Load += new System.EventHandler(this.FormDownload_Load);
             this.ResumeLayout(false);

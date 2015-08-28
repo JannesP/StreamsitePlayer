@@ -23,7 +23,8 @@ namespace StreamsitePlayer.Forms
 
         private State currentState = State.NORMAL;
 
-        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public State CurrentState
         {
             get
