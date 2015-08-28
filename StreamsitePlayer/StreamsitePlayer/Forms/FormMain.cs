@@ -35,24 +35,25 @@ namespace StreamsitePlayer
             seriesAnchorX = comboBoxStreamingProvider;
             seriesAnchorY = numericUpDownSkipEnd;
             panelEpisodeButtons.Focus();
-            this.comboBoxStreamingProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxStreamingProvider_SelectedIndexChanged);
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
             LoadSettingValues();
         }
 
         private void LoadSettingValues()
         {
+            comboBoxStreamingProvider.SelectedIndexChanged += comboBoxStreamingProvider_SelectedIndexChanged;
+
             checkBoxAutoplay.Checked = Settings.GetBool(Settings.AUTOPLAY);
             numericUpDownSkipEnd.Value = Settings.GetNumber(Settings.SKIP_END);
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
-            comboBoxStreamingProvider.SelectedIndex = Settings.GetNumber(Settings.LAST_PROVIDER);
+            int selectedProvider = Settings.GetNumber(Settings.LAST_PROVIDER);
+            comboBoxStreamingProvider.SelectedIndex = (selectedProvider >= 0 && selectedProvider < comboBoxStreamingProvider.Items.Count) ? selectedProvider : 0;
             textBoxSeriesExtension.Text = Settings.GetString(Settings.LAST_SERIES);
 
             //Add event listeners after the loaded settings got set to avoid saving of the same settings
             checkBoxAutoplay.CheckedChanged += checkBoxAutoplay_CheckedChanged;
             numericUpDownSkipEnd.ValueChanged += numericUpDownSkipEnd_ValueChanged;
             numericUpDownSkipStart.ValueChanged += numericUpDownSkipStart_ValueChanged;
-            comboBoxStreamingProvider.SelectedIndexChanged += comboBoxStreamingProvider_SelectedIndexChanged;
             textBoxSeriesExtension.TextChanged += textBoxSeriesExtension_TextChanged;
         }
 
@@ -67,10 +68,6 @@ namespace StreamsitePlayer
 #endif
             comboBoxStreamingProvider.Items.Clear();
             comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
-            if (comboBoxStreamingProvider.Items.Count != 0)
-            {
-                comboBoxStreamingProvider.SelectedIndex = 0;
-            }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -125,6 +122,9 @@ namespace StreamsitePlayer
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
                     if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
+                    Settings.WriteValue(Settings.LAST_PROVIDER, comboBoxStreamingProvider.SelectedIndex);
+                    Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
+                    Settings.SaveFileSettings();
                     BuildUIForCurrentProvider();
                 }
             }

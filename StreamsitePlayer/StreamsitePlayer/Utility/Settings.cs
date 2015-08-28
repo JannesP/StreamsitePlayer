@@ -38,7 +38,7 @@ namespace StreamsitePlayer
                 defaults.Add(LAST_PLAYED_EPISODE, "-1");
                 defaults.Add(LAST_PLAYED_SEASON, "-1");
                 defaults.Add(LAST_PLAYED_SERIES, "");
-                defaults.Add(LAST_PLAYED_PROVIDER, "");
+                defaults.Add(LAST_PLAYED_PROVIDER, "0");
                 defaults.Add(VOLUME, "100");
                 defaults.Add(MUTED, "false");
                 defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
