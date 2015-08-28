@@ -152,7 +152,7 @@ namespace StreamsitePlayer.Forms
             int seasons = currentProvider.GetSeriesCount();
             for (int i = 0; i < seasons; i++)
             {
-                listBoxSeason.Items.Add("Season " + i + 1);
+                listBoxSeason.Items.Add("Season " + (i + 1));
             }
             if (listBoxSeason.Items.Count != 0)
             {
@@ -203,7 +203,7 @@ namespace StreamsitePlayer.Forms
             CheckForRequest();
             Logger.Log("DOWNLOADER", "Received filelink: " + file + " for requestId " + requestId);
             Episode e = requested[requestId];
-            string season = e.Season == 0 ? "" : "S" + (e.Season + 1).ToString();
+            string season = e.Season == 0 ? "" : "S" + e.Season.ToString();
             string fileName = season + " " + e.Name + GetFileExtension(file);
             requested.Remove(requestId);
             downloadList.Add(file, fileName);
