@@ -211,7 +211,7 @@ namespace StreamsitePlayer
         {
             List<Button> buttons = new List<Button>();
             if (seriesButtons.Count == 0) return buttons;
-            int startX = seriesButtons[seriesButtons.Count - 1].Bounds.X;
+            int startX = seriesButtons[0].Bounds.X;
             int startY = seriesButtons[seriesButtons.Count - 1].Bounds.Y + seriesButtons[seriesButtons.Count - 1].Bounds.Height + PADDING;
             
             List<Episode> episodes = currentProvider.GetEpisodeList(series);
