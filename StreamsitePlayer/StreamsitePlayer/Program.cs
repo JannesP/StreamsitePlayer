@@ -24,7 +24,7 @@ namespace StreamsitePlayer
         private const int IE11 = 0x2AF8;
         private const int IEEDGE = 0x2AF9;
 
-        public const string VERSION = "1.1.0b";
+        public const string VERSION = "1.1.1b";
 
 
         /// <summary>
@@ -48,14 +48,14 @@ namespace StreamsitePlayer
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
+            Logger.Log("Exception!", e.ExceptionObject.GetType().ToString() + ": " + ((Exception)e.ExceptionObject).Message + "\n\t" + ((Exception)e.ExceptionObject).StackTrace);
             DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (dr == DialogResult.Yes) Application.Exit();
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            Logger.Log("Exception!", sender.GetType().ToString() + "\n\t" + e.Exception.StackTrace);
+            Logger.Log("Exception!", e.Exception.GetType().ToString() + ": " + e.Exception.Message + "\n\t" + e.Exception.StackTrace);
             DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (dr == DialogResult.Yes) Application.Exit();
         }
