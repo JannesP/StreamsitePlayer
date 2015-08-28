@@ -65,7 +65,7 @@
             this.listBoxEpisodes.Location = new System.Drawing.Point(120, 25);
             this.listBoxEpisodes.Name = "listBoxEpisodes";
             this.listBoxEpisodes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxEpisodes.Size = new System.Drawing.Size(332, 277);
+            this.listBoxEpisodes.Size = new System.Drawing.Size(252, 277);
             this.listBoxEpisodes.TabIndex = 0;
             // 
             // buttonDownloadSelected
@@ -143,7 +143,7 @@
             // 
             // labelAllProgress
             // 
-            this.labelAllProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelAllProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelAllProgress.AutoSize = true;
             this.labelAllProgress.Location = new System.Drawing.Point(138, 357);
             this.labelAllProgress.Name = "labelAllProgress";
@@ -223,7 +223,7 @@
             // 
             // labelEpisodesLeft
             // 
-            this.labelEpisodesLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelEpisodesLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelEpisodesLeft.AutoSize = true;
             this.labelEpisodesLeft.Location = new System.Drawing.Point(209, 357);
             this.labelEpisodesLeft.Name = "labelEpisodesLeft";
@@ -233,6 +233,7 @@
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(235, 357);
             this.label7.Name = "label7";
@@ -242,6 +243,7 @@
             // 
             // labelSpeed
             // 
+            this.labelSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelSpeed.AutoSize = true;
             this.labelSpeed.Location = new System.Drawing.Point(282, 357);
             this.labelSpeed.Name = "labelSpeed";
@@ -251,20 +253,20 @@
             // 
             // listBoxDownloadQueue
             // 
-            this.listBoxDownloadQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.listBoxDownloadQueue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxDownloadQueue.FormattingEnabled = true;
-            this.listBoxDownloadQueue.Location = new System.Drawing.Point(458, 25);
+            this.listBoxDownloadQueue.Location = new System.Drawing.Point(378, 25);
             this.listBoxDownloadQueue.Name = "listBoxDownloadQueue";
             this.listBoxDownloadQueue.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxDownloadQueue.Size = new System.Drawing.Size(147, 277);
+            this.listBoxDownloadQueue.Size = new System.Drawing.Size(227, 277);
             this.listBoxDownloadQueue.TabIndex = 26;
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(455, 9);
+            this.label3.Location = new System.Drawing.Point(375, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 13);
             this.label3.TabIndex = 27;
@@ -272,6 +274,7 @@
             // 
             // labelLinkRequest
             // 
+            this.labelLinkRequest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLinkRequest.AutoSize = true;
             this.labelLinkRequest.Location = new System.Drawing.Point(611, 304);
             this.labelLinkRequest.Name = "labelLinkRequest";
@@ -293,6 +296,7 @@
             // 
             // stateProgressBarLinkRequest
             // 
+            this.stateProgressBarLinkRequest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.stateProgressBarLinkRequest.Location = new System.Drawing.Point(611, 323);
             this.stateProgressBarLinkRequest.Name = "stateProgressBarLinkRequest";
             this.stateProgressBarLinkRequest.Size = new System.Drawing.Size(116, 13);
