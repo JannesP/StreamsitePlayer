@@ -12,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Shell;
 
 namespace StreamsitePlayer.Forms
 {
@@ -28,6 +29,7 @@ namespace StreamsitePlayer.Forms
         private const string DOWNLOADS = @"downloads\";
         private List<Episode> requestedEpisodes = new List<Episode>();
         private bool requesting = false;
+        private TaskbarItemInfo taskBarProgress;
 
         public FormDownload(StreamProvider provider)
         {
@@ -36,6 +38,7 @@ namespace StreamsitePlayer.Forms
             webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
             webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             InitializeComponent();
+            taskBarProgress = new TaskbarItemInfo();
         }
 
         private void StartNext()
@@ -136,6 +139,7 @@ namespace StreamsitePlayer.Forms
             lastBytesReceived = 0;
 
             stateProgressBarCurrentFile.Value = 100;
+            taskBarProgress.ProgressValue = 1.0f;
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.WARNING;
 
             try
@@ -152,7 +156,9 @@ namespace StreamsitePlayer.Forms
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             stateProgressBarCurrentFile.Value = e.ProgressPercentage;
+            taskBarProgress.ProgressValue = (float)e.ProgressPercentage / 100f;
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.NORMAL;
+            taskBarProgress.ProgressState = TaskbarItemProgressState.Normal;
             long sizeAll = e.TotalBytesToReceive * downloadList.Count;
             double secondsPassed = (double)(DateTime.Now.Ticks - lastProgressChangedTime) / (double)TimeSpan.TicksPerSecond;
             long bytesSinceLastUpdate = e.BytesReceived - lastBytesReceived;
@@ -361,6 +367,7 @@ namespace StreamsitePlayer.Forms
             labelTimeLeft.Text = "--.--.--";
             labelTimeRunning.Text = "--.--.--";
             stateProgressBarCurrentFile.Value = 100;
+            taskBarProgress.ProgressState = TaskbarItemProgressState.None;
         }
 
         private void CancelDownloads()
@@ -372,6 +379,7 @@ namespace StreamsitePlayer.Forms
             requestedEpisodes.Clear();
             ResetUi();
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.ERROR;
+            taskBarProgress.ProgressState = TaskbarItemProgressState.None;
             while (File.Exists(currentLocalFile))
             {
                 try
