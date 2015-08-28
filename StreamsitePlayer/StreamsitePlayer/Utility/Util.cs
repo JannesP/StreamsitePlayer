@@ -70,6 +70,7 @@ namespace StreamsitePlayer
 
         public static void OpenLinkInDefaultBrowser(string link)
         {
+            Logger.Log("OPEN_EXTERNAL_LINK", "Opening link: " + link);
             System.Diagnostics.Process.Start(link);
         }
 
