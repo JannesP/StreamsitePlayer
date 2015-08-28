@@ -197,8 +197,9 @@
             // 
             // labelCurrentlyLoaded
             // 
+            this.labelCurrentlyLoaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelCurrentlyLoaded.AutoSize = true;
-            this.labelCurrentlyLoaded.Location = new System.Drawing.Point(12, 73);
+            this.labelCurrentlyLoaded.Location = new System.Drawing.Point(12, 365);
             this.labelCurrentlyLoaded.Name = "labelCurrentlyLoaded";
             this.labelCurrentlyLoaded.Size = new System.Drawing.Size(88, 13);
             this.labelCurrentlyLoaded.TabIndex = 9;
@@ -355,6 +356,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 387);
+            this.Controls.Add(this.labelCurrentlyLoaded);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonDownload);
             this.Controls.Add(this.buttonOpenProviderSite);
@@ -366,7 +368,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numericUpDownSkipEnd);
             this.Controls.Add(this.checkBoxAutoplay);
-            this.Controls.Add(this.labelCurrentlyLoaded);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.comboBoxStreamingSites);
             this.Controls.Add(this.label1);
