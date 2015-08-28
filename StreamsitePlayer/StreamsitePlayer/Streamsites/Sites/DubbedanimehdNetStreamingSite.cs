@@ -76,7 +76,8 @@ namespace StreamsitePlayer.Streamsites.Sites
 
         private bool iFrameNavigated = false;
         private string iFrameUrl = "";
-        IJwCallbackReceiver receiver;
+        IJwCallbackReceiver jwReceiver;
+        IFileCallbackReceiver fileReceiver;
         int requestId;
         private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
@@ -99,18 +100,40 @@ namespace StreamsitePlayer.Streamsites.Sites
                 Logger.Log("SITE_REQUEST_DAHD", "Loaded IFrame. Searching for file.");
                 string html = GetTargetBrowser().DocumentText;
                 string file = Util.GetStringBetween(html, 0, "file: '", "'");
+                if (fileReceiver != null)
+                {
+                    Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");
+                    fileReceiver.ReceiveFileLink(file, requestId);
+                    GetTargetBrowser().Dispose();
+                    return;
+                }
                 string insertion = "file:\"" + file + "\"";   //file:"http://.../"
                 Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
-                receiver.ReceiveJwLinks(insertion, requestId);
+                if (jwReceiver != null)
+                {
+                    jwReceiver.ReceiveJwLinks(insertion, requestId);
+                }
                 GetTargetBrowser().Dispose();
             }
 
         }
 
-
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
-            this.receiver = receiver;
+            this.jwReceiver = receiver;
+            this.requestId = requestId;
+            Logger.Log("SITE_REQUEST_DAHD", "Navigating borwser to: " + this.link);
+            GetTargetBrowser().Navigate(this.link);
+        }
+
+        public override bool IsFileDownloadSupported()
+        {
+            return true;
+        }
+
+        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        {
+            this.fileReceiver = receiver;
             this.requestId = requestId;
             Logger.Log("SITE_REQUEST_DAHD", "Navigating borwser to: " + this.link);
             GetTargetBrowser().Navigate(this.link);

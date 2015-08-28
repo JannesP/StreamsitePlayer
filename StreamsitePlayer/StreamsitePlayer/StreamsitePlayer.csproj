@@ -43,7 +43,16 @@
     <ApplicationIcon>Icon-Player.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8\Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45\Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Xml.Linq" />
@@ -57,11 +66,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormDownload.Designer.cs">
+      <DependentUpon>FormDownload.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\StateProgressBar.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Player\JwPlayer\FormJwPlayer.cs">
       <SubType>Form</SubType>
@@ -93,7 +111,9 @@
     <Compile Include="Streamsites\Providers\RyuanimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\IFileCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />
+    <Compile Include="Utility\AutoClosingMessageBox.cs" />
     <Compile Include="Utility\Seriescache.cs" />
     <Compile Include="Player\ISitePlayer.cs" />
     <Compile Include="Utility\Settings.cs" />
@@ -107,6 +127,9 @@
     <Compile Include="Utility\Util.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\VersionChecker.cs" />
+    <EmbeddedResource Include="Forms\FormDownload.resx">
+      <DependentUpon>FormDownload.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
@@ -129,6 +152,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.manifest" />
+    <None Include="packages.config" />
     <None Include="Player\JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

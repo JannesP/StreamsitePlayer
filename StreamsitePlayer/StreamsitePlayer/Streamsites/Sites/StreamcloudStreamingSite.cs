@@ -150,7 +150,7 @@ namespace StreamsitePlayer.Streamsites.Sites
             {
                 continued = ContinueWhenReady();
                 Console.WriteLine("Continued: " + continued);
-                System.Threading.Timer t = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
+                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace StreamsitePlayer.Streamsites.Sites
                 }
                 else
                 {
-                    System.Threading.Timer t = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
+                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
                 }
             }
             
@@ -181,6 +181,7 @@ namespace StreamsitePlayer.Streamsites.Sites
             return true;
         }
 
+        System.Threading.Timer timerReference;
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
             if (!continued)
@@ -188,14 +189,14 @@ namespace StreamsitePlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 Console.WriteLine("Continued: " + continued);
-                System.Threading.Timer t = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
             }
             else
             {
                 if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
                 {
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
-                    System.Threading.Timer t = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
                 }
                 else
                 {
@@ -205,6 +206,36 @@ namespace StreamsitePlayer.Streamsites.Sites
                     string insertion = "file:\"" + file + "\",";   //file:"http://.../",
                     insertion += "\nimage:\"" + image + "\"";   //image:"http://.../"
                     receiver.ReceiveJwLinks(insertion, requestId);
+                }
+            }
+        }
+
+        public override bool IsFileDownloadSupported()
+        {
+            return true;
+        }
+
+        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        {
+            if (!continued)
+            {
+                continued = ContinueWhenReady();
+                receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
+                Console.WriteLine("Continued: " + continued);
+                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+            }
+            else
+            {
+                if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
+                {
+                    receiver.FileRequestStatusUpdate(0, 10000, requestId);
+                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                }
+                else
+                {
+                    string htmlText = GetTargetBrowser().DocumentText;
+                    string file = Util.GetStringBetween(htmlText, 0, "file: \"", "\"");
+                    receiver.ReceiveFileLink(file, requestId);
                 }
             }
         }

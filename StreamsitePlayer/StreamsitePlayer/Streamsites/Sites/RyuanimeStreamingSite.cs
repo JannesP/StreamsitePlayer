@@ -78,7 +78,8 @@ namespace StreamsitePlayer.Streamsites.Sites
 
         private bool iFrameNavigated = false;
         private string iFrameUrl = "";
-        IJwCallbackReceiver receiver;
+        IJwCallbackReceiver jwReceiver;
+        IFileCallbackReceiver fileReceiver;
         int requestId;
         private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
@@ -105,8 +106,17 @@ namespace StreamsitePlayer.Streamsites.Sites
                 string stringToSearch = element.InnerHtml;
                 int testSearch = stringToSearch.IndexOf("url");
                 string file = Util.GetStringBetween(stringToSearch, 0, "\"clip\":{\"url\":\"", "\"");
+                if (fileReceiver != null)
+                {
+                    fileReceiver.ReceiveFileLink(file, requestId);
+                    GetTargetBrowser().Dispose();
+                    return;
+                }
                 string insertion = "file:\"" + file + "\"";   //file:"http://.../"
-                receiver.ReceiveJwLinks(insertion, requestId);
+                if (jwReceiver != null)
+                {
+                    jwReceiver.ReceiveJwLinks(insertion, requestId);
+                }
                 GetTargetBrowser().Dispose();
             }
 
@@ -114,7 +124,19 @@ namespace StreamsitePlayer.Streamsites.Sites
         
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
-            this.receiver = receiver;
+            this.jwReceiver = receiver;
+            this.requestId = requestId;
+            GetTargetBrowser().Navigate(this.link);
+        }
+
+        public override bool IsFileDownloadSupported()
+        {
+            return true;
+        }
+
+        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        {
+            this.fileReceiver = receiver;
             this.requestId = requestId;
             GetTargetBrowser().Navigate(this.link);
         }

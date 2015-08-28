@@ -106,8 +106,16 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         public abstract bool IsJwLinkSupported();
         /// <summary>
-        /// Requests the vlc link. All results and updates are sent to the callback receiver !in another thread!.
+        /// Returns if the extraction of the file is supported.
+        /// </summary>
+        public abstract bool IsFileDownloadSupported();
+        /// <summary>
+        /// Requests the jw link. All results and updates are sent to the callback receiver !in another thread!.
         /// </summary>
         public abstract void RequestJwData(IJwCallbackReceiver receiver, int requestId);
+        /// <summary>
+        /// Requests the jw link. All results and updates are sent to the callback receiver !in another thread!.
+        /// </summary>
+        public abstract void RequestFile(IFileCallbackReceiver receiver, int requestId);
     }
 }

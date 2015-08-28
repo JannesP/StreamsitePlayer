@@ -55,6 +55,7 @@
             this.numericUpDownSkipStart = new System.Windows.Forms.NumericUpDown();
             this.panelEpisodeButtons = new System.Windows.Forms.Panel();
             this.buttonOpenProviderSite = new System.Windows.Forms.Button();
+            this.buttonDownload = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -317,11 +318,23 @@
             this.buttonOpenProviderSite.UseVisualStyleBackColor = true;
             this.buttonOpenProviderSite.Click += new System.EventHandler(this.buttonOpenProviderSite_Click);
             // 
+            // buttonDownload
+            // 
+            this.buttonDownload.Enabled = false;
+            this.buttonDownload.Location = new System.Drawing.Point(196, 68);
+            this.buttonDownload.Name = "buttonDownload";
+            this.buttonDownload.Size = new System.Drawing.Size(92, 23);
+            this.buttonDownload.TabIndex = 19;
+            this.buttonDownload.Text = "Click \'Go!\' first.";
+            this.buttonDownload.UseVisualStyleBackColor = true;
+            this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 387);
+            this.Controls.Add(this.buttonDownload);
             this.Controls.Add(this.buttonOpenProviderSite);
             this.Controls.Add(this.panelEpisodeButtons);
             this.Controls.Add(this.label5);
@@ -385,6 +398,7 @@
         private System.Windows.Forms.ToolStripMenuItem githubToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem versionToolStripMenuItem;
+        private System.Windows.Forms.Button buttonDownload;
     }
 }
 

@@ -67,6 +67,7 @@ namespace StreamsitePlayer.Streamsites.Providers
                     e.Season = 0;
 
                     episodes.Add(e);
+                    FormMain.SeriesOpenCallback(e);
                     Application.DoEvents();
                 }
                 else break;

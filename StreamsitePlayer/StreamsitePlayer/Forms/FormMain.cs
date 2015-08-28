@@ -183,6 +183,9 @@ namespace StreamsitePlayer
             int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
             this.Height = bottomY + titleHeight;
             HighlightCurrentEpisode();
+
+            buttonDownload.Enabled = true;
+            buttonDownload.Text = "Download";
         }
 
         private List<Button> BuildButtonsForSeries(ToolTip tooltip)
@@ -397,6 +400,12 @@ namespace StreamsitePlayer
         private void versionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("You are currently using version " + Program.VERSION + "!", "Version " + Program.VERSION, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void buttonDownload_Click(object sender, EventArgs e)
+        {
+            Form f = new FormDownload(currentProvider);
+            f.Show();
         }
     }
 }
