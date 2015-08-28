@@ -56,6 +56,8 @@
             this.panelEpisodeButtons = new System.Windows.Forms.Panel();
             this.buttonOpenProviderSite = new System.Windows.Forms.Button();
             this.buttonDownload = new System.Windows.Forms.Button();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonHelp = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -65,7 +67,8 @@
             // 
             this.menuStripFormMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.aboutToolStripMenuItem});
+            this.aboutToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStripFormMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripFormMain.Name = "menuStripFormMain";
             this.menuStripFormMain.Size = new System.Drawing.Size(627, 24);
@@ -124,7 +127,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSeriesExtension.Location = new System.Drawing.Point(196, 46);
             this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
-            this.textBoxSeriesExtension.Size = new System.Drawing.Size(214, 20);
+            this.textBoxSeriesExtension.Size = new System.Drawing.Size(187, 20);
             this.textBoxSeriesExtension.TabIndex = 2;
             // 
             // labelSeriesExtensionHelp
@@ -141,7 +144,7 @@
             // 
             this.comboBoxStreamingProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStreamingProvider.FormattingEnabled = true;
-            this.comboBoxStreamingProvider.Location = new System.Drawing.Point(15, 44);
+            this.comboBoxStreamingProvider.Location = new System.Drawing.Point(15, 46);
             this.comboBoxStreamingProvider.Name = "comboBoxStreamingProvider";
             this.comboBoxStreamingProvider.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingProvider.TabIndex = 4;
@@ -183,7 +186,7 @@
             this.comboBoxStreamingSites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStreamingSites.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStreamingSites.FormattingEnabled = true;
-            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 46);
+            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 47);
             this.comboBoxStreamingSites.Name = "comboBoxStreamingSites";
             this.comboBoxStreamingSites.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStreamingSites.TabIndex = 7;
@@ -310,7 +313,7 @@
             // 
             // buttonOpenProviderSite
             // 
-            this.buttonOpenProviderSite.Location = new System.Drawing.Point(139, 43);
+            this.buttonOpenProviderSite.Location = new System.Drawing.Point(139, 45);
             this.buttonOpenProviderSite.Name = "buttonOpenProviderSite";
             this.buttonOpenProviderSite.Size = new System.Drawing.Size(51, 23);
             this.buttonOpenProviderSite.TabIndex = 18;
@@ -329,11 +332,30 @@
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
+            // 
+            // buttonHelp
+            // 
+            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonHelp.Location = new System.Drawing.Point(385, 45);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(25, 23);
+            this.buttonHelp.TabIndex = 20;
+            this.buttonHelp.Text = "?";
+            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 387);
+            this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonDownload);
             this.Controls.Add(this.buttonOpenProviderSite);
             this.Controls.Add(this.panelEpisodeButtons);
@@ -399,6 +421,8 @@
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem versionToolStripMenuItem;
         private System.Windows.Forms.Button buttonDownload;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.Button buttonHelp;
     }
 }
 
