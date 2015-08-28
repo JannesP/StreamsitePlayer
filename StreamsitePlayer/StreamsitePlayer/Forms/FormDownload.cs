@@ -48,11 +48,13 @@ namespace StreamsitePlayer.Forms
                     string link = keys[0];
                     string fileName = downloadList[keys[0]];
                     string dir = DOWNLOADS + currentProvider.GetSeriesName();
+                    ValidateDirectoryName(ref dir);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
                     this.currentFile = link;
+                    ValidateFileName(ref fileName);
                     labelCurrentEpisode.Text = fileName;
 
                     fileName = Path.Combine(Environment.CurrentDirectory, dir, fileName);
@@ -61,6 +63,7 @@ namespace StreamsitePlayer.Forms
                     if (File.Exists(fileName))
                     {
                         downloadList.Remove(currentFile);
+                        ListBoxDownloadingRefresh();
                         StartNext();
                         return;
                     }
@@ -78,6 +81,37 @@ namespace StreamsitePlayer.Forms
             }
         }
 
+        private void ListBoxDownloadingRefresh()
+        {
+            listBoxDownloadQueue.Items.Clear();
+
+            string[] entries = downloadList.Values.ToArray();
+            foreach (string entry in entries)
+            {
+                listBoxDownloadQueue.Items.Add(entry);
+            }
+        }
+
+        private string ValidateDirectoryName(ref string nameToCheck)
+        {
+            char[] invalid = Path.GetInvalidPathChars();
+            foreach (char c in invalid)
+            {
+                nameToCheck = nameToCheck.Replace(c.ToString(), "");
+            }
+            return nameToCheck;
+        }
+
+        private string ValidateFileName(ref string nameToCheck)
+        {
+            char[] invalid = Path.GetInvalidFileNameChars();
+            foreach (char c in invalid)
+            {
+                nameToCheck = nameToCheck.Replace(c.ToString(), "");
+            }
+            return nameToCheck;
+        }
+
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled)
@@ -86,7 +120,7 @@ namespace StreamsitePlayer.Forms
             }
             else if (e.Error != null)
             {
-                Logger.Log("DOWNLOADER", "Error downloading file: \"" + currentFile + "\"!\n\t" + e.Error.GetType() + ": " + e.Error.Message + "\n" + e.Error.StackTrace);
+                Logger.Log("DOWNLOADER", "Error downloading file: \"" + currentFile + " as " + currentLocalFile + "\"!\n\t" + e.Error.GetType() + ": " + e.Error.Message + "\n" + e.Error.StackTrace);
                 AutoClosingMessageBox.Show("Error downloading the current episode. Further detailes are in the log.", "Error downloading episode.", MessageBoxButtons.OK, MessageBoxIcon.Error, 10000);
                 StartNext();
                 return;
@@ -96,6 +130,7 @@ namespace StreamsitePlayer.Forms
             {
                 downloadList.Remove(currentFile);
             }
+            ListBoxDownloadingRefresh();
 
             labelEpisodesLeft.Text = downloadList.Count.ToString();
             lastBytesReceived = 0;
@@ -194,19 +229,37 @@ namespace StreamsitePlayer.Forms
 
         public void FileRequestStatusUpdate(int remainingTime, int max, int rqeuestId)
         {
-            return;
+            stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.WARNING;
+            stateProgressBarLinkRequest.Maximum = max;
+            stateProgressBarLinkRequest.Value = max - remainingTime;
+
+            if (remainingTime == 0)
+            {
+                stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.NORMAL;
+            }
+
+            stateProgressBarLinkRequest.Visible = true;
+            labelLinkRequest.Visible = true;
         }
 
         public void ReceiveFileLink(string file, int requestId)
         {
             requesting = false;
             CheckForRequest();
-            Logger.Log("DOWNLOADER", "Received filelink: " + file + " for requestId " + requestId);
+            if (!requesting)
+            {
+                stateProgressBarLinkRequest.Visible = false;
+                labelLinkRequest.Visible = false;
+            }
+            if (file == "") return;
+            
             Episode e = requested[requestId];
             string season = e.Season == 0 ? "" : "S" + e.Season.ToString();
-            string fileName = season + " " + e.Name + GetFileExtension(file);
+            string fileName = season + " E" + e.Number + " - " + e.Name + GetFileExtension(file);
             requested.Remove(requestId);
-            downloadList.Add(file, fileName);
+            downloadList.Add(file, ValidateFileName(ref fileName));
+            ListBoxDownloadingRefresh();
+            Logger.Log("DOWNLOADER", "Received filelink: " + file + " for requestId " + requestId + " downloading as " + fileName + ".");
             labelEpisodesLeft.Text = downloadList.Count.ToString();
             StartNext();
         }
@@ -257,13 +310,17 @@ namespace StreamsitePlayer.Forms
 
         private void CheckForRequest()
         {
+            Logger.Log("DOWNLOADER", "CheckForRequest called. " + "requesting = " + requesting);
+
             if (!requesting)
             {
-                StreamingSite site;
-                requesting = true;
+                Logger.Log("DOWNLOADER", "requestedEpisodes.Count = " + requestedEpisodes.Count);
                 if (requestedEpisodes.Count != 0)
                 {
+                    StreamingSite site;
+                    requesting = true;
                     Dictionary<string, string> links = requestedEpisodes[0].GetAllAvailableLinks();
+                    Logger.Log("DOWNLOADER", "requestedEpisodes[0].GetAllAvailableLinks().Count = " + links.Keys.Count);
                     if (links.Keys.Count != 0)
                     {
                         string siteName = links.Keys.ToArray()[0];
@@ -271,6 +328,7 @@ namespace StreamsitePlayer.Forms
                     
                         requested.Add(requestId, requestedEpisodes[0]);
                         requestedEpisodes.RemoveAt(0);
+                        
                         site.RequestFile(this, requestId++);
                     }
 
@@ -333,6 +391,24 @@ namespace StreamsitePlayer.Forms
             if (dr == DialogResult.Yes)
             {
                 CancelDownloads();
+            }
+        }
+
+        private void buttonRemoveSelected_Click(object sender, EventArgs e)
+        {
+            ListBox.SelectedIndexCollection selectedIndices = listBoxDownloadQueue.SelectedIndices;
+            foreach (int index in selectedIndices)
+            {
+                RemoveFromDictionary(downloadList, (string)(listBoxDownloadQueue.Items[index]));
+            }
+            ListBoxDownloadingRefresh();
+        }
+
+        private void RemoveFromDictionary(Dictionary<string, string> dictionary, string value)
+        {
+            foreach (KeyValuePair<string, string> item in dictionary.Where(kvp => kvp.Value == value).ToList())
+            {
+                dictionary.Remove(item.Key);
             }
         }
     }

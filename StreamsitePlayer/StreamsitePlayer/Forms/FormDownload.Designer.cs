@@ -48,7 +48,12 @@
             this.labelEpisodesLeft = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.labelSpeed = new System.Windows.Forms.Label();
+            this.listBoxDownloadQueue = new System.Windows.Forms.ListBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.labelLinkRequest = new System.Windows.Forms.Label();
+            this.stateProgressBarLinkRequest = new StreamsitePlayer.Forms.StateProgressBar();
             this.stateProgressBarCurrentFile = new StreamsitePlayer.Forms.StateProgressBar();
+            this.buttonRemoveSelected = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxEpisodes
@@ -60,7 +65,7 @@
             this.listBoxEpisodes.Location = new System.Drawing.Point(120, 25);
             this.listBoxEpisodes.Name = "listBoxEpisodes";
             this.listBoxEpisodes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxEpisodes.Size = new System.Drawing.Size(486, 277);
+            this.listBoxEpisodes.Size = new System.Drawing.Size(332, 277);
             this.listBoxEpisodes.TabIndex = 0;
             // 
             // buttonDownloadSelected
@@ -244,6 +249,46 @@
             this.labelSpeed.TabIndex = 25;
             this.labelSpeed.Text = "0 KB/s";
             // 
+            // listBoxDownloadQueue
+            // 
+            this.listBoxDownloadQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxDownloadQueue.FormattingEnabled = true;
+            this.listBoxDownloadQueue.Location = new System.Drawing.Point(458, 25);
+            this.listBoxDownloadQueue.Name = "listBoxDownloadQueue";
+            this.listBoxDownloadQueue.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxDownloadQueue.Size = new System.Drawing.Size(147, 277);
+            this.listBoxDownloadQueue.TabIndex = 26;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(455, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(88, 13);
+            this.label3.TabIndex = 27;
+            this.label3.Text = "Downloadqueue:";
+            // 
+            // labelLinkRequest
+            // 
+            this.labelLinkRequest.AutoSize = true;
+            this.labelLinkRequest.Location = new System.Drawing.Point(611, 304);
+            this.labelLinkRequest.Name = "labelLinkRequest";
+            this.labelLinkRequest.Size = new System.Drawing.Size(70, 13);
+            this.labelLinkRequest.TabIndex = 29;
+            this.labelLinkRequest.Text = "LinkRequest:";
+            this.labelLinkRequest.Visible = false;
+            // 
+            // stateProgressBarLinkRequest
+            // 
+            this.stateProgressBarLinkRequest.CurrentState = StreamsitePlayer.Forms.StateProgressBar.State.NORMAL;
+            this.stateProgressBarLinkRequest.Location = new System.Drawing.Point(611, 323);
+            this.stateProgressBarLinkRequest.Name = "stateProgressBarLinkRequest";
+            this.stateProgressBarLinkRequest.Size = new System.Drawing.Size(116, 13);
+            this.stateProgressBarLinkRequest.TabIndex = 28;
+            this.stateProgressBarLinkRequest.Visible = false;
+            // 
             // stateProgressBarCurrentFile
             // 
             this.stateProgressBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -254,11 +299,27 @@
             this.stateProgressBarCurrentFile.Size = new System.Drawing.Size(519, 23);
             this.stateProgressBarCurrentFile.TabIndex = 16;
             // 
+            // buttonRemoveSelected
+            // 
+            this.buttonRemoveSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRemoveSelected.Location = new System.Drawing.Point(612, 190);
+            this.buttonRemoveSelected.Name = "buttonRemoveSelected";
+            this.buttonRemoveSelected.Size = new System.Drawing.Size(115, 23);
+            this.buttonRemoveSelected.TabIndex = 30;
+            this.buttonRemoveSelected.Text = "Remove Selected";
+            this.buttonRemoveSelected.UseVisualStyleBackColor = true;
+            this.buttonRemoveSelected.Click += new System.EventHandler(this.buttonRemoveSelected_Click);
+            // 
             // FormDownload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 379);
+            this.Controls.Add(this.buttonRemoveSelected);
+            this.Controls.Add(this.labelLinkRequest);
+            this.Controls.Add(this.stateProgressBarLinkRequest);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.listBoxDownloadQueue);
             this.Controls.Add(this.labelSpeed);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.labelEpisodesLeft);
@@ -311,5 +372,10 @@
         private System.Windows.Forms.Label labelEpisodesLeft;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label labelSpeed;
+        private System.Windows.Forms.ListBox listBoxDownloadQueue;
+        private System.Windows.Forms.Label label3;
+        private StateProgressBar stateProgressBarLinkRequest;
+        private System.Windows.Forms.Label labelLinkRequest;
+        private System.Windows.Forms.Button buttonRemoveSelected;
     }
 }
