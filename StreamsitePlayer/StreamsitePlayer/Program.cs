@@ -24,6 +24,9 @@ namespace StreamsitePlayer
         private const int IE11 = 0x2AF8;
         private const int IEEDGE = 0x2AF9;
 
+        private const int TARGET_IE_VERSION = IE11;
+        private const string IE_VERSION_REG_PATH = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+
         public const string VERSION = "1.1.2b";
 
 
@@ -34,6 +37,9 @@ namespace StreamsitePlayer
         static void Main()
         {
             Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            Logger.Log("PREINIT", "Started version " + VERSION);
+
             SetWebBrowserVersion();
             DisableWebbrowserClick();
 
@@ -79,16 +85,31 @@ namespace StreamsitePlayer
             try
             {
            
-                Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
+                Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(IE_VERSION_REG_PATH, true);
 
                 //If the path is not correct or 
                 //If user't have priviledges to access registry 
                 if (Regkey == null)
                 {
-                    Logger.Log("PREINIT", "Error opening regkey for setting the webbrowser version! (" + @"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION" + ")");
+                    Logger.Log("PREINIT", "Error opening regkey for setting the webbrowser version! (" + IE_VERSION_REG_PATH + ")");
                     return;
                 }
-                Regkey.SetValue(Process.GetCurrentProcess().ProcessName + ".exe", unchecked(IE11), RegistryValueKind.DWord); //0x2AF9 = edge : 0x2AF8 = IE11 see https://msdn.microsoft.com/en-us/library/ee330730.aspx#browser_emulation
+
+                int currentValue = (int)Regkey.GetValue(Process.GetCurrentProcess().ProcessName + ".exe", 0);
+                if (currentValue != TARGET_IE_VERSION)
+                {
+                    Logger.Log("PREINIT", "Changing IE version to " + TARGET_IE_VERSION);
+                    Regkey.SetValue(Process.GetCurrentProcess().ProcessName + ".exe", unchecked(TARGET_IE_VERSION), RegistryValueKind.DWord); //0x2AF9 = edge : 0x2AF8 = IE11 see https://msdn.microsoft.com/en-us/library/ee330730.aspx#browser_emulation
+                    Logger.Log("PREINIT", "Successfully set the IE version.");
+                    Logger.Log("PREINIT", "Restarting program to apply changes ...");
+                    Process.Start(Environment.GetCommandLineArgs()[0]);
+                    Application.Exit();
+                }
+                else
+                {
+                    Logger.Log("PREINIT", "The right IE version is already set.");
+                }
+
                 Regkey.Close();
 
             }
