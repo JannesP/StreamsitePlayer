@@ -54,7 +54,7 @@ namespace StreamsitePlayer
                 }
                 else
                 {
-                    throw new MissingFieldException("The requested key: " + key + " is missing in the default config! Try deleting the settings file.");
+                    throw new MissingFieldException("The requested key: " + key + " is missing in the default config!");
                 }
             }
 
@@ -65,8 +65,10 @@ namespace StreamsitePlayer
 
         static Settings()
         {
+            Logger.Log("SETTINGS", "Checking if settings are present.");
             if (!File.Exists(FILE_NAME))
             {
+                Logger.Log("SETTINGS", "The settings weren't present. Creating a new one!");
                 File.Create(FILE_NAME).Close();
             }
             LoadFileSettings();
@@ -75,16 +77,19 @@ namespace StreamsitePlayer
         private static void LoadFileSettings()
         {
             string[] fileLines = File.ReadAllLines(FILE_NAME, Encoding.UTF8);
+            Logger.Log("SETTINGS", "Found " + fileLines.Length + " lines in the settings file, parsing ...");
             foreach (string line in fileLines)
             {
                 string[] splitResult = line.Split(new char[] { '=' }, 2);
                 if (splitResult.Length != 2)
                 {
+                    Logger.Log("SETTINGS", "Found invalid line: " + line);
                     continue;
                 }
                 else
                 {
                     WriteValue(splitResult[0], splitResult[1]);
+                    Logger.Log("SETTINGS", "Loaded key-value-pair from file: KEY-" + splitResult[0] + " | VALUE-" + splitResult[1]);
                 }
             }
         }
@@ -119,6 +124,7 @@ namespace StreamsitePlayer
 
         public static void WriteValue(string key, string value)
         {
+            Logger.Log("SETTINGS", "Writing the value: " + value + " for the key: " + key);
             if (settings.ContainsKey(key))
             {
                 if (!settings[key].Equals(value))
@@ -189,6 +195,7 @@ namespace StreamsitePlayer
             {
                 KeyValuePair<string, string> kvp = settings.ElementAt(i);
                 result[i] = kvp.Key + "=" + kvp.Value;
+                Logger.Log("SETTINGS", "Created savefile line: " + result[i]);
             }
 
             return result;

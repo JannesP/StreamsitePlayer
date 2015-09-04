@@ -43,10 +43,12 @@ namespace StreamsitePlayer
             SetWebBrowserVersion();
             DisableWebbrowserClick();
 
+            Logger.Log("PREINIT", "Adding global exception handlers.");
             Application.ThreadException += Application_ThreadException; //catch all exceptions to log them all.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+            Logger.Log("PREINIT", "Creating main form.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());

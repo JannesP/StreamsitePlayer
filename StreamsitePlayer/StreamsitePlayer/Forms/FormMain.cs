@@ -29,6 +29,7 @@ namespace StreamsitePlayer
 
         public FormMain()
         {
+            Logger.Log("START", "Creating new FormMain instance.");
             InitializeComponent();
             labelCurrentlyLoadedS = labelCurrentlyLoaded;
             InitStreamingProviders();
@@ -59,14 +60,20 @@ namespace StreamsitePlayer
 
         private void InitStreamingProviders()
         {
+            Logger.Log("START", "Adding streaming providers.");
             streamProviders = new List<string>();
             streamProviders.Add(BsToStreamProvider.NAME);
+            Logger.Log("START", "Added " + BsToStreamProvider.NAME);
             streamProviders.Add(RyuanimeStreamProvider.NAME);
+            Logger.Log("START", "Added " + RyuanimeStreamProvider.NAME);
             streamProviders.Add(DubbedanimehdNetProvider.NAME);
+            Logger.Log("START", "Added " + DubbedanimehdNetProvider.NAME);
 #if DEBUG
             streamProviders.Add(TestProvider.NAME);
+            Logger.Log("START", "Added " + TestProvider.NAME);
 #endif
             comboBoxStreamingProvider.Items.Clear();
+            Logger.Log("START", "Filling combobox with providers.");
             comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
         }
 

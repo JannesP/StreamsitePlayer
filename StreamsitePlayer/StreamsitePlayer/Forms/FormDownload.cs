@@ -34,6 +34,7 @@ namespace StreamsitePlayer.Forms
         public FormDownload(StreamProvider provider)
         {
             this.currentProvider = provider;
+            Logger.Log("DOWNLOADER", "Creating new WebClient.");
             webClient = new WebClient();
             webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
             webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
@@ -75,6 +76,7 @@ namespace StreamsitePlayer.Forms
                         File.Delete(currentLocalFile);
                     }
                     if (startTime == 0) startTime = DateTime.Now.Ticks;
+                    Logger.Log("DOWNLOADER", "Downloading the remote file: " + link + " to " + currentLocalFile + ".");
                     webClient.DownloadFileAsync(new Uri(link), currentLocalFile);
                 }
                 else
