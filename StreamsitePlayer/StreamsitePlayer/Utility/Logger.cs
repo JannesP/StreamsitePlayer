@@ -90,7 +90,7 @@ namespace StreamsitePlayer
 
             public void Log(string prefix, string message)
             {
-                string logLine = CreateTimeString() + ": " + prefix + "\t" + message + "\n";
+                string logLine = CreateTimeString() + "\t" + prefix + "\t" + message + "\n";
 #if DEBUG
                 Console.Write(logLine);
 #endif
