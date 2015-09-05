@@ -67,6 +67,7 @@
             this.listBoxEpisodes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxEpisodes.Size = new System.Drawing.Size(252, 277);
             this.listBoxEpisodes.TabIndex = 0;
+            this.listBoxEpisodes.DoubleClick += new System.EventHandler(this.listBoxEpisodes_DoubleClick);
             // 
             // buttonDownloadSelected
             // 

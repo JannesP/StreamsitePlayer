@@ -421,5 +421,15 @@ namespace StreamsitePlayer.Forms
                 dictionary.Remove(item.Key);
             }
         }
+
+        private void listBoxEpisodes_DoubleClick(object sender, EventArgs e)
+        {
+            ListBox.SelectedObjectCollection toDownload = listBoxEpisodes.SelectedItems;
+            foreach (object o in toDownload)
+            {
+                RequestEpisode((Episode)o);
+
+            }
+        }
     }
 }
