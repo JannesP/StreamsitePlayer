@@ -397,10 +397,13 @@ namespace StreamsitePlayer.Forms
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("This will stop all running downloads, are you sure?", "Calcel?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (dr == DialogResult.Yes)
+            if (webClient.IsBusy || downloadList.Count != 0)
             {
-                CancelDownloads();
+                DialogResult dr = MessageBox.Show("This will stop all running downloads, are you sure?", "Cancel?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dr == DialogResult.Yes)
+                {
+                    CancelDownloads();
+                }
             }
         }
 
