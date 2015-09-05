@@ -79,7 +79,7 @@ namespace StreamsitePlayer.Streamsites
 
         public override string ToString()
         {
-            return this.Name;
+            return "E" + this.Number + " " + this.Name;
         }
 
     }
