@@ -128,12 +128,13 @@ namespace StreamsitePlayer.Streamsites.Sites
         private bool ContinueWhenReady()
         {
             if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete) return false;
+            Logger.Log("SITE_REQUEST_STREAMCLOUD", "WebBrowser is ready.");
             HtmlElement watchButton = GetTargetBrowser().Document.GetElementById("btn_download");
             if (watchButton == null) return false;
-            Console.WriteLine("OuterOfButton: " + watchButton.OuterHtml);
+            Logger.Log("SITE_REQUEST_STREAMCLOUD", "watchButton != null -> " + watchButton.OuterHtml);
             if (watchButton.OuterHtml.Contains(" blue"))
             {
-                Console.WriteLine("Clicking");
+                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
                 watchButton.InvokeMember("Click");
                 return true;
             }
@@ -149,7 +150,7 @@ namespace StreamsitePlayer.Streamsites.Sites
             if (!continued)
             {
                 continued = ContinueWhenReady();
-                Console.WriteLine("Continued: " + continued);
+                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued " + continued);
                 timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
             }
             else
@@ -188,19 +189,26 @@ namespace StreamsitePlayer.Streamsites.Sites
             {
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-                Console.WriteLine("Continued: " + continued);
+                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
                 timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
             }
             else
             {
                 if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
                 {
+                    Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
                     timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
                 }
                 else
                 {
                     string htmlText = GetTargetBrowser().DocumentText;
+                    if (htmlText == "")
+                    {
+                        Logger.Log("SITE_REQUEST_STREAMCLOUD", "htmlText == \"\", failed to get file.");
+                        receiver.ReceiveJwLinks("", requestId);
+                        return;
+                    }
                     string file = Util.GetStringBetween(htmlText, 0, "file: \"", "\"");
                     string image = Util.GetStringBetween(htmlText, 0, "image: \"", "\"");
                     string insertion = "file:\"" + file + "\",";   //file:"http://.../",
