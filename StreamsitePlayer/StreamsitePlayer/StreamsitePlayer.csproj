@@ -117,6 +117,10 @@
     <Compile Include="Streamsites\Sites\StreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\StreamingSite.cs" />
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />
+    <Compile Include="Utility\TaskbarStatus\CTaskbarList.cs" />
+    <Compile Include="Utility\TaskbarStatus\ITaskbarList4.cs" />
+    <Compile Include="Utility\TaskbarStatus\TaskbarManager.cs" />
+    <Compile Include="Utility\TaskbarStatus\TaskbarProgressBarStatus.cs" />
     <Compile Include="Utility\Util.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\VersionChecker.cs" />

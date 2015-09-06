@@ -1,6 +1,7 @@
 ﻿using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Sites;
 using StreamsitePlayer.Utility;
+using StreamsitePlayer.Utility.TaskbarProgressBarStatus;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Shell;
 
 namespace StreamsitePlayer.Forms
 {
@@ -29,7 +29,6 @@ namespace StreamsitePlayer.Forms
         private const string DOWNLOADS = @"downloads\";
         private List<Episode> requestedEpisodes = new List<Episode>();
         private bool requesting = false;
-        private TaskbarItemInfo taskBarProgress;
 
         public FormDownload(StreamProvider provider)
         {
@@ -39,7 +38,6 @@ namespace StreamsitePlayer.Forms
             webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
             webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             InitializeComponent();
-            taskBarProgress = new TaskbarItemInfo();
         }
 
         private void StartNext()
@@ -141,7 +139,11 @@ namespace StreamsitePlayer.Forms
             lastBytesReceived = 0;
 
             stateProgressBarCurrentFile.Value = 100;
-            taskBarProgress.ProgressValue = 1.0f;
+            if (TaskbarManager.IsPlatformSupported)
+            {
+                TaskbarManager.Instance.SetProgressValue(this.Handle, 0, 100);
+                TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.NoProgress);
+            }
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.WARNING;
 
             try
@@ -157,10 +159,14 @@ namespace StreamsitePlayer.Forms
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            stateProgressBarCurrentFile.Value = e.ProgressPercentage;
-            taskBarProgress.ProgressValue = (float)e.ProgressPercentage / 100f;
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.NORMAL;
-            taskBarProgress.ProgressState = TaskbarItemProgressState.Normal;
+            stateProgressBarCurrentFile.Value = e.ProgressPercentage;
+            if (TaskbarManager.IsPlatformSupported)
+            {
+                TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.Normal);
+                TaskbarManager.Instance.SetProgressValue(this.Handle, (ulong)Convert.ToUInt32(e.ProgressPercentage), 100UL);
+            }
+            
             long sizeAll = e.TotalBytesToReceive * downloadList.Count;
             double secondsPassed = (double)(DateTime.Now.Ticks - lastProgressChangedTime) / (double)TimeSpan.TicksPerSecond;
             long bytesSinceLastUpdate = e.BytesReceived - lastBytesReceived;
@@ -240,6 +246,11 @@ namespace StreamsitePlayer.Forms
             stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.WARNING;
             stateProgressBarLinkRequest.Maximum = max;
             stateProgressBarLinkRequest.Value = max - remainingTime;
+            if (TaskbarManager.IsPlatformSupported)
+            {
+                TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.Paused);
+                TaskbarManager.Instance.SetProgressValue(this.Handle, (ulong)Convert.ToUInt32((max - remainingTime)), (ulong)Convert.ToUInt32(max));
+            }
 
             if (remainingTime == 0)
             {
@@ -369,7 +380,7 @@ namespace StreamsitePlayer.Forms
             labelTimeLeft.Text = "--.--.--";
             labelTimeRunning.Text = "--.--.--";
             stateProgressBarCurrentFile.Value = 100;
-            taskBarProgress.ProgressState = TaskbarItemProgressState.None;
+            TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.NoProgress);
         }
 
         private void CancelDownloads()
@@ -381,7 +392,7 @@ namespace StreamsitePlayer.Forms
             requestedEpisodes.Clear();
             ResetUi();
             stateProgressBarCurrentFile.CurrentState = StateProgressBar.State.ERROR;
-            taskBarProgress.ProgressState = TaskbarItemProgressState.None;
+            TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.NoProgress);
             while (File.Exists(currentLocalFile))
             {
                 try
