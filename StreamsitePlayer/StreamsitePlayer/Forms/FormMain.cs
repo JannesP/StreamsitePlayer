@@ -133,6 +133,7 @@ namespace StreamsitePlayer
                     Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
                     Settings.SaveFileSettings();
                     BuildUIForCurrentProvider();
+                    HighlightCurrentEpisode(true);
                 }
             }
             panelEpisodeButtons.Focus();
@@ -189,7 +190,8 @@ namespace StreamsitePlayer
             Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
             int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
             this.Height = bottomY + titleHeight;
-            HighlightCurrentEpisode();
+
+            HighlightCurrentEpisode(false);
 
             buttonDownload.Enabled = true;
             buttonDownload.Text = "Download";
@@ -267,7 +269,7 @@ namespace StreamsitePlayer
             player.Play(selectedSeason, episode);
         }
 
-        private void HighlightCurrentEpisode()
+        private void HighlightCurrentEpisode(bool changeSeason)
         {
             int episode = Settings.GetNumber(Settings.LAST_PLAYED_EPISODE);
             int season = Settings.GetNumber(Settings.LAST_PLAYED_SEASON);
@@ -281,8 +283,11 @@ namespace StreamsitePlayer
                 season = season == 0 ? 1 : season;  //if season == 0 -> season = 1
                 if (season != selectedSeason)
                 {
-                    selectedSeason = season == 0 ? 1 : season;
-                    BuildUIForCurrentProvider();
+                    if (changeSeason)
+                    {
+                        selectedSeason = season == 0 ? 1 : season;
+                        BuildUIForCurrentProvider();
+                    }
                     return;
                 }
 
@@ -317,7 +322,7 @@ namespace StreamsitePlayer
             Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
             Settings.SaveFileSettings();
 
-            HighlightCurrentEpisode();
+            HighlightCurrentEpisode(true);
         }
 
         private void OnSeriesButtonClicked(object sender, EventArgs e)
