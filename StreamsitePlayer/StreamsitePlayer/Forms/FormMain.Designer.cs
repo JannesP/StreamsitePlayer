@@ -183,9 +183,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(494, 28);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 13);
+            this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 8;
-            this.label2.Text = "Streaming site:";
+            this.label2.Text = "Stream from:";
             this.label2.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
             // comboBoxStreamingSites
