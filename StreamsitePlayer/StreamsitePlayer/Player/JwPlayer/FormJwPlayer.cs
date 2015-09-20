@@ -435,12 +435,15 @@ namespace StreamsitePlayer
         private Size oldClientSize;
         private void FormJwPlayer_Resize(object sender, EventArgs e)
         {
-            int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
-            int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
-            
-            this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
+            if (!this.maximized)
+            {
+                int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
+                int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
 
-            oldClientSize = this.ClientSize;
+                this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
+
+                oldClientSize = this.ClientSize;
+            }
         }
     }
 }
