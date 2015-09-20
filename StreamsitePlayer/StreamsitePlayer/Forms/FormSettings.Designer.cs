@@ -35,6 +35,7 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.checkBoxAutoUpdate = new System.Windows.Forms.CheckBox();
+            this.buttonOpenAppFolder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -101,11 +102,22 @@
             this.checkBoxAutoUpdate.Text = "Check for updates at startup?";
             this.checkBoxAutoUpdate.UseVisualStyleBackColor = true;
             // 
+            // buttonOpenAppFolder
+            // 
+            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 40);
+            this.buttonOpenAppFolder.Name = "buttonOpenAppFolder";
+            this.buttonOpenAppFolder.Size = new System.Drawing.Size(117, 23);
+            this.buttonOpenAppFolder.TabIndex = 6;
+            this.buttonOpenAppFolder.Text = "Open Program Folder";
+            this.buttonOpenAppFolder.UseVisualStyleBackColor = true;
+            this.buttonOpenAppFolder.Click += new System.EventHandler(this.buttonOpenAppFolder_Click);
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(585, 75);
+            this.Controls.Add(this.buttonOpenAppFolder);
             this.Controls.Add(this.checkBoxAutoUpdate);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
@@ -131,5 +143,6 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.CheckBox checkBoxAutoUpdate;
+        private System.Windows.Forms.Button buttonOpenAppFolder;
     }
 }

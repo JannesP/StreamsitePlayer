@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -51,6 +52,11 @@ namespace StreamsitePlayer.Forms
             Settings.WriteValue(Settings.AUTOCHECK_FOR_UPDATES, checkBoxAutoUpdate.Checked);
             Settings.SaveFileSettings();
             base.Close();
+        }
+
+        private void buttonOpenAppFolder_Click(object sender, EventArgs e)
+        {
+            Process.Start(Environment.CurrentDirectory);
         }
     }
 }
