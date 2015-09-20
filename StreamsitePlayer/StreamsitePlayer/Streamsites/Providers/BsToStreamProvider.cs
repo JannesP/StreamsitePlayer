@@ -70,31 +70,35 @@ namespace StreamsitePlayer.Streamsites.Providers
         {
             List<Episode> episodes = new List<Episode>();
             int episodeNumber = 0;
-            int index = 0;
-            while (index != -1)
+            int episodeIndex = 0;
+            while (episodeIndex != -1)
             {
                 Episode e;
                 string searchString = "<td>" + ++episodeNumber + "</td><td><a href=\"serie/" + siteLinkNameExtension + "/" + seasonNumber;
-                index = html.IndexOf(searchString, index);
-                if (index != -1)
+                episodeIndex = html.IndexOf(searchString, episodeIndex);
+                int index = episodeIndex;
+                if (episodeIndex != -1)
                 {
-                    e = new Episode(seasonNumber, episodeNumber, Util.GetStringBetween(html, index, "<strong>", "</strong>"));
+                    string name = Util.GetStringBetween(html, index, "<strong>", "</strong>");
+                    if (name != "")
+                    {
+                        index = html.IndexOf("<strong>", index);
+                    }
+                    name += " (" + Util.GetStringBetween(html, index, "\">", "</span>") + ")";
+                    e = new Episode(seasonNumber, episodeNumber, name);
+
+                    index = html.IndexOf(STREAMCLOUD_SEARCH, index);
+                    if (index != -1)
+                    {
+                        string streamcloudSite = "http://bs.to/" + Util.GetStringBetween(html, index, STREAMCLOUD_SEARCH, "\"");
+                        streamcloudSite = Util.RequestSimplifiedHtmlSite(streamcloudSite);
+                        streamcloudSite = "http://streamcloud.eu/" + Util.GetStringBetween(streamcloudSite, 0, "<a href=\"http://streamcloud.eu/", "\"");
+                        e.AddLink(StreamcloudStreamingSite.NAME, streamcloudSite);
+                        threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
+                        Application.DoEvents();
+                    }
+                    episodes.Add(e);
                 }
-                else
-                {
-                    break;
-                }
-                index = html.IndexOf(STREAMCLOUD_SEARCH, index);
-                if (index != -1)
-                {
-                    string streamcloudSite = "http://bs.to/" + Util.GetStringBetween(html, index, STREAMCLOUD_SEARCH, "\"");
-                    streamcloudSite = Util.RequestSimplifiedHtmlSite(streamcloudSite);
-                    streamcloudSite = "http://streamcloud.eu/" + Util.GetStringBetween(streamcloudSite, 0, "<a href=\"http://streamcloud.eu/", "\"");
-                    e.AddLink(StreamcloudStreamingSite.NAME, streamcloudSite);
-                    threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
-                    Application.DoEvents();
-                }
-                episodes.Add(e);
             }
             return episodes;
         }
