@@ -37,6 +37,7 @@
             this.githubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBoxSeriesExtension = new System.Windows.Forms.TextBox();
             this.labelSeriesExtensionHelp = new System.Windows.Forms.Label();
             this.comboBoxStreamingProvider = new System.Windows.Forms.ComboBox();
@@ -56,7 +57,6 @@
             this.panelEpisodeButtons = new System.Windows.Forms.Panel();
             this.buttonOpenProviderSite = new System.Windows.Forms.Button();
             this.buttonDownload = new System.Windows.Forms.Button();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonHelp = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
@@ -120,6 +120,13 @@
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.versionToolStripMenuItem.Text = "Version";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // textBoxSeriesExtension
             // 
@@ -199,7 +206,7 @@
             // 
             this.labelCurrentlyLoaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelCurrentlyLoaded.AutoSize = true;
-            this.labelCurrentlyLoaded.Location = new System.Drawing.Point(12, 365);
+            this.labelCurrentlyLoaded.Location = new System.Drawing.Point(12, 271);
             this.labelCurrentlyLoaded.Name = "labelCurrentlyLoaded";
             this.labelCurrentlyLoaded.Size = new System.Drawing.Size(88, 13);
             this.labelCurrentlyLoaded.TabIndex = 9;
@@ -308,7 +315,7 @@
             this.panelEpisodeButtons.Margin = new System.Windows.Forms.Padding(0);
             this.panelEpisodeButtons.MinimumSize = new System.Drawing.Size(588, 177);
             this.panelEpisodeButtons.Name = "panelEpisodeButtons";
-            this.panelEpisodeButtons.Size = new System.Drawing.Size(606, 280);
+            this.panelEpisodeButtons.Size = new System.Drawing.Size(606, 186);
             this.panelEpisodeButtons.TabIndex = 17;
             this.panelEpisodeButtons.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
@@ -333,13 +340,6 @@
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
-            // 
             // buttonHelp
             // 
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -355,7 +355,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(627, 387);
+            this.ClientSize = new System.Drawing.Size(627, 293);
             this.Controls.Add(this.labelCurrentlyLoaded);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonDownload);

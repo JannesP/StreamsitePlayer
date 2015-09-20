@@ -177,6 +177,7 @@ namespace StreamsitePlayer
 
         private void BuildUIForCurrentProvider()
         {
+            Size s = base.Size;
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
             ClearEpisodePanel();
@@ -185,11 +186,6 @@ namespace StreamsitePlayer
             panelEpisodeButtons.Controls.AddRange(seasonButtons.ToArray());
             panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
             seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
-            Button bottomButton = episodeButtons[episodeButtons.Count - 1];
-            int bottomY = panelEpisodeButtons.Bounds.Y + panelEpisodeButtons.Bounds.Height;
-            Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
-            int titleHeight = screenRectangle.Top - this.Top; //calculate the titlebar height
-            this.Height = bottomY + titleHeight;
 
             HighlightCurrentEpisode(false);
 
