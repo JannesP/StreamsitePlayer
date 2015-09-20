@@ -83,26 +83,11 @@ namespace StreamsitePlayer
             formSettings.Show();
         }
 
-        private StreamProvider CreateNewProvider(string name)
-        {
-            switch (name)
-            {
-                case BsToStreamProvider.NAME:
-                    return new BsToStreamProvider();
-                case TestProvider.NAME:
-                    return new TestProvider();
-                case RyuanimeStreamProvider.NAME:
-                    return new RyuanimeStreamProvider();
-                case DubbedanimehdNetProvider.NAME:
-                    return new DubbedanimehdNetProvider();
-                default:
-                    return null;
-            }
-        }
+        
 
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentProvider = CreateNewProvider(comboBoxStreamingProvider.SelectedItem.ToString());
+            currentProvider = StreamProvider.Create(comboBoxStreamingProvider.SelectedItem.ToString());
             ReloadStreamingProviderInfo();
         }
 

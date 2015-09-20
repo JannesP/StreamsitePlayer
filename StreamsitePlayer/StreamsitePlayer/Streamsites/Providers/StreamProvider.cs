@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Streamsites.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -110,6 +111,23 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         /// <returns>The website link.</returns>
         public abstract string GetWebsiteLink();
+
+        public static StreamProvider Create(string name)
+        {
+            switch (name)
+            {
+                case BsToStreamProvider.NAME:
+                    return new BsToStreamProvider();
+                case TestProvider.NAME:
+                    return new TestProvider();
+                case RyuanimeStreamProvider.NAME:
+                    return new RyuanimeStreamProvider();
+                case DubbedanimehdNetProvider.NAME:
+                    return new DubbedanimehdNetProvider();
+                default:
+                    return null;
+            }
+        }
 
     }
 }
