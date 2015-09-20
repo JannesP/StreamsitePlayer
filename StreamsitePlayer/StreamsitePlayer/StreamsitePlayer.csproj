@@ -124,6 +124,7 @@
     <Compile Include="Utility\Util.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\VersionChecker.cs" />
+    <Compile Include="Utility\WinAPIHelper.cs" />
     <EmbeddedResource Include="Forms\FormDownload.resx">
       <DependentUpon>FormDownload.cs</DependentUpon>
     </EmbeddedResource>

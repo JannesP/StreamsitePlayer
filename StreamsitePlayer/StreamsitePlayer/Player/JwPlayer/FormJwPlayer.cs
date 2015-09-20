@@ -12,6 +12,7 @@ using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Sites;
 using StreamsitePlayer.JwPlayer;
 using StreamsitePlayer.Player;
+using StreamsitePlayer.Utility;
 
 namespace StreamsitePlayer
 {
@@ -50,6 +51,12 @@ namespace StreamsitePlayer
             this.GotFocus += FormJwPlayer_GotFocus;
 
             this.Size = new Size(964, 576);
+            WinAPIHelper.PreventIdle();
+        }
+
+        ~FormJwPlayer()
+        {
+            WinAPIHelper.AllowIdle();
         }
 
         private void FormJwPlayer_GotFocus(object sender, EventArgs e)
