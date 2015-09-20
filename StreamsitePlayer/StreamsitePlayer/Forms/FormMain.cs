@@ -20,7 +20,7 @@ namespace StreamsitePlayer
         private const int PADDING = 5;
         private const int BUTTON_SIZE = 60;
         private int selectedSeason = 1;
-        private List<Button> seriesButtons;
+        private List<Button> seasonButtons;
         private List<Button> episodeButtons;
         private static Label labelCurrentlyLoadedS;
         private ISitePlayer player = null;
@@ -157,9 +157,9 @@ namespace StreamsitePlayer
 
         private void ClearEpisodePanel()
         {
-            if (seriesButtons != null) //remove old buttons from the window
+            if (seasonButtons != null) //remove old buttons from the window
             {
-                foreach (Control c in seriesButtons)
+                foreach (Control c in seasonButtons)
                 {
                     panelEpisodeButtons.Controls.Remove(c);
                     c.Dispose();
@@ -180,11 +180,11 @@ namespace StreamsitePlayer
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
             ClearEpisodePanel();
-            seriesButtons = BuildButtonsForSeries(tooltip); //add new buttons to the window
+            seasonButtons = BuildButtonsForSeries(tooltip); //add new buttons to the window
             episodeButtons = BuildButtonsForEpisodes(selectedSeason, tooltip);
-            panelEpisodeButtons.Controls.AddRange(seriesButtons.ToArray());
+            panelEpisodeButtons.Controls.AddRange(seasonButtons.ToArray());
             panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
-            seriesButtons[selectedSeason - 1].Enabled = false;  //disable current series
+            seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
             Button bottomButton = episodeButtons[episodeButtons.Count - 1];
             int bottomY = panelEpisodeButtons.Bounds.Y + panelEpisodeButtons.Bounds.Height;
             Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
@@ -219,9 +219,9 @@ namespace StreamsitePlayer
         private List<Button> BuildButtonsForEpisodes(int series, ToolTip tooltip)
         {
             List<Button> buttons = new List<Button>();
-            if (seriesButtons.Count == 0) return buttons;
-            int startX = seriesButtons[0].Bounds.X;
-            int startY = seriesButtons[seriesButtons.Count - 1].Bounds.Y + seriesButtons[seriesButtons.Count - 1].Bounds.Height + PADDING;
+            if (seasonButtons.Count == 0) return buttons;
+            int startX = seasonButtons[0].Bounds.X;
+            int startY = seasonButtons[seasonButtons.Count - 1].Bounds.Y + seasonButtons[seasonButtons.Count - 1].Bounds.Height + PADDING;
             
             List<Episode> episodes = currentProvider.GetEpisodeList(series);
 
