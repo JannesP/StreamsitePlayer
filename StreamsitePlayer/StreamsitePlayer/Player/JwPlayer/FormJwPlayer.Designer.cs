@@ -92,7 +92,7 @@ namespace StreamsitePlayer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "FormJwPlayer";
-            this.Text = "FormJwPlayer";
+            this.Text = "StreamsitePlayer loading ...";
             this.Resize += new System.EventHandler(this.FormJwPlayer_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -270,6 +270,7 @@ namespace StreamsitePlayer
                 progressBarLoadingNext.Maximum = max;
                 progressBarLoadingNext.Value = max - remainingTime;
                 string baseMsg = "Processing " + streamProvider.GetValidStreamingSites()[0] + " page";
+                string baseTitle = "Currently loading Season " + currentSeason + " Episode " + currentEpisode;
                 string pointsString = "";
                 for (int i = 0; i < pointsOnMessage; i++)
                 {
@@ -277,6 +278,7 @@ namespace StreamsitePlayer
                 }
                 pointsOnMessage = ++pointsOnMessage % 5;
                 labelRequestingStatus.Text = baseMsg + pointsString;
+                base.Text = baseTitle + pointsString;
             }
         }
 
