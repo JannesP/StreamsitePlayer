@@ -27,7 +27,7 @@ namespace StreamsitePlayer
         private const int TARGET_IE_VERSION = IE11;
         private const string IE_VERSION_REG_PATH = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 
-        public const string VERSION = "1.1.4b";
+        public const string VERSION = "1.1.4.1b";
 
 
         /// <summary>
