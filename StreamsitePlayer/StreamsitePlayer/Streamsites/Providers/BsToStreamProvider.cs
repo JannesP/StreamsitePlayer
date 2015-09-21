@@ -68,37 +68,49 @@ namespace StreamsitePlayer.Streamsites.Providers
 
         private static List<Episode> ExtractEpisodesFromHtml(int seasonNumber, string html, string siteLinkNameExtension, Control threadAnchor)
         {
-            List<Episode> episodes = new List<Episode>();
+            var episodes = new List<Episode>();
             int episodeNumber = 0;
             int episodeIndex = 0;
-            while (episodeIndex != -1)
+            var episodeIndices = new List<int>();
+            Application.DoEvents();
+            //Scan for all episode indices.
+            do
             {
-                Episode e;
                 string searchString = "<td>" + ++episodeNumber + "</td><td><a href=\"serie/" + siteLinkNameExtension + "/" + seasonNumber;
                 episodeIndex = html.IndexOf(searchString, episodeIndex);
-                int index = episodeIndex;
                 if (episodeIndex != -1)
                 {
-                    string name = Util.GetStringBetween(html, index, "<strong>", "</strong>");
-                    if (name != "")
-                    {
-                        index = html.IndexOf("<strong>", index);
-                    }
-                    name += " (" + Util.GetStringBetween(html, index, "\">", "</span>") + ")";
-                    e = new Episode(seasonNumber, episodeNumber, name);
+                    episodeIndices.Add(episodeIndex);
+                }
+            } while (episodeIndex != -1);
 
-                    index = html.IndexOf(STREAMCLOUD_SEARCH, index);
-                    if (index != -1)
+            //Scan for episodes
+            for (int i = 0; i < episodeIndices.Count; i++)
+            {
+                episodeIndex = episodeIndices[i];
+                Episode e = null;
+                int index = episodeIndex;
+                string name = Util.GetStringBetween(html, index, "<strong>", "</strong>");
+                if (name != "")
+                {
+                    index = html.IndexOf("<strong>", index);
+                }
+                name += " (" + Util.GetStringBetween(html, index, "\">", "</span>") + ")";
+                e = new Episode(seasonNumber, i + 1, name);
+
+                index = html.IndexOf(STREAMCLOUD_SEARCH, index);
+                if (index != -1)    //check if a streamcloud link is found
+                {
+                    if ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1]))  //check if the streamcloud link is before the next episode.
                     {
                         string streamcloudSite = "http://bs.to/" + Util.GetStringBetween(html, index, STREAMCLOUD_SEARCH, "\"");
                         streamcloudSite = Util.RequestSimplifiedHtmlSite(streamcloudSite);
                         streamcloudSite = "http://streamcloud.eu/" + Util.GetStringBetween(streamcloudSite, 0, "<a href=\"http://streamcloud.eu/", "\"");
                         e.AddLink(StreamcloudStreamingSite.NAME, streamcloudSite);
                         threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
-                        Application.DoEvents();
                     }
-                    episodes.Add(e);
                 }
+                episodes.Add(e);
             }
             return episodes;
         }

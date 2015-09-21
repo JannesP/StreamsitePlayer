@@ -27,7 +27,14 @@ namespace StreamsitePlayer.Streamsites
 
         public string GetLink(string siteName)
         {
-            return links[siteName];
+            if (links.ContainsKey(siteName))
+            {
+                return links[siteName];
+            }
+            else
+            {
+                return "";
+            }
         }
 
         public Dictionary<string, string> GetAllAvailableLinks()

@@ -217,13 +217,21 @@ namespace StreamsitePlayer
             currentSeason = season;
             currentEpisode = episode;
             string episodeLink = streamProvider.GetEpisodeLink(season, episode, streamProvider.GetValidStreamingSites()[0]);
-            WebBrowser browser = new WebBrowser();
-            browser.ScriptErrorsSuppressed = true;
-            StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], browser, episodeLink);
-            streamcloudWaitTime = site.GetEstimateWaitTime();
-            site.RequestJwData(this, ++validRequestId);
-            playNextId = validRequestId;
-            OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
+            if (episodeLink != "")
+            {
+                WebBrowser browser = new WebBrowser();
+                browser.ScriptErrorsSuppressed = true;
+                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], browser, episodeLink);
+                streamcloudWaitTime = site.GetEstimateWaitTime();
+                site.RequestJwData(this, ++validRequestId);
+                playNextId = validRequestId;
+                OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
+            }
+            else
+            {
+                Next();
+            }
+            
         }
 
         public void RestartStream()
