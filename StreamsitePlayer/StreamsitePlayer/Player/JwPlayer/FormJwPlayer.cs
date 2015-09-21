@@ -172,10 +172,13 @@ namespace StreamsitePlayer
         public void Next()
         {
             nextRequested = true;
-            currentEpisode = ++currentEpisode % streamProvider.GetEpisodeCount(currentSeason);
-            if (currentEpisode == 1)
+            if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
             {
-                currentSeason = ++currentSeason % streamProvider.GetSeriesCount();
+                if (++currentSeason > streamProvider.GetSeriesCount())
+                {
+                    return;
+                }
+                currentEpisode = 1;
             }
             Play(currentSeason, currentEpisode);
         }
