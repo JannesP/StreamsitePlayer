@@ -223,6 +223,11 @@ namespace StreamsitePlayer
             if (episodeLink != "")
             {
                 WebBrowser browser = new WebBrowser();
+                browser.Visible = true;
+                browser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
+                browser.Size = base.ClientSize;
+                browser.Location = new Point(0, 0);
+                base.Controls.Add(browser);
                 browser.ScriptErrorsSuppressed = true;
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], browser, episodeLink);
                 streamcloudWaitTime = site.GetEstimateWaitTime();
@@ -289,19 +294,27 @@ namespace StreamsitePlayer
         {
             if (requestId == playNextId)
             {
-                Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
-                nextFullscreen = jwPlayer.Maximized;
-                jwPlayer.Play(insertion);
-                jwPlayer.Visible = true;
-                jwPlayer.Focus();
-                
-                progressBarRequestingStatus.Visible = false;
-                labelRequestingStatus.Visible = false;
-                progressBarLoadingNext.Visible = false;
-                this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
-                nextRequested = false;
+                if (insertion == "")
+                {
+                    Logger.Log("JwLink", "Got no file link");
+                    progressBarRequestingStatus.Value = 0;
+                }
+                else
+                {
+                    Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+                    nextFullscreen = jwPlayer.Maximized;
+                    jwPlayer.Play(insertion);
+                    jwPlayer.Visible = true;
+                    jwPlayer.Focus();
 
-                UpdateLabelEpisode();
+                    progressBarRequestingStatus.Visible = false;
+                    labelRequestingStatus.Visible = false;
+                    progressBarLoadingNext.Visible = false;
+                    this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
+                    nextRequested = false;
+
+                    UpdateLabelEpisode();
+                }
             }
         }
 

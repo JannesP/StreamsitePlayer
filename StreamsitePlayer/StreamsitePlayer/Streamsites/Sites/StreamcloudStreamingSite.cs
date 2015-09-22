@@ -11,8 +11,23 @@ namespace StreamsitePlayer.Streamsites.Sites
     {
         public const string NAME = "Streamcloud";
         public const int WAIT_TIME_UNKNOWN = 123456;
+        public Uri trueLink;
 
-        public StreamcloudStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link) { targetBrowser.Navigate(link); }
+        public StreamcloudStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        {
+            targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
+            trueLink = new Uri(link);
+            targetBrowser.Navigate(trueLink);
+        }
+
+        private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            Logger.Log("STREAMCLOUD_NAVIGATION", e.Url.ToString());
+            if (e.Url == trueLink)
+            {
+                Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
+            }
+        }
 
         public override string GetFileName()
         {
@@ -68,10 +83,6 @@ namespace StreamsitePlayer.Streamsites.Sites
                 startedWaiting = 0;
                 return 0;
             }
-            //string cutNum = countdown.GetAttribute("value").Replace("Waiting time ", "");
-            //cutNum = cutNum.Replace(" seconds", "");
-            //cutNum = cutNum.Replace("Wartezeit: Noch ", "");
-            //cutNum = cutNum.Replace(" Sekunden", "");
             long ticks = DateTime.Now.Ticks - startedWaiting;
             long millis = ticks / TimeSpan.TicksPerMillisecond;
             int remainingMillis = GetEstimateWaitTime() - (int)millis;
@@ -128,14 +139,14 @@ namespace StreamsitePlayer.Streamsites.Sites
         private bool ContinueWhenReady()
         {
             if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete) return false;
-            Logger.Log("SITE_REQUEST_STREAMCLOUD", "WebBrowser is ready.");
+            //Logger.Log("SITE_REQUEST_STREAMCLOUD", "WebBrowser is ready.");
             HtmlElement watchButton = GetTargetBrowser().Document.GetElementById("btn_download");
             if (watchButton == null) return false;
-            Logger.Log("SITE_REQUEST_STREAMCLOUD", "watchButton != null -> " + watchButton.OuterHtml);
+            //Logger.Log("SITE_REQUEST_STREAMCLOUD", "watchButton != null -> " + watchButton.OuterHtml);
             if (watchButton.OuterHtml.Contains(" blue"))
             {
                 Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
-                watchButton.InvokeMember("Click");
+                watchButton.InvokeMember("click");
                 return true;
             }
             else
@@ -189,14 +200,14 @@ namespace StreamsitePlayer.Streamsites.Sites
             {
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
+                //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
                 timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
             }
             else
             {
                 if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
                 {
-                    Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
+                    //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
                     timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
                 }
@@ -211,6 +222,11 @@ namespace StreamsitePlayer.Streamsites.Sites
                     }
                     string file = Util.GetStringBetween(htmlText, 0, "file: \"", "\"");
                     string image = Util.GetStringBetween(htmlText, 0, "image: \"", "\"");
+                    if (file == "" || image == "")
+                    {
+                        receiver.ReceiveJwLinks("", requestId);
+                        return;
+                    }
                     string insertion = "file:\"" + file + "\",";   //file:"http://.../",
                     insertion += "\nimage:\"" + image + "\"";   //image:"http://.../"
                     receiver.ReceiveJwLinks(insertion, requestId);
