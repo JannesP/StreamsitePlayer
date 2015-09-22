@@ -215,6 +215,7 @@ namespace StreamsitePlayer
         private int playNextId = 0;
         private int validRequestId = int.MinValue;
         private long nextPlayTime = 0;
+        private WebBrowser requestBrowser;
         public void Play(int season, int episode)
         {
             currentSeason = season;
@@ -222,14 +223,14 @@ namespace StreamsitePlayer
             string episodeLink = streamProvider.GetEpisodeLink(season, episode, streamProvider.GetValidStreamingSites()[0]);
             if (episodeLink != "")
             {
-                WebBrowser browser = new WebBrowser();
-                browser.Visible = true;
-                browser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
-                browser.Size = base.ClientSize;
-                browser.Location = new Point(0, 0);
-                base.Controls.Add(browser);
-                browser.ScriptErrorsSuppressed = true;
-                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], browser, episodeLink);
+                requestBrowser = new WebBrowser();
+                requestBrowser.Visible = true;
+                requestBrowser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
+                requestBrowser.Size = base.ClientSize;
+                requestBrowser.Location = new Point(0, 0);
+                base.Controls.Add(requestBrowser);
+                requestBrowser.ScriptErrorsSuppressed = true;
+                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], requestBrowser, episodeLink);
                 streamcloudWaitTime = site.GetEstimateWaitTime();
                 site.RequestJwData(this, ++validRequestId);
                 playNextId = validRequestId;
@@ -302,6 +303,8 @@ namespace StreamsitePlayer
                 else
                 {
                     Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+                    base.Controls.Remove(requestBrowser);
+                    requestBrowser.Dispose();
                     nextFullscreen = jwPlayer.Maximized;
                     jwPlayer.Play(insertion);
                     jwPlayer.Visible = true;
