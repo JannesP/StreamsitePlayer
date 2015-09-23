@@ -24,6 +24,7 @@ namespace StreamsitePlayer
         private List<Button> episodeButtons;
         private static Label labelCurrentlyLoadedS;
         private ISitePlayer player = null;
+        private bool autoUpdate = false;
 
         StreamProvider currentProvider = null;
 
@@ -376,6 +377,12 @@ namespace StreamsitePlayer
                     return;
                 }
             }
+            else if (!e.UpdateRequired && !autoUpdate)
+            {
+                MessageBox.Show("You got the newest version " + Program.VERSION + " installed :)", "No update found!", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+            }
+
+            autoUpdate = false;
             checkForUpdateToolStripMenuItem.Enabled = true;
         }
 
@@ -384,6 +391,7 @@ namespace StreamsitePlayer
 #if !DEBUG
             if (Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES))
             {
+                autoUpdate = true;
                 checkForUpdateToolStripMenuItem.Enabled = false;
                 VersionChecker.CheckForUpdateAsync();
             }
