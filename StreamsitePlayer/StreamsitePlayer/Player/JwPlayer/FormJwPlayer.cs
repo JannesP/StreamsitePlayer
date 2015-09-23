@@ -224,11 +224,13 @@ namespace StreamsitePlayer
             if (episodeLink != "")
             {
                 requestBrowser = new WebBrowser();
+#if DEBUG
                 requestBrowser.Visible = true;
                 requestBrowser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
                 requestBrowser.Size = base.ClientSize;
                 requestBrowser.Location = new Point(0, 0);
                 base.Controls.Add(requestBrowser);
+#endif
                 requestBrowser.ScriptErrorsSuppressed = true;
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], requestBrowser, episodeLink);
                 streamcloudWaitTime = site.GetEstimateWaitTime();
@@ -303,8 +305,10 @@ namespace StreamsitePlayer
                 else
                 {
                     Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+#if DEBUG
                     base.Controls.Remove(requestBrowser);
-                    requestBrowser.Dispose();
+#endif
+                    if (!requestBrowser.IsDisposed) requestBrowser.Dispose();
                     nextFullscreen = jwPlayer.Maximized;
                     jwPlayer.Play(insertion);
                     jwPlayer.Visible = true;
