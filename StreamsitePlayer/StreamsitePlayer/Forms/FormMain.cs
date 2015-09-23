@@ -401,12 +401,17 @@ namespace StreamsitePlayer
             f.Show();
         }
 
-        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        private void buttonHelp_Click(object sender, EventArgs e)
         {
-            buttonHelp_Click(null, null);
+            ShowHelp();
         }
 
-        private void buttonHelp_Click(object sender, EventArgs e)
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowHelp();
+        }
+
+        private void ShowHelp()
         {
             MessageBox.Show("Please fill in whatever stands in the link instead of the question marks. It's USUALLY the series name with hyphens.\nExample:\"http://bs.to/serie/Prison-Break/1\" results in \"Prison-Break\".", "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
