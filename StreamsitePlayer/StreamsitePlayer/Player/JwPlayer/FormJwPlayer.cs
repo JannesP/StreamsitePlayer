@@ -107,8 +107,11 @@ namespace StreamsitePlayer
             set
             {
                 if (value == this.maximized) return;
-                if (value)
+                if (value)  //is it should maximized
                 {
+                    Logger.Log("JW_MAXIMIZING", "Values BEFORE fullscreen:");
+                    LogScreenData();
+
                     this.Resize -= FormJwPlayer_Resize;
                     this.maximized = true;
                     this.TopMost = true;
@@ -125,8 +128,11 @@ namespace StreamsitePlayer
                     this.Activate();
                     jwPlayer.Focus();
                     this.Resize += FormJwPlayer_Resize;
+
+                    Logger.Log("JW_MAXIMIZING", "Values AFTER fullscreen:");
+                    LogScreenData();
                 }
-                else
+                else    //if it should restore
                 {
                     this.Resize -= FormJwPlayer_Resize;
                     this.FormBorderStyle = this.normalFormBorderStyle;
@@ -139,6 +145,18 @@ namespace StreamsitePlayer
                     this.Resize += FormJwPlayer_Resize;
                 }
             }
+        }
+
+        private void LogScreenData()
+        {
+            Screen[] screens = Screen.AllScreens;
+            foreach (Screen screen in screens)
+            {
+                Logger.Log("JW_SCREEN_INFO", "Screen: " + screen.DeviceName + "\tWidth: " + screen.Bounds.Width + "\tHeight: " + screen.Bounds.Height + "\tX: " + screen.Bounds.X + "\tY: " + screen.Bounds.Y + "\tPrimary: " + screen.Primary);
+            }
+            Logger.Log("JW_SCREEN_INFO", "Window: \tWidth: " + base.Width + "\tHeight: " + base.Height + "\tX: " + base.Location.X + "\tY: " + base.Location.Y);
+            Screen s = Screen.FromHandle(base.Handle);
+            Logger.Log("JW_SCREEN_INFO", "Active screen: " + s.DeviceName + "\tWidth: " + s.Bounds.Width + "\tHeight: " + s.Bounds.Height + "\tX: " + s.Bounds.X + "\tY: " + s.Bounds.Y + "\tPrimary: " + s.Primary);
         }
 
         public int SkipEndSeconds
