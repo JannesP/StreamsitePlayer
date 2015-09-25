@@ -446,5 +446,15 @@ namespace StreamsitePlayer.Forms
 
             }
         }
+
+        private void buttonBrowseDownloaded_Click(object sender, EventArgs e)
+        {
+            string downloadDir = Path.Combine(Util.GetAppFolder(), DOWNLOADS);
+            if (!Directory.Exists(downloadDir))
+            {
+                Directory.CreateDirectory(downloadDir);
+            }
+            Process.Start(downloadDir);
+        }
     }
 }

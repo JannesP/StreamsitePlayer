@@ -54,6 +54,7 @@
             this.buttonRemoveSelected = new System.Windows.Forms.Button();
             this.stateProgressBarLinkRequest = new StreamsitePlayer.Forms.StateProgressBar();
             this.stateProgressBarCurrentFile = new StreamsitePlayer.Forms.StateProgressBar();
+            this.buttonBrowseDownloaded = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxEpisodes
@@ -313,11 +314,22 @@
             this.stateProgressBarCurrentFile.Size = new System.Drawing.Size(519, 23);
             this.stateProgressBarCurrentFile.TabIndex = 16;
             // 
+            // buttonBrowseDownloaded
+            // 
+            this.buttonBrowseDownloaded.Location = new System.Drawing.Point(612, 130);
+            this.buttonBrowseDownloaded.Name = "buttonBrowseDownloaded";
+            this.buttonBrowseDownloaded.Size = new System.Drawing.Size(115, 35);
+            this.buttonBrowseDownloaded.TabIndex = 31;
+            this.buttonBrowseDownloaded.Text = "Open Downloads Folder";
+            this.buttonBrowseDownloaded.UseVisualStyleBackColor = true;
+            this.buttonBrowseDownloaded.Click += new System.EventHandler(this.buttonBrowseDownloaded_Click);
+            // 
             // FormDownload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 379);
+            this.Controls.Add(this.buttonBrowseDownloaded);
             this.Controls.Add(this.buttonRemoveSelected);
             this.Controls.Add(this.labelLinkRequest);
             this.Controls.Add(this.stateProgressBarLinkRequest);
@@ -380,5 +392,6 @@
         private StateProgressBar stateProgressBarLinkRequest;
         private System.Windows.Forms.Label labelLinkRequest;
         private System.Windows.Forms.Button buttonRemoveSelected;
+        private System.Windows.Forms.Button buttonBrowseDownloaded;
     }
 }
