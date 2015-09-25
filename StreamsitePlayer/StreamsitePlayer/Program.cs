@@ -36,7 +36,7 @@ namespace StreamsitePlayer
         [STAThread]
         static void Main()
         {
-            Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Environment.CurrentDirectory = Util.GetAppFolder();
 
             Logger.Log("PREINIT", "Started version " + VERSION);
 

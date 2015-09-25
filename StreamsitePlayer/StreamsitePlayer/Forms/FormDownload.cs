@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace StreamsitePlayer.Forms
                     ValidateFileName(ref fileName);
                     labelCurrentEpisode.Text = fileName;
 
-                    fileName = Path.Combine(Environment.CurrentDirectory, dir, fileName);
+                    fileName = Path.Combine(Util.GetAppFolder(), dir, fileName);
                     currentLocalFile = fileName + ".part";
                     labelEpisodesLeft.Text = downloadList.Count.ToString();
                     if (File.Exists(fileName))

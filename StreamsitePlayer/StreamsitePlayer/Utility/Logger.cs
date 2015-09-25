@@ -29,7 +29,7 @@ namespace StreamsitePlayer
             logFile += DateTime.Now.Second.ToString("00"); //yyyyddmm-hhmmss
             logFile += DateTime.Now.Millisecond.ToString("000"); //yyyyddmm-hhmmssmmm
             logFile += ".log";  //yyyyddmm-hhmmssmmm.log
-            Logger.logFile = Path.Combine(Environment.CurrentDirectory, logFile);
+            Logger.logFile = Path.Combine(Util.GetAppFolder(), logFile);
             try
             {
                 if (!Directory.Exists(LOG_PATH))

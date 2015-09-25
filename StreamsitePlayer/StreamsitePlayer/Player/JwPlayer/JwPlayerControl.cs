@@ -166,7 +166,7 @@ namespace StreamsitePlayer.JwPlayer
         private void DisplayHtml(string html)
         {
             File.WriteAllText(JW_TEMP_SITE_PATH, html);
-            string path = Path.Combine("file:///" + Environment.CurrentDirectory, JW_TEMP_SITE_PATH);
+            string path = Path.Combine("file:///" + Util.GetAppFolder(), JW_TEMP_SITE_PATH);
             base.Navigate(new Uri(path));
             while (base.ReadyState != WebBrowserReadyState.Complete)
             {

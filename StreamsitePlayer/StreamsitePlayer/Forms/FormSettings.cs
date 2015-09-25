@@ -56,7 +56,7 @@ namespace StreamsitePlayer.Forms
 
         private void buttonOpenAppFolder_Click(object sender, EventArgs e)
         {
-            Process.Start(Environment.CurrentDirectory);
+            Process.Start(Util.GetAppFolder());
         }
     }
 }

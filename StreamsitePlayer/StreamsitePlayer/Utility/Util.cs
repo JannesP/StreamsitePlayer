@@ -74,5 +74,10 @@ namespace StreamsitePlayer
             System.Diagnostics.Process.Start(link);
         }
 
+        public static string GetAppFolder()
+        {
+            return System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        }
+
     }
 }
