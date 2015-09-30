@@ -9,6 +9,8 @@ namespace StreamsitePlayer
 {
     public static class Settings
     {
+        public const string NOSETTING_CACHE_PATH = "cache";
+
         public const string AUTOPLAY = "autoplay";
         public const string SKIP_END = "skipEnd";
         public const string SKIP_BEGINNING = "skipBeginning";

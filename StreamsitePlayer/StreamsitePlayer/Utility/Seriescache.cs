@@ -10,19 +10,17 @@ namespace StreamsitePlayer
 {
     static class Seriescache
     {
-        private const string CACHE_PATH = "cache/";
-
         static Seriescache() 
         {
-            if (!Directory.Exists(@CACHE_PATH))
+            if (!Directory.Exists(Settings.NOSETTING_CACHE_PATH))
             {
-                Directory.CreateDirectory(@CACHE_PATH);
+                Directory.CreateDirectory(Settings.NOSETTING_CACHE_PATH);
             }
         }
 
-        public static void CacheSeries(string providerName, string seriesExtension, Series series)
+        public static void CacheSeries(Series series)
         {
-            string filepath = CACHE_PATH + providerName + "." + seriesExtension + ".series";
+            string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), series.Provider + "." + series.LinkExtension + ".series");
             if (File.Exists(filepath))
             {
                 File.Delete(filepath);
@@ -30,6 +28,8 @@ namespace StreamsitePlayer
             using (StreamWriter sw = new StreamWriter(File.Create(filepath)))
             {
                 sw.WriteLine("seriesname." + series.Name);
+                sw.WriteLine("provider." + series.Provider);
+                sw.WriteLine("linkExtension." + series.LinkExtension);
 
                 for (int s = 0; s < series.Count; s++)
                 {
@@ -52,12 +52,14 @@ namespace StreamsitePlayer
             }
         }
 
-        public static Series ReadCachedSeries(string providerName, string seriesExtension)
+        public static Series ReadCachedSeries(string providerName, string fileName)
         {
-            string filepath = CACHE_PATH + providerName + "." + seriesExtension + ".series";
+            string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), providerName + "." + fileName + ".series");
             if (!File.Exists(filepath)) return null;
             List<List<Episode>> seasons = new List<List<Episode>>();
-            string seriesName = seriesExtension;
+            string seriesName = fileName;
+            string seriesProvider = providerName;
+            string linkExtension = fileName;
             using (StreamReader sr = new StreamReader(File.OpenRead(filepath)))
             {
                 Episode currEpisode = new Episode();
@@ -95,11 +97,55 @@ namespace StreamsitePlayer
                         case "seriesname":
                             seriesName = parts[1];
                             break;
+                        case "provider":
+                            seriesProvider = parts[1];
+                            break;
+                        case "linkExtension":
+                            linkExtension = parts[1];
+                            break;
                     }
                 }
             }
-            Series series = new Series(seasons, seriesName);
+            Series series = new Series(seasons, seriesName, providerName, linkExtension);
             return series;
+        }
+
+        public static void RemoveCachedSeries(Series s)
+        {
+            string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), s.Provider + "." + s.LinkExtension + ".series");
+            if (File.Exists(filepath))
+            {
+                File.Delete(filepath);
+            }
+        }
+
+        public static List<string> FindCachedSeries()
+        {
+            if (Directory.Exists(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH)))
+            {
+                var files = new List<string>(Directory.GetFiles(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH)));
+                for (int i = 0; i < files.Count; i++) files[i] = Path.GetFileName(files[i]);  //reduce to the file names
+                files.RemoveAll(x => !IsValidCacheFileName(x));
+                return files;
+            }
+            return new List<string>(0);
+        }
+
+        private static bool IsValidCacheFileName(string name)
+        {
+            int endingIndex = name.LastIndexOf(".series");
+            if (endingIndex != 0
+                && (name.Length - ".series".Length == endingIndex))  //.series must be the end of the path
+            {
+                foreach (string provider in StreamProvider.VALID_PROVIDERS)    //starts with a valid provider
+                {
+                    if (name.IndexOf(provider) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
     }

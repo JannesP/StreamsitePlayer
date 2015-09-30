@@ -48,8 +48,8 @@ namespace StreamsitePlayer.Streamsites.Providers
                 seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "<h2>", "<");
-            series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkExtension, series);
+            series = new Series(seasons, seriesName, NAME, siteLinkExtension);
+            Seriescache.CacheSeries(series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }

@@ -15,6 +15,24 @@ namespace StreamsitePlayer.Streamsites
         public const int RESULT_NET_FAILED = -1;
         public const int RESULT_SERIES_MISSING = -2;
 
+        public static List<string> VALID_PROVIDERS;
+
+        static StreamProvider()
+        {
+            Logger.Log("START", "Adding streaming providers.");
+            VALID_PROVIDERS = new List<string>();
+            VALID_PROVIDERS.Add(BsToStreamProvider.NAME);
+            Logger.Log("START", "Added " + BsToStreamProvider.NAME);
+            VALID_PROVIDERS.Add(RyuanimeStreamProvider.NAME);
+            Logger.Log("START", "Added " + RyuanimeStreamProvider.NAME);
+            VALID_PROVIDERS.Add(DubbedanimehdNetProvider.NAME);
+            Logger.Log("START", "Added " + DubbedanimehdNetProvider.NAME);
+#if DEBUG
+            VALID_PROVIDERS.Add(TestProvider.NAME);
+            Logger.Log("START", "Added " + TestProvider.NAME);
+#endif
+        }
+
         protected Series series;
         protected string siteLinkExtension = "";
         /// <summary>
@@ -112,6 +130,11 @@ namespace StreamsitePlayer.Streamsites
         /// <returns>The website link.</returns>
         public abstract string GetWebsiteLink();
 
+        public Series GetSeries()
+        {
+            return series;
+        }
+
         public static StreamProvider Create(string name)
         {
             switch (name)
@@ -129,5 +152,9 @@ namespace StreamsitePlayer.Streamsites
             }
         }
 
+        internal void LoadSeries(Series series)
+        {
+            this.series = series;
+        }
     }
 }

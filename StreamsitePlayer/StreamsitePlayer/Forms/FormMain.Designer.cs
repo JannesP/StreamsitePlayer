@@ -37,13 +37,7 @@
             this.githubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBoxSeriesExtension = new System.Windows.Forms.TextBox();
-            this.labelSeriesExtensionHelp = new System.Windows.Forms.Label();
-            this.comboBoxStreamingProvider = new System.Windows.Forms.ComboBox();
-            this.buttonOpenSeries = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBoxStreamingSites = new System.Windows.Forms.ComboBox();
+            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.labelCurrentlyLoaded = new System.Windows.Forms.Label();
             this.checkBoxAutoplay = new System.Windows.Forms.CheckBox();
@@ -54,10 +48,9 @@
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownSkipStart = new System.Windows.Forms.NumericUpDown();
             this.panelEpisodeButtons = new System.Windows.Forms.Panel();
-            this.buttonOpenProviderSite = new System.Windows.Forms.Button();
             this.buttonDownload = new System.Windows.Forms.Button();
-            this.buttonHelp = new System.Windows.Forms.Button();
-            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBoxChangeSeries = new System.Windows.Forms.ComboBox();
+            this.buttonRefreshSeries = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -85,7 +78,7 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -121,75 +114,12 @@
             this.versionToolStripMenuItem.Text = "Version";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
             // 
-            // textBoxSeriesExtension
+            // helpToolStripMenuItem1
             // 
-            this.textBoxSeriesExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSeriesExtension.Location = new System.Drawing.Point(196, 46);
-            this.textBoxSeriesExtension.Name = "textBoxSeriesExtension";
-            this.textBoxSeriesExtension.Size = new System.Drawing.Size(187, 20);
-            this.textBoxSeriesExtension.TabIndex = 2;
-            // 
-            // labelSeriesExtensionHelp
-            // 
-            this.labelSeriesExtensionHelp.AutoSize = true;
-            this.labelSeriesExtensionHelp.Location = new System.Drawing.Point(193, 28);
-            this.labelSeriesExtensionHelp.Name = "labelSeriesExtensionHelp";
-            this.labelSeriesExtensionHelp.Size = new System.Drawing.Size(29, 13);
-            this.labelSeriesExtensionHelp.TabIndex = 3;
-            this.labelSeriesExtensionHelp.Text = "Help";
-            this.labelSeriesExtensionHelp.Click += new System.EventHandler(this.PanelFocus_Click);
-            // 
-            // comboBoxStreamingProvider
-            // 
-            this.comboBoxStreamingProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStreamingProvider.FormattingEnabled = true;
-            this.comboBoxStreamingProvider.Location = new System.Drawing.Point(15, 46);
-            this.comboBoxStreamingProvider.Name = "comboBoxStreamingProvider";
-            this.comboBoxStreamingProvider.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxStreamingProvider.TabIndex = 4;
-            // 
-            // buttonOpenSeries
-            // 
-            this.buttonOpenSeries.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOpenSeries.Location = new System.Drawing.Point(416, 45);
-            this.buttonOpenSeries.Name = "buttonOpenSeries";
-            this.buttonOpenSeries.Size = new System.Drawing.Size(75, 23);
-            this.buttonOpenSeries.TabIndex = 5;
-            this.buttonOpenSeries.Text = "Go!";
-            this.buttonOpenSeries.UseVisualStyleBackColor = true;
-            this.buttonOpenSeries.Click += new System.EventHandler(this.buttonOpenSeries_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Streamprovider:";
-            this.label1.Click += new System.EventHandler(this.PanelFocus_Click);
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(494, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Stream from:";
-            this.label2.Click += new System.EventHandler(this.PanelFocus_Click);
-            // 
-            // comboBoxStreamingSites
-            // 
-            this.comboBoxStreamingSites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStreamingSites.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStreamingSites.FormattingEnabled = true;
-            this.comboBoxStreamingSites.Location = new System.Drawing.Point(497, 47);
-            this.comboBoxStreamingSites.Name = "comboBoxStreamingSites";
-            this.comboBoxStreamingSites.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxStreamingSites.TabIndex = 7;
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(166, 22);
+            this.helpToolStripMenuItem1.Text = "Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // toolTip
             // 
@@ -312,20 +242,10 @@
             this.panelEpisodeButtons.TabIndex = 17;
             this.panelEpisodeButtons.Click += new System.EventHandler(this.PanelFocus_Click);
             // 
-            // buttonOpenProviderSite
-            // 
-            this.buttonOpenProviderSite.Location = new System.Drawing.Point(139, 45);
-            this.buttonOpenProviderSite.Name = "buttonOpenProviderSite";
-            this.buttonOpenProviderSite.Size = new System.Drawing.Size(51, 23);
-            this.buttonOpenProviderSite.TabIndex = 18;
-            this.buttonOpenProviderSite.Text = "Browse";
-            this.buttonOpenProviderSite.UseVisualStyleBackColor = true;
-            this.buttonOpenProviderSite.Click += new System.EventHandler(this.buttonOpenProviderSite_Click);
-            // 
             // buttonDownload
             // 
             this.buttonDownload.Enabled = false;
-            this.buttonDownload.Location = new System.Drawing.Point(196, 68);
+            this.buttonDownload.Location = new System.Drawing.Point(12, 54);
             this.buttonDownload.Name = "buttonDownload";
             this.buttonDownload.Size = new System.Drawing.Size(92, 23);
             this.buttonDownload.TabIndex = 19;
@@ -333,33 +253,34 @@
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
-            // buttonHelp
+            // comboBoxChangeSeries
             // 
-            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonHelp.Location = new System.Drawing.Point(385, 45);
-            this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(25, 23);
-            this.buttonHelp.TabIndex = 20;
-            this.buttonHelp.Text = "?";
-            this.buttonHelp.UseVisualStyleBackColor = true;
-            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+            this.comboBoxChangeSeries.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxChangeSeries.FormattingEnabled = true;
+            this.comboBoxChangeSeries.Location = new System.Drawing.Point(12, 27);
+            this.comboBoxChangeSeries.Name = "comboBoxChangeSeries";
+            this.comboBoxChangeSeries.Size = new System.Drawing.Size(202, 21);
+            this.comboBoxChangeSeries.TabIndex = 20;
             // 
-            // helpToolStripMenuItem1
+            // buttonRefreshSeries
             // 
-            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(166, 22);
-            this.helpToolStripMenuItem1.Text = "Help";
-            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
+            this.buttonRefreshSeries.Location = new System.Drawing.Point(349, 42);
+            this.buttonRefreshSeries.Name = "buttonRefreshSeries";
+            this.buttonRefreshSeries.Size = new System.Drawing.Size(86, 23);
+            this.buttonRefreshSeries.TabIndex = 21;
+            this.buttonRefreshSeries.Text = "Refresh Series";
+            this.buttonRefreshSeries.UseVisualStyleBackColor = true;
+            this.buttonRefreshSeries.Click += new System.EventHandler(this.buttonRefreshSeries_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 293);
+            this.Controls.Add(this.buttonRefreshSeries);
+            this.Controls.Add(this.comboBoxChangeSeries);
             this.Controls.Add(this.labelCurrentlyLoaded);
-            this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonDownload);
-            this.Controls.Add(this.buttonOpenProviderSite);
             this.Controls.Add(this.panelEpisodeButtons);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label6);
@@ -368,13 +289,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numericUpDownSkipEnd);
             this.Controls.Add(this.checkBoxAutoplay);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.comboBoxStreamingSites);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonOpenSeries);
-            this.Controls.Add(this.comboBoxStreamingProvider);
-            this.Controls.Add(this.labelSeriesExtensionHelp);
-            this.Controls.Add(this.textBoxSeriesExtension);
             this.Controls.Add(this.menuStripFormMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripFormMain;
@@ -399,13 +313,6 @@
         private System.Windows.Forms.MenuStrip menuStripFormMain;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.TextBox textBoxSeriesExtension;
-        private System.Windows.Forms.Label labelSeriesExtensionHelp;
-        private System.Windows.Forms.ComboBox comboBoxStreamingProvider;
-        private System.Windows.Forms.Button buttonOpenSeries;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBoxStreamingSites;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label labelCurrentlyLoaded;
         private System.Windows.Forms.CheckBox checkBoxAutoplay;
@@ -416,14 +323,14 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numericUpDownSkipStart;
         private System.Windows.Forms.Panel panelEpisodeButtons;
-        private System.Windows.Forms.Button buttonOpenProviderSite;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem githubToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem versionToolStripMenuItem;
         private System.Windows.Forms.Button buttonDownload;
-        private System.Windows.Forms.Button buttonHelp;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ComboBox comboBoxChangeSeries;
+        private System.Windows.Forms.Button buttonRefreshSeries;
     }
 }
 

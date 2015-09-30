@@ -42,8 +42,8 @@ namespace StreamsitePlayer.Streamsites.Providers
             seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "<h1> ", "</h1>");
-            base.series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkExtension, series);
+            base.series = new Series(seasons, seriesName, NAME, siteLinkExtension);
+            Seriescache.CacheSeries(series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }

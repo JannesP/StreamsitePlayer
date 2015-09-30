@@ -13,7 +13,7 @@ namespace StreamsitePlayer
 {
     public partial class FormMain : Form
     {
-        List<string> streamProviders;
+        public static List<string> streamProviders;
 
         private Control seriesAnchorX;
         private Control seriesAnchorY;
@@ -34,7 +34,7 @@ namespace StreamsitePlayer
             InitializeComponent();
             labelCurrentlyLoadedS = labelCurrentlyLoaded;
             InitStreamingProviders();
-            seriesAnchorX = comboBoxStreamingProvider;
+            seriesAnchorX = comboBoxChangeSeries;
             seriesAnchorY = numericUpDownSkipEnd;
             panelEpisodeButtons.Focus();
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
@@ -43,20 +43,55 @@ namespace StreamsitePlayer
 
         private void LoadSettingValues()
         {
-            comboBoxStreamingProvider.SelectedIndexChanged += comboBoxStreamingProvider_SelectedIndexChanged;
-
             checkBoxAutoplay.Checked = Settings.GetBool(Settings.AUTOPLAY);
             numericUpDownSkipEnd.Value = Settings.GetNumber(Settings.SKIP_END);
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
-            int selectedProvider = Settings.GetNumber(Settings.LAST_PROVIDER);
-            comboBoxStreamingProvider.SelectedIndex = (selectedProvider >= 0 && selectedProvider < comboBoxStreamingProvider.Items.Count) ? selectedProvider : 0;
-            textBoxSeriesExtension.Text = Settings.GetString(Settings.LAST_SERIES);
+
+            LoadCachedSeries();
 
             //Add event listeners after the loaded settings got set to avoid saving of the same settings
             checkBoxAutoplay.CheckedChanged += checkBoxAutoplay_CheckedChanged;
             numericUpDownSkipEnd.ValueChanged += numericUpDownSkipEnd_ValueChanged;
             numericUpDownSkipStart.ValueChanged += numericUpDownSkipStart_ValueChanged;
-            textBoxSeriesExtension.TextChanged += textBoxSeriesExtension_TextChanged;
+            
+            comboBoxChangeSeries.MouseWheel += ComboBoxChangeSeries_MouseWheel;
+        }
+
+        private void ComboBoxChangeSeries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var seriesSelector = (ComboBox)sender;
+            if (seriesSelector.SelectedIndex != -1)
+            {
+                if (seriesSelector.SelectedIndex == seriesSelector.Items.Count - 1) //add new selected
+                {
+                    new FormAddNewSeries(this).Show();
+                }
+                else
+                {
+                    OpenSeries((Series)seriesSelector.SelectedItem);
+                }
+            }
+        }
+
+        public void LoadCachedSeries()
+        {
+            List<string> cachedSeriesFiles = Seriescache.FindCachedSeries();
+            var series = new List<Series>(cachedSeriesFiles.Count);
+            for (int i = 0; i < cachedSeriesFiles.Count; i++)
+            {
+                cachedSeriesFiles[i] = cachedSeriesFiles[i].Replace(".series", "");
+                string seriesExtension = cachedSeriesFiles[i].Substring(cachedSeriesFiles[i].LastIndexOf('.') + 1);
+                string provider = cachedSeriesFiles[i].Substring(0, cachedSeriesFiles[i].LastIndexOf('.'));
+                Series s = Seriescache.ReadCachedSeries(provider, seriesExtension);
+                if (s != null)
+                {
+                    series.Add(s);
+                }
+            }
+            comboBoxChangeSeries.Items.Clear();
+            comboBoxChangeSeries.Items.AddRange(series.ToArray());
+            comboBoxChangeSeries.Items.Add("-- add new --");
+            comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
         }
 
         private void InitStreamingProviders()
@@ -73,9 +108,6 @@ namespace StreamsitePlayer
             streamProviders.Add(TestProvider.NAME);
             Logger.Log("START", "Added " + TestProvider.NAME);
 #endif
-            comboBoxStreamingProvider.Items.Clear();
-            Logger.Log("START", "Filling combobox with providers.");
-            comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,24 +116,35 @@ namespace StreamsitePlayer
             formSettings.Show();
         }
 
-        
-
-        private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
+        public void OpenSeries(Series series)
         {
-            currentProvider = StreamProvider.Create(comboBoxStreamingProvider.SelectedItem.ToString());
-            ReloadStreamingProviderInfo();
+            currentProvider = StreamProvider.Create(series.Provider);
+            currentProvider.LoadSeries(series);
+            if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
+            Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
+            Settings.SaveFileSettings();
+            BuildUIForCurrentProvider();
+            HighlightCurrentEpisode(true);
         }
 
-        private void ReloadStreamingProviderInfo()
+        public void SelectSeries(Series series)
         {
-            comboBoxStreamingSites.Items.Clear();
-            comboBoxStreamingSites.Items.AddRange(currentProvider.GetValidStreamingSites());
-            if (comboBoxStreamingSites.Items.Count != 0) comboBoxStreamingSites.SelectedIndex = 0;
-
-            labelSeriesExtensionHelp.Text = currentProvider.GetLinkInstructions();
+            Series found = null;
+            foreach (object o in comboBoxChangeSeries.Items)
+            {
+                if (series.Equals((Series)o))
+                {
+                    found = (Series)o;
+                    break;
+                }
+            }
+            if (series != null && found != null)
+            {
+                comboBoxChangeSeries.SelectedItem = found;
+            }
         }
 
-        private void buttonOpenSeries_Click(object sender, EventArgs e)
+        private void OpenSeries(string linkExtension)
         {
             if (currentProvider != null)
             {
@@ -109,13 +152,14 @@ namespace StreamsitePlayer
                 this.Enabled = false;
                 string oldName = this.Text;
                 this.Text = "Working, please be patient ...";
-                int res = currentProvider.LoadSeries(textBoxSeriesExtension.Text, comboBoxStreamingProvider);
+                int res = currentProvider.LoadSeries(linkExtension, comboBoxChangeSeries);
                 this.Text = oldName;
                 this.Enabled = true;
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
                     if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
-                    Settings.WriteValue(Settings.LAST_PROVIDER, comboBoxStreamingProvider.SelectedIndex);
+                    comboBoxChangeSeries.Items.Add(currentProvider.GetSeries());
+                    comboBoxChangeSeries.SelectedItem = currentProvider.GetSeries();
                     Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
                     Settings.SaveFileSettings();
                     BuildUIForCurrentProvider();
@@ -123,6 +167,13 @@ namespace StreamsitePlayer
                 }
             }
             panelEpisodeButtons.Focus();
+        }
+
+        private void RefreshSeries(Series series)
+        {
+            Seriescache.RemoveCachedSeries(series);
+            comboBoxChangeSeries.Items.Remove(series);
+            OpenSeries(series.LinkExtension);
         }
 
         private static int currentlyLoaded = 0;
@@ -336,10 +387,6 @@ namespace StreamsitePlayer
             Settings.SaveFileSettings();
         }
 
-        private void textBoxSeriesExtension_TextChanged(object sender, EventArgs e)
-        {
-        }
-
         private void buttonOpenProviderSite_Click(object sender, EventArgs e)
         {
             Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
@@ -419,9 +466,23 @@ namespace StreamsitePlayer
             ShowHelp();
         }
 
+        private void ComboBoxChangeSeries_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            ((HandledMouseEventArgs)e).Handled = true;
+        }
+
         private void ShowHelp()
         {
             MessageBox.Show("Please fill in whatever stands in the link instead of the question marks. It's USUALLY the series name with hyphens.\nExample:\"http://bs.to/serie/Prison-Break/1\" results in \"Prison-Break\".", "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void buttonRefreshSeries_Click(object sender, EventArgs e)
+        {
+            if (comboBoxChangeSeries.SelectedIndex != -1 && (comboBoxChangeSeries.SelectedIndex != comboBoxChangeSeries.Items.Count - 1))
+            {
+                var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
+                RefreshSeries(currSeries);
+            }
         }
     }
 }

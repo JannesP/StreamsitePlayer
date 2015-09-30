@@ -40,8 +40,8 @@ namespace StreamsitePlayer.Streamsites.Providers
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "wp-post-image\" alt=\"", "\" />");
-            base.series = new Series(seasons, seriesName);
-            Seriescache.CacheSeries(NAME, siteLinkExtension, base.series);
+            base.series = new Series(seasons, seriesName, NAME, siteLinkExtension);
+            Seriescache.CacheSeries(base.series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }

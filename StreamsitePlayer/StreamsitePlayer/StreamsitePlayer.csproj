@@ -59,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormAddNewSeries.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormAddNewSeries.Designer.cs">
+      <DependentUpon>FormAddNewSeries.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormDownload.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\VersionChecker.cs" />
     <Compile Include="Utility\WinAPIHelper.cs" />
+    <EmbeddedResource Include="Forms\FormAddNewSeries.resx">
+      <DependentUpon>FormAddNewSeries.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormDownload.resx">
       <DependentUpon>FormDownload.cs</DependentUpon>
     </EmbeddedResource>
