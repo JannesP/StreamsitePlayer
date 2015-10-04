@@ -238,7 +238,18 @@ namespace StreamsitePlayer
         {
             currentSeason = season;
             currentEpisode = episode;
-            string episodeLink = streamProvider.GetEpisodeLink(season, episode, streamProvider.GetValidStreamingSites()[0]);
+            string episodeLink = "";
+            int usedProvider = 0;
+            for (int i = 0; i < streamProvider.GetValidStreamingSites().Length; i++)
+            {
+                episodeLink = streamProvider.GetEpisodeLink(season, episode, streamProvider.GetValidStreamingSites()[i]);
+                if (episodeLink != "")
+                {
+                    usedProvider = i;
+                    break;
+                }
+            }
+
             if (episodeLink != "")
             {
                 requestBrowser = new WebBrowser();
@@ -250,7 +261,7 @@ namespace StreamsitePlayer
                 base.Controls.Add(requestBrowser);
 #endif
                 requestBrowser.ScriptErrorsSuppressed = true;
-                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[0], requestBrowser, episodeLink);
+                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
                 streamcloudWaitTime = site.GetEstimateWaitTime();
                 site.RequestJwData(this, ++validRequestId);
                 playNextId = validRequestId;

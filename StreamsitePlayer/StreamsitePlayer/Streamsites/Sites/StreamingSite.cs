@@ -10,8 +10,8 @@ namespace StreamsitePlayer.Streamsites
 {
     abstract class StreamingSite
     {
-        private WebBrowser targetBrowser;
-        private string link;
+        protected WebBrowser targetBrowser;
+        protected string link;
 
         public static StreamingSite CreateStreamingSite(string name, WebBrowser targetBrowser, string link)
         {
@@ -23,6 +23,8 @@ namespace StreamsitePlayer.Streamsites
                     return new RyuanimeStreamingSite(targetBrowser, link);
                 case DubbedanimehdNetStreamingSite.NAME:
                     return new DubbedanimehdNetStreamingSite(targetBrowser, link);
+                case BsToStreamingSite.NAME:
+                    return new BsToStreamingSite(targetBrowser, link);
                 default:
                     Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
                     return null;

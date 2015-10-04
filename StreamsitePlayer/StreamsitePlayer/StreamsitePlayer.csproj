@@ -109,6 +109,7 @@
     <Compile Include="Streamsites\Providers\DubbedanimehdNetProvider.cs" />
     <Compile Include="Streamsites\Providers\RyuanimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
+    <Compile Include="Streamsites\Sites\BsToStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdNetStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\IFileCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\RyuanimeStreamingSite.cs" />

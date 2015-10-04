@@ -15,7 +15,7 @@ namespace StreamsitePlayer.Streamsites.Providers
         private const string URL_PRE = "http://bs.to/serie/";
         private const string STREAMCLOUD_SEARCH = "<a class=\"icon Streamcloud\" title=\"Streamcloud\"   href=\"";
 
-        private readonly string[] VALID_SITES = { StreamcloudStreamingSite.NAME };
+        private readonly string[] VALID_SITES = { BsToStreamingSite.NAME, StreamcloudStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
@@ -39,7 +39,7 @@ namespace StreamsitePlayer.Streamsites.Providers
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
 
             string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
-            int seriesCount = ScanForSeriesCount(htmlEpisodeOverview, siteLinkExtension);
+            int seriesCount = ScanForSeasonCount(htmlEpisodeOverview, siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             for (int i = 2; i <= seriesCount; i++)
@@ -54,7 +54,7 @@ namespace StreamsitePlayer.Streamsites.Providers
             return StreamProvider.RESULT_OK;
         }
 
-        private static int ScanForSeriesCount(string html, string siteLinkNameExtension)
+        private static int ScanForSeasonCount(string html, string siteLinkNameExtension)
         {
             int seriesCount = 0;
             int index = 0;
@@ -104,9 +104,7 @@ namespace StreamsitePlayer.Streamsites.Providers
                     if ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1]))  //check if the streamcloud link is before the next episode.
                     {
                         string streamcloudSite = "http://bs.to/" + Util.GetStringBetween(html, index, STREAMCLOUD_SEARCH, "\"");
-                        streamcloudSite = Util.RequestSimplifiedHtmlSite(streamcloudSite);
-                        streamcloudSite = "http://streamcloud.eu/" + Util.GetStringBetween(streamcloudSite, 0, "<a href=\"http://streamcloud.eu/", "\"");
-                        e.AddLink(StreamcloudStreamingSite.NAME, streamcloudSite);
+                        e.AddLink(BsToStreamingSite.NAME, streamcloudSite);
                         threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
                     }
                 }

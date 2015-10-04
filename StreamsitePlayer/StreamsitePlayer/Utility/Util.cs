@@ -17,6 +17,7 @@ namespace StreamsitePlayer
             long start = DateTime.Now.Ticks;
             // Create a request for the URL. 
             WebRequest request = WebRequest.Create(url);
+            Logger.Log("UA", ((HttpWebRequest)request).UserAgent);
             // Get the response.
             WebResponse response = request.GetResponse();
             // Display the status.

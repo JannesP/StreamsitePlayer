@@ -89,6 +89,7 @@
             this.seriesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.downloadToolStripMenuItem,
             this.refreshToolStripMenuItem});
+            this.seriesToolStripMenuItem.Enabled = false;
             this.seriesToolStripMenuItem.Name = "seriesToolStripMenuItem";
             this.seriesToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.seriesToolStripMenuItem.Text = "Series";

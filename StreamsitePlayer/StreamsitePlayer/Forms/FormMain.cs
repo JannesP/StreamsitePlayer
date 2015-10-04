@@ -186,6 +186,7 @@ namespace StreamsitePlayer
         {
             downloadToolStripMenuItem.Enabled = false;
             refreshToolStripMenuItem.Enabled = false;
+            seriesToolStripMenuItem.Enabled = false;
             Seriescache.RemoveCachedSeries(series);
             comboBoxChangeSeries.Items.Remove(series);
             OpenSeries(series.LinkExtension);
@@ -243,6 +244,7 @@ namespace StreamsitePlayer
 
             downloadToolStripMenuItem.Enabled = true;
             refreshToolStripMenuItem.Enabled = true;
+            seriesToolStripMenuItem.Enabled = true;
             
         }
 
@@ -464,14 +466,9 @@ namespace StreamsitePlayer
             
         }
 
-        private void buttonHelp_Click(object sender, EventArgs e)
-        {
-            ShowHelp();
-        }
-
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            ShowHelp();
+            MessageBox.Show("No help available at the moment :P ask me on whatsapp ^^");
         }
 
         private void ComboBoxChangeSeries_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
