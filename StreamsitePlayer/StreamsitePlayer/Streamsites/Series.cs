@@ -9,9 +9,8 @@ namespace StreamsitePlayer.Streamsites
     public class Series : IEquatable<Series>
     {
         private List<List<Episode>> seasons;
-        private string name;
-        private string provider;
-        private string linkExtension;
+        private string name, provider, linkExtension;
+        private int lastPlayedEpisode = 1, lastPlayedSeason = 1;
 
         public Series(List<List<Episode>> seasons, string name, string provider, string linkExtension)
         {
@@ -88,6 +87,32 @@ namespace StreamsitePlayer.Streamsites
             set
             {
                 linkExtension = value;
+            }
+        }
+
+        public int LastPlayedSeason
+        {
+            get
+            {
+                return lastPlayedSeason;
+            }
+
+            set
+            {
+                lastPlayedSeason = value;
+            }
+        }
+
+        public int LastPlayedEpisode
+        {
+            get
+            {
+                return lastPlayedEpisode;
+            }
+
+            set
+            {
+                lastPlayedEpisode = value;
             }
         }
 

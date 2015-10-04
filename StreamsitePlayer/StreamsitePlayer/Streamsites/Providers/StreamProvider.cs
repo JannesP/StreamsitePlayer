@@ -41,7 +41,7 @@ namespace StreamsitePlayer.Streamsites
         /// <returns>the link extension</returns>
         public string GetLinkExtension()
         {
-            return siteLinkExtension;
+            return series.LinkExtension;
         }
         /// <summary>
         /// Initilizes the class and requests all the series data.

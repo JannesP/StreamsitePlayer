@@ -30,6 +30,8 @@ namespace StreamsitePlayer
                 sw.WriteLine("seriesname." + series.Name);
                 sw.WriteLine("provider." + series.Provider);
                 sw.WriteLine("linkExtension." + series.LinkExtension);
+                sw.WriteLine("lastPlayedSeason." + series.LastPlayedSeason);
+                sw.WriteLine("lastPlayedEpisode." + series.LastPlayedEpisode);
 
                 for (int s = 0; s < series.Count; s++)
                 {
@@ -60,6 +62,7 @@ namespace StreamsitePlayer
             string seriesName = fileName;
             string seriesProvider = providerName;
             string linkExtension = fileName;
+            int lastPlayedEpisode = 1, lastPlayedSeason = 1; 
             using (StreamReader sr = new StreamReader(File.OpenRead(filepath)))
             {
                 Episode currEpisode = new Episode();
@@ -79,16 +82,17 @@ namespace StreamsitePlayer
                     }
                     string[] parts = line.Split(new char[]{ '.' }, 2);
                     if (parts.Length != 2) return null;
+                    int res;
                     switch (parts[0])
                     {
                         case "name":
                             currEpisode.Name = parts[1];
                             break;
                         case "season":
-                            currEpisode.Season = int.Parse(parts[1]);
+                            if (int.TryParse(parts[1], out res)) currEpisode.Season = res;
                             break;
                         case "episode":
-                            currEpisode.Number = int.Parse(parts[1]);
+                            if (int.TryParse(parts[1], out res)) currEpisode.Number = res;
                             break;
                         case "link":
                             string[] hostAndLink = parts[1].Split(new char[] { ' ' }, 2);
@@ -103,10 +107,18 @@ namespace StreamsitePlayer
                         case "linkExtension":
                             linkExtension = parts[1];
                             break;
+                        case "lastPlayedSeason":
+                            if (int.TryParse(parts[1], out res)) lastPlayedSeason = res;
+                            break;
+                        case "lastPlayedEpisode":
+                            if (int.TryParse(parts[1], out res)) lastPlayedEpisode = res;
+                            break;
                     }
                 }
             }
             Series series = new Series(seasons, seriesName, providerName, linkExtension);
+            series.LastPlayedEpisode = lastPlayedEpisode;
+            series.LastPlayedSeason = lastPlayedSeason;
             return series;
         }
 

@@ -76,7 +76,9 @@ namespace StreamsitePlayer
         public void LoadCachedSeries()
         {
             List<string> cachedSeriesFiles = Seriescache.FindCachedSeries();
+            string lastPlayedSeries = Settings.GetString(Settings.LAST_PLAYED_SERIES);
             var series = new List<Series>(cachedSeriesFiles.Count);
+            Series lastSeries = null;
             for (int i = 0; i < cachedSeriesFiles.Count; i++)
             {
                 cachedSeriesFiles[i] = cachedSeriesFiles[i].Replace(".series", "");
@@ -85,6 +87,11 @@ namespace StreamsitePlayer
                 Series s = Seriescache.ReadCachedSeries(provider, seriesExtension);
                 if (s != null)
                 {
+                    if (s.LinkExtension == lastPlayedSeries)
+                    {
+                        lastSeries = s;
+                        Logger.Log("LOADING", "Found last played series: " + s.LinkExtension);
+                    }
                     series.Add(s);
                 }
             }
@@ -92,6 +99,12 @@ namespace StreamsitePlayer
             comboBoxChangeSeries.Items.AddRange(series.ToArray());
             comboBoxChangeSeries.Items.Add("-- add new --");
             comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
+
+            if (lastSeries != null)
+            {
+                Logger.Log("LOADING", "Selecting last played series: " + lastSeries.LinkExtension);
+                comboBoxChangeSeries.SelectedItem = lastSeries;
+            }
         }
 
         private void InitStreamingProviders()
@@ -171,6 +184,8 @@ namespace StreamsitePlayer
 
         private void RefreshSeries(Series series)
         {
+            downloadToolStripMenuItem.Enabled = false;
+            refreshToolStripMenuItem.Enabled = false;
             Seriescache.RemoveCachedSeries(series);
             comboBoxChangeSeries.Items.Remove(series);
             OpenSeries(series.LinkExtension);
@@ -226,8 +241,9 @@ namespace StreamsitePlayer
 
             HighlightCurrentEpisode(false);
 
-            buttonDownload.Enabled = true;
-            buttonDownload.Text = "Download";
+            downloadToolStripMenuItem.Enabled = true;
+            refreshToolStripMenuItem.Enabled = true;
+            
         }
 
         private List<Button> BuildButtonsForSeries(ToolTip tooltip)
@@ -304,44 +320,37 @@ namespace StreamsitePlayer
 
         private void HighlightCurrentEpisode(bool changeSeason)
         {
-            int episode = Settings.GetNumber(Settings.LAST_PLAYED_EPISODE);
-            int season = Settings.GetNumber(Settings.LAST_PLAYED_SEASON);
-            string series = Settings.GetString(Settings.LAST_PLAYED_SERIES);
-            string provider = Settings.GetString(Settings.LAST_PLAYED_PROVIDER);
+            int episode = currentProvider.GetSeries().LastPlayedEpisode;
+            int season = currentProvider.GetSeries().LastPlayedSeason;
 
-            if (episode == -1 || season == -1 || series.Equals("") || provider.Equals("")) return;
-
-            if (series == currentProvider.GetLinkExtension() && provider == currentProvider.GetReadableSiteName())
+            season = season == 0 ? 1 : season;  //if season == 0 -> season = 1
+            if (season != selectedSeason)
             {
-                season = season == 0 ? 1 : season;  //if season == 0 -> season = 1
-                if (season != selectedSeason)
+                if (changeSeason)
                 {
-                    if (changeSeason)
-                    {
-                        selectedSeason = season == 0 ? 1 : season;
-                        BuildUIForCurrentProvider();
-                    }
-                    return;
+                    selectedSeason = season == 0 ? 1 : season;
+                    BuildUIForCurrentProvider();
                 }
+                return;
+            }
 
-                foreach (Button b in episodeButtons)
+            foreach (Button b in episodeButtons)
+            {
+                int buttonEpisode = int.Parse(b.Text);
+                if (buttonEpisode == episode)
                 {
-                    int buttonEpisode = int.Parse(b.Text);
-                    if (buttonEpisode == episode)
+                    panelEpisodeButtons.AutoScroll = true;
+                    panelEpisodeButtons.SetAutoScrollMargin(0, BUTTON_SIZE * 2 + PADDING);
+                    b.ForeColor = Color.FromArgb(255, 0, 255);
+                    if (player == null)
                     {
-                        panelEpisodeButtons.AutoScroll = true;
-                        panelEpisodeButtons.SetAutoScrollMargin(0, BUTTON_SIZE * 2 + PADDING);
-                        b.ForeColor = Color.FromArgb(255, 0, 255);
-                        if (player == null)
-                        {
-                            b.Focus();
-                        }
-                        panelEpisodeButtons.ScrollControlIntoView(b);
+                        b.Focus();
                     }
-                    else
-                    {
-                        b.ForeColor = Color.Black;
-                    }
+                    panelEpisodeButtons.ScrollControlIntoView(b);
+                }
+                else
+                {
+                    b.ForeColor = Color.Black;
                 }
             }
             
@@ -349,11 +358,11 @@ namespace StreamsitePlayer
 
         private void Player_EpisodeChange(object source, Player.EpisodeChangeEventArgs e)
         {
-            Settings.WriteValue(Settings.LAST_PLAYED_EPISODE, e.NewEpisode.Number);
-            Settings.WriteValue(Settings.LAST_PLAYED_SEASON, e.NewEpisode.Season);
-            Settings.WriteValue(Settings.LAST_PLAYED_PROVIDER, currentProvider.GetReadableSiteName());
+            currentProvider.GetSeries().LastPlayedEpisode = e.NewEpisode.Number;
+            currentProvider.GetSeries().LastPlayedSeason = e.NewEpisode.Season;
             Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
             Settings.SaveFileSettings();
+            Seriescache.CacheSeries(currentProvider.GetSeries());
 
             HighlightCurrentEpisode(true);
         }
@@ -452,8 +461,7 @@ namespace StreamsitePlayer
 
         private void buttonDownload_Click(object sender, EventArgs e)
         {
-            Form f = new FormDownload(currentProvider);
-            f.Show();
+            
         }
 
         private void buttonHelp_Click(object sender, EventArgs e)
@@ -478,10 +486,25 @@ namespace StreamsitePlayer
 
         private void buttonRefreshSeries_Click(object sender, EventArgs e)
         {
+            
+        }
+
+        private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new FormDownload(currentProvider);
+            f.Show();
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (comboBoxChangeSeries.SelectedIndex != -1 && (comboBoxChangeSeries.SelectedIndex != comboBoxChangeSeries.Items.Count - 1))
             {
-                var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
-                RefreshSeries(currSeries);
+                DialogResult dr = MessageBox.Show("This will reset your currently played episode. Also if the refresh fails the episode is gone and you have to look for it again!\n Do you still want to refresh?", "Know the risks?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (dr == DialogResult.Yes)
+                {
+                    var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
+                    RefreshSeries(currSeries);
+                }
             }
         }
     }
