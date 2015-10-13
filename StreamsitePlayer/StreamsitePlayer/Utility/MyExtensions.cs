@@ -52,5 +52,13 @@ namespace StreamsitePlayer.Utility.Extensions
             autoComplete.AddRange(list.ToArray());
             return autoComplete;
         }
+
+        public static void ScrollToYPosition(this Panel p, int pos)
+        {
+            using (Control c = new Control() { Parent = p, Height = 1, Top = pos })
+            {
+                p.ScrollControlIntoView(c);
+            }
+        }
     }
 }

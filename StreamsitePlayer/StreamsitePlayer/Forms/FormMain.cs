@@ -2,6 +2,7 @@
 using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Providers;
 using StreamsitePlayer.Utility;
+using StreamsitePlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,12 +33,7 @@ namespace StreamsitePlayer
         {
             Logger.Log("START", "Creating new FormMain instance.");
             InitializeComponent();
-            labelCurrentlyLoadedS = labelCurrentlyLoaded;
-            seriesAnchorX = comboBoxChangeSeries;
-            seriesAnchorY = numericUpDownSkipEnd;
-            panelEpisodeButtons.Focus();
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
-            LoadSettingValues();
         }
 
         private void LoadSettingValues()
@@ -237,8 +233,8 @@ namespace StreamsitePlayer
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
             ClearEpisodePanel();
-            seasonButtons = BuildButtonsForSeries(tooltip); //add new buttons to the window
-            episodeButtons = BuildButtonsForEpisodes(selectedSeason, tooltip);
+            seasonButtons = BuildButtonsForSeries(panelEpisodeButtons, tooltip); //add new buttons to the window
+            episodeButtons = BuildButtonsForEpisodes(panelEpisodeButtons, selectedSeason, tooltip);
             panelEpisodeButtons.Controls.AddRange(seasonButtons.ToArray());
             panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
             seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
@@ -250,7 +246,7 @@ namespace StreamsitePlayer
             seriesToolStripMenuItem.Enabled = true;
         }
 
-        private List<Button> BuildButtonsForSeries(ToolTip tooltip)
+        private List<Button> BuildButtonsForSeries(Panel parent, ToolTip tooltip)
         {
             int startX = 0;
             int startY = 0;
@@ -261,7 +257,7 @@ namespace StreamsitePlayer
             int fittingInOneRow = (this.Size.Width - PADDING) / (BUTTON_SIZE + PADDING);
             for (int i = 0; i < seriesCount; i++)
             {
-                Button b = CreateNewButton("S" + (i + 1).ToString(), "Series " + (i + 1), tooltip);
+                Button b = CreateNewButton(parent, "S" + (i + 1).ToString(), "Series " + (i + 1), tooltip);
                 b.Location = new Point(startX + (PADDING + BUTTON_SIZE) * (i % fittingInOneRow), startY + (i / fittingInOneRow) * (PADDING + BUTTON_SIZE));
                 b.Click += this.OnSeriesButtonClicked;
                 buttons.Add(b);
@@ -269,7 +265,7 @@ namespace StreamsitePlayer
             return buttons;
         }
 
-        private List<Button> BuildButtonsForEpisodes(int series, ToolTip tooltip)
+        private List<Button> BuildButtonsForEpisodes(Panel parent, int series, ToolTip tooltip)
         {
             List<Button> buttons = new List<Button>();
             if (seasonButtons.Count == 0) return buttons;
@@ -282,7 +278,7 @@ namespace StreamsitePlayer
             int fittingInOneRow = (this.Size.Width - PADDING) / (BUTTON_SIZE + PADDING);
             for (int i = 0; i < episodeCount; i++)
             {
-                Button b = CreateNewButton((i + 1).ToString(), episodes[i].Name, tooltip);
+                Button b = CreateNewButton(parent, (i + 1).ToString(), episodes[i].Name, tooltip);
                 b.Location = new Point(startX + (PADDING + BUTTON_SIZE) * (i % fittingInOneRow), startY + (i / fittingInOneRow) * (PADDING + BUTTON_SIZE));
                 b.GotFocus += Button_GotFocus;
                 b.Click += this.OnEpisodeButtonClicked;
@@ -296,9 +292,10 @@ namespace StreamsitePlayer
             panelEpisodeButtons.Focus();
         }
 
-        private Button CreateNewButton(string text, string tooltipText, ToolTip tip)
+        private Button CreateNewButton(Panel parent, string text, string tooltipText, ToolTip tip)
         {
             Button b = new Button();
+            b.Parent = parent;
             tip.SetToolTip(b, tooltipText);
             b.Text = text;
             b.TextAlign = ContentAlignment.MiddleCenter;
@@ -344,13 +341,12 @@ namespace StreamsitePlayer
                 if (buttonEpisode == episode)
                 {
                     panelEpisodeButtons.AutoScroll = true;
-                    panelEpisodeButtons.SetAutoScrollMargin(0, BUTTON_SIZE * 2 + PADDING);
+                    panelEpisodeButtons.ScrollToYPosition(b.Bounds.Bottom + BUTTON_SIZE + PADDING * 2);
                     b.ForeColor = Color.FromArgb(255, 0, 255);
                     if (player == null)
                     {
                         b.Focus();
                     }
-                    panelEpisodeButtons.ScrollControlIntoView(b);
                 }
                 else
                 {
@@ -456,6 +452,11 @@ namespace StreamsitePlayer
                 VersionChecker.CheckForUpdateAsync();
             }
 #endif
+            labelCurrentlyLoadedS = labelCurrentlyLoaded;
+            seriesAnchorX = comboBoxChangeSeries;
+            seriesAnchorY = numericUpDownSkipEnd;
+            panelEpisodeButtons.Focus();
+            LoadSettingValues();
         }
 
         private void versionToolStripMenuItem_Click(object sender, EventArgs e)
