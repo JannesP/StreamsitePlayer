@@ -27,6 +27,7 @@ namespace StreamsitePlayer.Forms
 
         private void FormAddNewSeries_Load(object sender, EventArgs e)
         {
+            comboBoxStreamingProvider.Items.AddRange(StreamProvider.VALID_PROVIDERS.ToArray());
             parent.Enabled = false;
         }
 
