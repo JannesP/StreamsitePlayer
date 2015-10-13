@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -54,6 +55,7 @@ namespace StreamsitePlayer.Utility
             newVersion = e.Result.Replace("\n", "");
             if (!Program.VERSION.Equals(e.Result.Replace("\n", "")))
             {
+                Logger.Log("UPDATE", "Successfully checked for update. Update needed, downloading changelog ...");
                 using (WebClient webClientChangelog = new WebClient())
                 {
                     webClientChangelog.DownloadStringCompleted += WebClientChangelog_DownloadStringCompleted; ;
@@ -62,6 +64,7 @@ namespace StreamsitePlayer.Utility
             }
             else
             {
+                Logger.Log("UPDATE", "Successfully checked for update. No update required.");
                 OnVersionChecked(new VersionCheckedEventArgs("", "", false, false));
             }
         }
@@ -74,6 +77,7 @@ namespace StreamsitePlayer.Utility
                 OnVersionChecked(new VersionCheckedEventArgs("", "", false, true));
                 return;
             }
+            Logger.Log("UPDATE", "Successfully downloaded changelog.");
             OnVersionChecked(new VersionCheckedEventArgs(e.Result, newVersion, true, false));
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -220,8 +221,8 @@ namespace StreamsitePlayer.Streamsites.Sites
                         receiver.ReceiveJwLinks("", requestId);
                         return;
                     }
-                    string file = Util.GetStringBetween(htmlText, 0, "file: \"", "\"");
-                    string image = Util.GetStringBetween(htmlText, 0, "image: \"", "\"");
+                    string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
+                    string image = htmlText.GetSubstringBetween(0, "image: \"", "\"");
                     if (file == "" || image == "")
                     {
                         receiver.ReceiveJwLinks("", requestId);
@@ -258,7 +259,7 @@ namespace StreamsitePlayer.Streamsites.Sites
                 else
                 {
                     string htmlText = GetTargetBrowser().DocumentText;
-                    string file = Util.GetStringBetween(htmlText, 0, "file: \"", "\"");
+                    string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
                     receiver.ReceiveFileLink(file, requestId);
                 }
             }

@@ -23,8 +23,6 @@ namespace StreamsitePlayer.Streamsites
             VALID_PROVIDERS = new List<string>();
             VALID_PROVIDERS.Add(BsToStreamProvider.NAME);
             Logger.Log("START", "Added " + BsToStreamProvider.NAME);
-            VALID_PROVIDERS.Add(RyuanimeStreamProvider.NAME);
-            Logger.Log("START", "Added " + RyuanimeStreamProvider.NAME);
             VALID_PROVIDERS.Add(DubbedanimehdNetProvider.NAME);
             Logger.Log("START", "Added " + DubbedanimehdNetProvider.NAME);
 #if DEBUG
@@ -135,6 +133,11 @@ namespace StreamsitePlayer.Streamsites
             return series;
         }
 
+        /// <summary>
+        /// Creates a new instance of the specified provider.
+        /// </summary>
+        /// <param name="name">The unique name of the provider [XxxxStreamProvider.NAME]</param>
+        /// <returns>A StreamProvider instance.</returns>
         public static StreamProvider Create(string name)
         {
             switch (name)
@@ -143,8 +146,6 @@ namespace StreamsitePlayer.Streamsites
                     return new BsToStreamProvider();
                 case TestProvider.NAME:
                     return new TestProvider();
-                case RyuanimeStreamProvider.NAME:
-                    return new RyuanimeStreamProvider();
                 case DubbedanimehdNetProvider.NAME:
                     return new DubbedanimehdNetProvider();
                 default:
@@ -152,7 +153,20 @@ namespace StreamsitePlayer.Streamsites
             }
         }
 
-        internal void LoadSeries(Series series)
+        /// <summary>
+        /// Defines if the provider supports search for new series.
+        /// </summary>
+        /// <returns>false if not sopported</returns>
+        public abstract bool IsSearchSupported();
+
+        /// <summary>
+        /// Returns the complete search index for the streamprovider regardless of the sites available.
+        /// CAREFUL: This call blocks.
+        /// </summary>
+        /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
+        public abstract Dictionary<string, string> GetSearchIndex();
+
+        public void LoadSeries(Series series)
         {
             this.series = series;
         }

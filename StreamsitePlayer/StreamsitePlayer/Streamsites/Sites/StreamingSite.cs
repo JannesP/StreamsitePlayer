@@ -19,8 +19,6 @@ namespace StreamsitePlayer.Streamsites
             {
                 case StreamcloudStreamingSite.NAME:
                     return new StreamcloudStreamingSite(targetBrowser, link);
-                case RyuanimeStreamingSite.NAME:
-                    return new RyuanimeStreamingSite(targetBrowser, link);
                 case DubbedanimehdNetStreamingSite.NAME:
                     return new DubbedanimehdNetStreamingSite(targetBrowser, link);
                 case BsToStreamingSite.NAME:

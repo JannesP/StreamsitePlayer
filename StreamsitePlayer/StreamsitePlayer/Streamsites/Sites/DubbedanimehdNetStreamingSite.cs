@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,6 @@ namespace StreamsitePlayer.Streamsites.Sites
 {
     class DubbedanimehdNetStreamingSite : StreamingSite
     {
-        private string link;
-
         public DubbedanimehdNetStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
@@ -89,7 +88,7 @@ namespace StreamsitePlayer.Streamsites.Sites
                 string htmlText = GetTargetBrowser().DocumentText;
 
                 string iFrameSearch = "<iframe id='video' src='";
-                string iframeUrl = Util.GetStringBetween(htmlText, 0, iFrameSearch, "'");
+                string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
                 Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
                 GetTargetBrowser().Navigate(iframeUrl);
                 iFrameNavigated = true;
@@ -99,7 +98,7 @@ namespace StreamsitePlayer.Streamsites.Sites
             {
                 Logger.Log("SITE_REQUEST_DAHD", "Loaded IFrame. Searching for file.");
                 string html = GetTargetBrowser().DocumentText;
-                string file = Util.GetStringBetween(html, 0, "file: '", "'");
+                string file = html.GetSubstringBetween(0, "file: '", "'");
                 if (fileReceiver != null)
                 {
                     Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");

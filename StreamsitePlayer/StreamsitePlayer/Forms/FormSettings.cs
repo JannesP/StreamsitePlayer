@@ -58,5 +58,11 @@ namespace StreamsitePlayer.Forms
         {
             Process.Start(Util.GetAppFolder());
         }
+
+        private void buttonResetJwKey_Click(object sender, EventArgs e)
+        {
+            Settings.RestoreDefault(Settings.JW_KEY);
+            textBoxJwKey.Text = Settings.GetString(Settings.JW_KEY);
+        }
     }
 }

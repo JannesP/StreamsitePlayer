@@ -33,7 +33,6 @@ namespace StreamsitePlayer
             Logger.Log("START", "Creating new FormMain instance.");
             InitializeComponent();
             labelCurrentlyLoadedS = labelCurrentlyLoaded;
-            InitStreamingProviders();
             seriesAnchorX = comboBoxChangeSeries;
             seriesAnchorY = numericUpDownSkipEnd;
             panelEpisodeButtons.Focus();
@@ -71,12 +70,16 @@ namespace StreamsitePlayer
                     OpenSeries((Series)seriesSelector.SelectedItem);
                 }
             }
+            else
+            {
+                ClearEpisodePanel();
+            }
         }
 
         public void LoadCachedSeries()
         {
             List<string> cachedSeriesFiles = Seriescache.FindCachedSeries();
-            string lastPlayedSeries = Settings.GetString(Settings.LAST_PLAYED_SERIES);
+            string lastPlayedSeries = Settings.GetString(Settings.LAST_SERIES);
             var series = new List<Series>(cachedSeriesFiles.Count);
             Series lastSeries = null;
             for (int i = 0; i < cachedSeriesFiles.Count; i++)
@@ -107,22 +110,6 @@ namespace StreamsitePlayer
             }
         }
 
-        private void InitStreamingProviders()
-        {
-            Logger.Log("START", "Adding streaming providers.");
-            streamProviders = new List<string>();
-            streamProviders.Add(BsToStreamProvider.NAME);
-            Logger.Log("START", "Added " + BsToStreamProvider.NAME);
-            streamProviders.Add(RyuanimeStreamProvider.NAME);
-            Logger.Log("START", "Added " + RyuanimeStreamProvider.NAME);
-            streamProviders.Add(DubbedanimehdNetProvider.NAME);
-            Logger.Log("START", "Added " + DubbedanimehdNetProvider.NAME);
-#if DEBUG
-            streamProviders.Add(TestProvider.NAME);
-            Logger.Log("START", "Added " + TestProvider.NAME);
-#endif
-        }
-
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form formSettings = new FormSettings(this);
@@ -142,6 +129,11 @@ namespace StreamsitePlayer
 
         public void SelectSeries(Series series)
         {
+            if (series == null)
+            {
+                comboBoxChangeSeries.SelectedIndex = -1;
+                return;
+            }
             Series found = null;
             foreach (object o in comboBoxChangeSeries.Items)
             {
@@ -171,7 +163,7 @@ namespace StreamsitePlayer
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
                     if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
-                    comboBoxChangeSeries.Items.Add(currentProvider.GetSeries());
+                    comboBoxChangeSeries.Items.Insert(comboBoxChangeSeries.Items.Count - 1, currentProvider.GetSeries());
                     comboBoxChangeSeries.SelectedItem = currentProvider.GetSeries();
                     Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
                     Settings.SaveFileSettings();
@@ -190,6 +182,17 @@ namespace StreamsitePlayer
             Seriescache.RemoveCachedSeries(series);
             comboBoxChangeSeries.Items.Remove(series);
             OpenSeries(series.LinkExtension);
+        }
+
+        private void RemoveSeries(Series series)
+        {
+            downloadToolStripMenuItem.Enabled = false;
+            refreshToolStripMenuItem.Enabled = false;
+            seriesToolStripMenuItem.Enabled = false;
+            Seriescache.RemoveCachedSeries(series);
+            comboBoxChangeSeries.Items.Remove(series);
+            currentProvider = null;
+            ClearEpisodePanel();
         }
 
         private static int currentlyLoaded = 0;
@@ -245,7 +248,6 @@ namespace StreamsitePlayer
             downloadToolStripMenuItem.Enabled = true;
             refreshToolStripMenuItem.Enabled = true;
             seriesToolStripMenuItem.Enabled = true;
-            
         }
 
         private List<Button> BuildButtonsForSeries(ToolTip tooltip)
@@ -501,6 +503,20 @@ namespace StreamsitePlayer
                 {
                     var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
                     RefreshSeries(currSeries);
+                }
+            }
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Seriescache.RemoveCachedSeries(currentProvider.GetSeries());
+            if (comboBoxChangeSeries.SelectedIndex != -1 && (comboBoxChangeSeries.SelectedIndex != comboBoxChangeSeries.Items.Count - 1))
+            {
+                DialogResult dr = MessageBox.Show("This will reset your currently played episode and remove the series.\nYour downloaded episodes are not affected!\nStill want to remove it from the list?", "Know the risks?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (dr == DialogResult.Yes)
+                {
+                    var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
+                    RemoveSeries(currSeries);
                 }
             }
         }

@@ -36,6 +36,7 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.checkBoxAutoUpdate = new System.Windows.Forms.CheckBox();
             this.buttonOpenAppFolder = new System.Windows.Forms.Button();
+            this.buttonResetJwKey = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -53,19 +54,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxJwKey.Location = new System.Drawing.Point(91, 12);
             this.textBoxJwKey.Name = "textBoxJwKey";
-            this.textBoxJwKey.Size = new System.Drawing.Size(399, 20);
+            this.textBoxJwKey.Size = new System.Drawing.Size(291, 20);
             this.textBoxJwKey.TabIndex = 1;
             // 
             // linkLabelJwKey
             // 
             this.linkLabelJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabelJwKey.AutoSize = true;
-            this.linkLabelJwKey.Location = new System.Drawing.Point(496, 12);
+            this.linkLabelJwKey.Location = new System.Drawing.Point(464, 15);
             this.linkLabelJwKey.Name = "linkLabelJwKey";
-            this.linkLabelJwKey.Size = new System.Drawing.Size(84, 13);
+            this.linkLabelJwKey.Size = new System.Drawing.Size(109, 13);
             this.linkLabelJwKey.TabIndex = 2;
             this.linkLabelJwKey.TabStop = true;
-            this.linkLabelJwKey.Text = "Get one for free!";
+            this.linkLabelJwKey.Text = "Get your own for free!";
             this.linkLabelJwKey.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelJwKey_LinkClicked);
             // 
             // buttonSave
@@ -112,11 +113,23 @@
             this.buttonOpenAppFolder.UseVisualStyleBackColor = true;
             this.buttonOpenAppFolder.Click += new System.EventHandler(this.buttonOpenAppFolder_Click);
             // 
+            // buttonResetJwKey
+            // 
+            this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResetJwKey.Location = new System.Drawing.Point(388, 9);
+            this.buttonResetJwKey.Name = "buttonResetJwKey";
+            this.buttonResetJwKey.Size = new System.Drawing.Size(70, 23);
+            this.buttonResetJwKey.TabIndex = 7;
+            this.buttonResetJwKey.Text = "Reset";
+            this.buttonResetJwKey.UseVisualStyleBackColor = true;
+            this.buttonResetJwKey.Click += new System.EventHandler(this.buttonResetJwKey_Click);
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(585, 75);
+            this.Controls.Add(this.buttonResetJwKey);
             this.Controls.Add(this.buttonOpenAppFolder);
             this.Controls.Add(this.checkBoxAutoUpdate);
             this.Controls.Add(this.buttonCancel);
@@ -144,5 +157,6 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.CheckBox checkBoxAutoUpdate;
         private System.Windows.Forms.Button buttonOpenAppFolder;
+        private System.Windows.Forms.Button buttonResetJwKey;
     }
 }

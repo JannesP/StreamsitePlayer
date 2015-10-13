@@ -1,7 +1,9 @@
 ﻿using StreamsitePlayer.Streamsites.Sites;
+using StreamsitePlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +49,7 @@ namespace StreamsitePlayer.Streamsites.Providers
                 htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension + "/" + i);
                 seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
-            string seriesName = Util.GetStringBetween(htmlEpisodeOverview, 0, "<h2>", "<");
+            string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "<h2>", "<");
             series = new Series(seasons, seriesName, NAME, siteLinkExtension);
             Seriescache.CacheSeries(series);
             FormMain.SeriesOpenCallback(null);
@@ -90,12 +92,12 @@ namespace StreamsitePlayer.Streamsites.Providers
                 episodeIndex = episodeIndices[i];
                 Episode e = null;
                 int index = episodeIndex;
-                string name = Util.GetStringBetween(html, index, "<strong>", "</strong>");
+                string name = html.GetSubstringBetween(index, "<strong>", "</strong>");
                 if (name != "")
                 {
                     index = html.IndexOf("<strong>", index);
                 }
-                name += " (" + Util.GetStringBetween(html, index, "\">", "</span>") + ")";
+                name += " (" + html.GetSubstringBetween(index, "\">", "</span>") + ")";
                 e = new Episode(seasonNumber, i + 1, name);
 
                 index = html.IndexOf(STREAMCLOUD_SEARCH, index);
@@ -103,7 +105,7 @@ namespace StreamsitePlayer.Streamsites.Providers
                 {
                     if ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1]))  //check if the streamcloud link is before the next episode.
                     {
-                        string streamcloudSite = "http://bs.to/" + Util.GetStringBetween(html, index, STREAMCLOUD_SEARCH, "\"");
+                        string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(index, STREAMCLOUD_SEARCH, "\"");
                         e.AddLink(BsToStreamingSite.NAME, streamcloudSite);
                         threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
                     }
@@ -116,6 +118,35 @@ namespace StreamsitePlayer.Streamsites.Providers
         public override string GetWebsiteLink()
         {
             return "http://bs.to/andere-serien";
+        }
+
+        public override bool IsSearchSupported()
+        {
+            return true;
+        }
+
+        public override Dictionary<string, string> GetSearchIndex()
+        {
+            var index = new Dictionary<string, string>();
+            string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
+
+            const string SERIES_SEARCH = "<li><a href=\"serie/";
+            const string END_LINK = "\">";
+            const string END_NAME = "</a></li>";
+
+            int searchIndex = site.IndexOf("<div id=\"seriesContainer\">");
+            while (searchIndex != -1)
+            {
+                string seriesExtension = site.GetSubstringBetween(searchIndex, SERIES_SEARCH, END_LINK, out searchIndex);
+                if (searchIndex == -1) continue;
+                string name = site.GetSubstringBetween(searchIndex, END_LINK, END_NAME, out searchIndex);
+                if (searchIndex != -1)
+                {
+                    index.Add(name, seriesExtension);
+                }
+            }
+
+            return index;
         }
     }
 }

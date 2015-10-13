@@ -43,22 +43,8 @@ namespace StreamsitePlayer
             requestedRaw = requestedRaw.Replace("\n", "");
             requestedRaw = requestedRaw.Replace("    ", "");
             Console.WriteLine("Cutting unnececcery things out took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
+            requestedRaw = WebUtility.HtmlDecode(requestedRaw);
             return requestedRaw;
-        }
-
-        /// <summary>
-        /// Searches for the string between the first and second string.
-        /// </summary>
-        /// <param name="stringToSearch">The string iwht all substrings</param>
-        /// <param name="startIndex">Startindex to start searching</param>
-        /// <returns>returns an empty string if either first or second were not found</returns>
-        public static string GetStringBetween(string stringToSearch, int startIndex, string first, string second)
-        {
-            int firstIndex = stringToSearch.IndexOf(first, startIndex) + first.Length;
-            if ((firstIndex - first.Length) == -1) return "";
-            int secondIndex = stringToSearch.IndexOf(second, firstIndex + 1);
-            if (secondIndex == -1) return "";
-            return stringToSearch.Substring(firstIndex, secondIndex - firstIndex);
         }
 
         public static bool CheckWriteAccess(string path)

@@ -9,13 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using StreamsitePlayer.Utility.Extensions;
 
 namespace StreamsitePlayer.Forms
 {
     public partial class FormAddNewSeries : Form
     {
-        private List<string> streamProviders;
         private FormMain parent;
+        private bool addBySearch = false;
+        private Dictionary<string, string> searchDictionary;
 
         public FormAddNewSeries(FormMain parent)
         {
@@ -25,28 +27,7 @@ namespace StreamsitePlayer.Forms
 
         private void FormAddNewSeries_Load(object sender, EventArgs e)
         {
-            InitStreamingProviders();
             parent.Enabled = false;
-        }
-
-        private void InitStreamingProviders()
-        {
-            Logger.Log("START", "Adding streaming providers.");
-            streamProviders = new List<string>();
-            streamProviders.Add(BsToStreamProvider.NAME);
-            Logger.Log("START", "Added " + BsToStreamProvider.NAME);
-            streamProviders.Add(RyuanimeStreamProvider.NAME);
-            Logger.Log("START", "Added " + RyuanimeStreamProvider.NAME);
-            streamProviders.Add(DubbedanimehdNetProvider.NAME);
-            Logger.Log("START", "Added " + DubbedanimehdNetProvider.NAME);
-#if DEBUG
-            streamProviders.Add(TestProvider.NAME);
-            Logger.Log("START", "Added " + TestProvider.NAME);
-#endif
-            comboBoxStreamingProvider.Items.Clear();
-            Logger.Log("START", "Filling combobox with providers.");
-            comboBoxStreamingProvider.Items.AddRange(streamProviders.ToArray());
-            comboBoxStreamingProvider.SelectedIndex = 0;
         }
 
         private void OpenSeries(string linkExtension)
@@ -70,12 +51,22 @@ namespace StreamsitePlayer.Forms
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            parent.SelectSeries(null);
             base.Close();
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            OpenSeries(textBoxLinkExtension.Text);
+            string seriesExtension = "";
+            if (addBySearch)
+            {
+                seriesExtension = searchDictionary[textBoxAddBySearch.Text];
+            }
+            else
+            {
+                seriesExtension = textBoxAddByExtension.Text;
+            }
+            OpenSeries(seriesExtension);
         }
 
         private void FormAddNewSeries_FormClosed(object sender, FormClosedEventArgs e)
@@ -87,6 +78,45 @@ namespace StreamsitePlayer.Forms
         private void buttonOpenProviderSite_Click(object sender, EventArgs e)
         {
             Util.OpenLinkInDefaultBrowser(StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem).GetWebsiteLink());
+        }
+
+        private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
+            if (currentProvider.IsSearchSupported())
+            {
+                addBySearch = true;
+                backgroundWorkerLoadAutoComplete.RunWorkerAsync(currentProvider);
+                FormLoadingIndicator.ShowDialog(this, "Loading autocomplete list, please be patient ...");
+            }
+            else
+            {
+                addBySearch = false;
+            }
+            buttonAdd.Enabled = !addBySearch;
+            panelAddByExtension.Visible = !addBySearch;
+            panelAddBySearch.Visible = addBySearch;
+        }
+
+        private void textBoxAddBySearch_TextChanged(object sender, EventArgs e)
+        {
+            bool foundSeriesWithName = searchDictionary.ContainsKey(((TextBox)sender).Text);
+            buttonAdd.Enabled = foundSeriesWithName;
+        }
+
+        private void backgroundWorkerLoadAutoComplete_DoWork(object sender, DoWorkEventArgs e)
+        {
+            searchDictionary = ((StreamProvider)e.Argument).GetSearchIndex();
+            e.Result = searchDictionary;
+        }
+
+        private void backgroundWorkerLoadAutoComplete_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            searchDictionary = (Dictionary<string, string>)e.Result;
+            textBoxAddBySearch.AutoCompleteMode = AutoCompleteMode.Suggest;
+            textBoxAddBySearch.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            textBoxAddBySearch.AutoCompleteCustomSource = searchDictionary.Keys.ToAutoCompleteStringCollection();
+            FormLoadingIndicator.CloseDialog();
         }
     }
 }

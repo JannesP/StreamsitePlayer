@@ -36,7 +36,7 @@ namespace StreamsitePlayer
                 defaults.Add(SKIP_BEGINNING, "0");
                 defaults.Add(LAST_SERIES, "");
                 defaults.Add(LAST_PROVIDER, "0");
-                defaults.Add(JW_KEY, "");
+                defaults.Add(JW_KEY, "brtm4UPVPkavg6wYzjRl3RufI+x0oquEsWZ8RA==");
                 defaults.Add(LAST_PLAYED_EPISODE, "-1");
                 defaults.Add(LAST_PLAYED_SEASON, "-1");
                 defaults.Add(LAST_PLAYED_SERIES, "");

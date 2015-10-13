@@ -46,6 +46,11 @@ namespace StreamsitePlayer.Streamsites.Providers
             return "test-provider.bz";
         }
 
+        public override Dictionary<string, string> GetSearchIndex()
+        {
+            throw new NotImplementedException();
+        }
+
         public override string[] GetValidStreamingSites()
         {
             return VALID_SITES;
@@ -54,6 +59,11 @@ namespace StreamsitePlayer.Streamsites.Providers
         public override string GetWebsiteLink()
         {
             return "https://www.google.com/";
+        }
+
+        public override bool IsSearchSupported()
+        {
+            return false;
         }
 
         public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)

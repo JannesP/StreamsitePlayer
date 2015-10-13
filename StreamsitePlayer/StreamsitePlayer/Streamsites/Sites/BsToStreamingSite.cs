@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,14 +22,14 @@ namespace StreamsitePlayer.Streamsites.Sites
         private void RequestStreamcloudJw(Control anchor, string url, IJwCallbackReceiver receiver, int requestId)
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
-            string streamcloudLink = "http://streamcloud.eu/" + Util.GetStringBetween(res, 0, "<a href=\"http://streamcloud.eu/", "\"");
+            string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
             anchor.Invoke((MethodInvoker)(() => StartStreamcloudJwRequest(streamcloudLink, receiver, requestId)));
         }
 
         private void RequestStreamcloudFile(Control anchor, string url, IFileCallbackReceiver receiver, int requestId)
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
-            string streamcloudLink = "http://streamcloud.eu/" + Util.GetStringBetween(res, 0, "<a href=\"http://streamcloud.eu/", "\"");
+            string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
             anchor.Invoke((MethodInvoker)(() => StartStreamcloudFileRequest(streamcloudLink, receiver, requestId)));
         }
 
