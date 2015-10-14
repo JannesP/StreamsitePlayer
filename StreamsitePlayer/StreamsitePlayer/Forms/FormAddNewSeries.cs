@@ -35,12 +35,9 @@ namespace StreamsitePlayer.Forms
         {
             var currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
             if (currentProvider == null) return;
-            this.Enabled = false;
-            string oldName = this.Text;
-            this.Text = "Working, please be patient ...";
+            FormLoadingIndicator.ShowDialog(this, "Loading series. This usually shouldn't take any longer then 30 seconds.");
             int res = currentProvider.LoadSeries(linkExtension, comboBoxStreamingProvider);
-            this.Text = oldName;
-            this.Enabled = true;
+            FormLoadingIndicator.CloseDialog();
             if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
             {
                 Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetSeries().LinkExtension);

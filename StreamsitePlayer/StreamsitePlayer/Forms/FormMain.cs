@@ -150,12 +150,9 @@ namespace StreamsitePlayer
             if (currentProvider != null)
             {
                 this.player = null;
-                this.Enabled = false;
-                string oldName = this.Text;
-                this.Text = "Working, please be patient ...";
+                FormLoadingIndicator.ShowDialog(this, "Loading series. This usually shouldn't take any longer then 30 seconds.");
                 int res = currentProvider.LoadSeries(linkExtension, comboBoxChangeSeries);
-                this.Text = oldName;
-                this.Enabled = true;
+                FormLoadingIndicator.CloseDialog();
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
                     if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
