@@ -60,7 +60,11 @@ namespace StreamsitePlayer
                 errorOccured = true;
                 MessageBox.Show("The LoggerInstance instance is null!\n Please report this error.\nThe program will nevertheless work like always.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+        }
+
+        public static void Log(Exception ex)
+        {
+            Log("EXCEPTION", ex.GetType().ToString() + ": " + ex.Message + "\n" + ex.StackTrace);
         }
 
 
