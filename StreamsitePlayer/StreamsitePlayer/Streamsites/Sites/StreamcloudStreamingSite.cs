@@ -14,6 +14,8 @@ namespace StreamsitePlayer.Streamsites.Sites
         public const int WAIT_TIME_UNKNOWN = 123456;
         public Uri trueLink;
 
+        private bool finalSiteLoaded;
+
         public StreamcloudStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
@@ -24,8 +26,9 @@ namespace StreamsitePlayer.Streamsites.Sites
         private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             Logger.Log("STREAMCLOUD_NAVIGATION", e.Url.ToString());
-            if (e.Url == trueLink)
+            if (e.Url == trueLink && continued)
             {
+                finalSiteLoaded = true;
                 Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
             }
         }
@@ -206,9 +209,9 @@ namespace StreamsitePlayer.Streamsites.Sites
             }
             else
             {
-                if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
+                if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete || !finalSiteLoaded)
                 {
-                    //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
+                    Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
                     timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
                 }
