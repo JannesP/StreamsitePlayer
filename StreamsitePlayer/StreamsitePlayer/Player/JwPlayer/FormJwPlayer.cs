@@ -265,6 +265,8 @@ namespace StreamsitePlayer
                 streamcloudWaitTime = site.GetEstimateWaitTime();
                 site.RequestJwData(this, ++validRequestId);
                 playNextId = validRequestId;
+                progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
+                progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
                 OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
             }
             else
@@ -305,6 +307,17 @@ namespace StreamsitePlayer
                     labelRequestingStatus.Visible = false;
                     progressBarLoadingNext.Visible = true;
                 }
+                if (remainingTime == max || remainingTime == 0)
+                {
+                    progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
+                    progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
+                }
+                else
+                {
+                    progressBarRequestingStatus.Style = ProgressBarStyle.Continuous;
+                    progressBarLoadingNext.Style = ProgressBarStyle.Continuous;
+                }
+                
                 progressBarRequestingStatus.Maximum = max;
                 progressBarRequestingStatus.Value = max - remainingTime;
                 progressBarLoadingNext.Maximum = max;
