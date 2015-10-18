@@ -33,6 +33,8 @@ namespace StreamsitePlayer.Forms
             parent.Enabled = false;
             textBoxJwKey.Text = Settings.GetString(Settings.JW_KEY);
             checkBoxAutoUpdate.Checked = Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES);
+            numericUpDownPort.Value = Settings.GetNumber(Settings.REMOTE_CONTROL_PORT);
+            checkBoxRemoteControl.Checked = Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED);
             this.Focus();
         }
 
@@ -50,6 +52,8 @@ namespace StreamsitePlayer.Forms
         {
             Settings.WriteValue(Settings.JW_KEY, textBoxJwKey.Text);
             Settings.WriteValue(Settings.AUTOCHECK_FOR_UPDATES, checkBoxAutoUpdate.Checked);
+            Settings.WriteValue(Settings.REMOTE_CONTROL_PORT, (int)numericUpDownPort.Value);
+            Settings.WriteValue(Settings.REMOTE_CONTROL_ACTIVATED, checkBoxRemoteControl.Checked);
             Settings.SaveFileSettings();
             base.Close();
         }

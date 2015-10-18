@@ -1,4 +1,6 @@
 ﻿using StreamsitePlayer.Forms;
+using StreamsitePlayer.Networking;
+using StreamsitePlayer.Networking.Events;
 using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Providers;
 using StreamsitePlayer.Utility;
@@ -26,6 +28,7 @@ namespace StreamsitePlayer
         private static Label labelCurrentlyLoadedS;
         private ISitePlayer player = null;
         private bool autoUpdate = false;
+        private TcpServer tcpServer;
 
         StreamProvider currentProvider = null;
 
@@ -43,6 +46,13 @@ namespace StreamsitePlayer
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
 
             LoadCachedSeries();
+            if (Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED))
+            {
+                tcpServer = new TcpServer(Settings.GetNumber(Settings.REMOTE_CONTROL_PORT));
+                tcpServer.NetworkControl += TcpServer_NetworkControl;
+                tcpServer.NetworkRequest += TcpServer_NetworkRequest;
+                tcpServer.Start();
+            }
 
             //Add event listeners after the loaded settings got set to avoid saving of the same settings
             checkBoxAutoplay.CheckedChanged += checkBoxAutoplay_CheckedChanged;
@@ -50,6 +60,43 @@ namespace StreamsitePlayer
             numericUpDownSkipStart.ValueChanged += numericUpDownSkipStart_ValueChanged;
             
             comboBoxChangeSeries.MouseWheel += ComboBoxChangeSeries_MouseWheel;
+        }
+
+        private void TcpServer_NetworkRequest(object source, NetworkRequestEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void TcpServer_NetworkControl(object source, NetworkControlEventArgs e)
+        {
+            switch (e.EventId)
+            {
+                case NetworkControlEvent.PlayPause:
+                    if (player != null)
+                    {
+                        if (player.IsPlaying)
+                        {
+                            player.Pause();
+                        }
+                        else
+                        {
+                            player.Play();
+                        }
+                    }
+                    break;
+                case NetworkControlEvent.Next:
+                    if (player != null) player.Next();
+                    break;
+                case NetworkControlEvent.Previous:
+                    if (player != null) player.Previous();
+                    break;
+                case NetworkControlEvent.PlayEpisode:
+                    throw new NotImplementedException();
+                    break;
+                case NetworkControlEvent.ClosePlayer:
+                    if (player != null) player.Close();
+                    break;
+            }
         }
 
         private void ComboBoxChangeSeries_SelectedIndexChanged(object sender, EventArgs e)
@@ -384,6 +431,10 @@ namespace StreamsitePlayer
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (tcpServer != null)
+            {
+                tcpServer.Stop();
+            }
             Settings.SaveFileSettings();
         }
 

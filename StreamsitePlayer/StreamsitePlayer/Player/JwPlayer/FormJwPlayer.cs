@@ -13,6 +13,8 @@ using StreamsitePlayer.Streamsites.Sites;
 using StreamsitePlayer.JwPlayer;
 using StreamsitePlayer.Player;
 using StreamsitePlayer.Utility;
+using StreamsitePlayer.Networking;
+using StreamsitePlayer.Networking.Events;
 
 namespace StreamsitePlayer
 {
@@ -57,6 +59,7 @@ namespace StreamsitePlayer
         ~FormJwPlayer()
         {
             WinAPIHelper.AllowIdle();
+            NetworkConnection = null;
         }
 
         private void FormJwPlayer_GotFocus(object sender, EventArgs e)
@@ -184,6 +187,64 @@ namespace StreamsitePlayer
             {
                 Settings.WriteValue(Settings.SKIP_BEGINNING, value);
                 Settings.SaveFileSettings();
+            }
+        }
+
+        private TcpServer networkConnection = null;
+        public TcpServer NetworkConnection
+        {
+            get
+            {
+                return networkConnection;
+            }
+
+            set
+            {
+                if (networkConnection != null)
+                {
+                    networkConnection.NetworkControl -= NetworkConnection_NetworkControl;
+                    networkConnection.NetworkRequest -= NetworkConnection_NetworkRequest;
+                }
+                networkConnection = value;
+                if (networkConnection != null)
+                {
+                    networkConnection.NetworkControl += NetworkConnection_NetworkControl;
+                    networkConnection.NetworkRequest += NetworkConnection_NetworkRequest;
+                }
+            }
+        }
+
+        private void NetworkConnection_NetworkRequest(object source, NetworkRequestEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetworkConnection_NetworkControl(object source, NetworkControlEventArgs e)
+        {
+            switch (e.EventId)
+            {
+                case NetworkControlEvent.PlayPause:
+                    if (IsPlaying)
+                    {
+                        Pause();
+                    }
+                    else
+                    {
+                        Play();
+                    }
+                    break;
+                case NetworkControlEvent.Next:
+                    Next();
+                    break;
+                case NetworkControlEvent.Previous:
+                    Previous();
+                    break;
+                case NetworkControlEvent.PlayEpisode:
+                    throw new NotImplementedException();
+                    break;
+                case NetworkControlEvent.ClosePlayer:
+                    this.Close();
+                    break;
             }
         }
 

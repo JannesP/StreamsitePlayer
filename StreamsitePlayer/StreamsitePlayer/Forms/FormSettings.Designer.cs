@@ -37,6 +37,10 @@
             this.checkBoxAutoUpdate = new System.Windows.Forms.CheckBox();
             this.buttonOpenAppFolder = new System.Windows.Forms.Button();
             this.buttonResetJwKey = new System.Windows.Forms.Button();
+            this.numericUpDownPort = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.checkBoxRemoteControl = new System.Windows.Forms.CheckBox();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -72,7 +76,7 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(498, 40);
+            this.buttonSave.Location = new System.Drawing.Point(498, 81);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 3;
@@ -83,7 +87,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(415, 40);
+            this.buttonCancel.Location = new System.Drawing.Point(415, 81);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
@@ -93,10 +97,11 @@
             // 
             // checkBoxAutoUpdate
             // 
+            this.checkBoxAutoUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxAutoUpdate.AutoSize = true;
             this.checkBoxAutoUpdate.Checked = true;
             this.checkBoxAutoUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxAutoUpdate.Location = new System.Drawing.Point(15, 38);
+            this.checkBoxAutoUpdate.Location = new System.Drawing.Point(15, 85);
             this.checkBoxAutoUpdate.Name = "checkBoxAutoUpdate";
             this.checkBoxAutoUpdate.Size = new System.Drawing.Size(166, 17);
             this.checkBoxAutoUpdate.TabIndex = 5;
@@ -105,7 +110,8 @@
             // 
             // buttonOpenAppFolder
             // 
-            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 40);
+            this.buttonOpenAppFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 81);
             this.buttonOpenAppFolder.Name = "buttonOpenAppFolder";
             this.buttonOpenAppFolder.Size = new System.Drawing.Size(117, 23);
             this.buttonOpenAppFolder.TabIndex = 6;
@@ -115,7 +121,7 @@
             // 
             // buttonResetJwKey
             // 
-            this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonResetJwKey.Location = new System.Drawing.Point(388, 9);
             this.buttonResetJwKey.Name = "buttonResetJwKey";
             this.buttonResetJwKey.Size = new System.Drawing.Size(70, 23);
@@ -124,11 +130,57 @@
             this.buttonResetJwKey.UseVisualStyleBackColor = true;
             this.buttonResetJwKey.Click += new System.EventHandler(this.buttonResetJwKey_Click);
             // 
+            // numericUpDownPort
+            // 
+            this.numericUpDownPort.Location = new System.Drawing.Point(121, 56);
+            this.numericUpDownPort.Maximum = new decimal(new int[] {
+            49151,
+            0,
+            0,
+            0});
+            this.numericUpDownPort.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.numericUpDownPort.Name = "numericUpDownPort";
+            this.numericUpDownPort.Size = new System.Drawing.Size(53, 20);
+            this.numericUpDownPort.TabIndex = 8;
+            this.numericUpDownPort.Value = new decimal(new int[] {
+            8003,
+            0,
+            0,
+            0});
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 58);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(103, 13);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Remote control port:";
+            // 
+            // checkBoxRemoteControl
+            // 
+            this.checkBoxRemoteControl.AutoSize = true;
+            this.checkBoxRemoteControl.Checked = true;
+            this.checkBoxRemoteControl.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxRemoteControl.Location = new System.Drawing.Point(15, 38);
+            this.checkBoxRemoteControl.Name = "checkBoxRemoteControl";
+            this.checkBoxRemoteControl.Size = new System.Drawing.Size(223, 17);
+            this.checkBoxRemoteControl.TabIndex = 10;
+            this.checkBoxRemoteControl.Text = "Activate remote control? (via android app)";
+            this.checkBoxRemoteControl.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(585, 75);
+            this.ClientSize = new System.Drawing.Size(585, 116);
+            this.Controls.Add(this.checkBoxRemoteControl);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.numericUpDownPort);
             this.Controls.Add(this.buttonResetJwKey);
             this.Controls.Add(this.buttonOpenAppFolder);
             this.Controls.Add(this.checkBoxAutoUpdate);
@@ -143,6 +195,7 @@
             this.Text = "SeriesPlayer Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSettings_FormClosing);
             this.Shown += new System.EventHandler(this.FormSettings_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -158,5 +211,8 @@
         private System.Windows.Forms.CheckBox checkBoxAutoUpdate;
         private System.Windows.Forms.Button buttonOpenAppFolder;
         private System.Windows.Forms.Button buttonResetJwKey;
+        private System.Windows.Forms.NumericUpDown numericUpDownPort;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBoxRemoteControl;
     }
 }

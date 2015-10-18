@@ -24,6 +24,8 @@ namespace StreamsitePlayer
         public const string VOLUME = "volume";
         public const string MUTED = "muted";
         public const string AUTOCHECK_FOR_UPDATES = "updateCheckAtStartup";
+        public const string REMOTE_CONTROL_PORT = "remoteControlPort";
+        public const string REMOTE_CONTROL_ACTIVATED = "remoteControlActive";
 
         private static class Defaults
         {
@@ -44,6 +46,8 @@ namespace StreamsitePlayer
                 defaults.Add(VOLUME, "100");
                 defaults.Add(MUTED, "false");
                 defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
+                defaults.Add(REMOTE_CONTROL_PORT, "8003");
+                defaults.Add(REMOTE_CONTROL_ACTIVATED, "true");
             }
 
             public static string GetValue(string key)

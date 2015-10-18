@@ -1,4 +1,5 @@
-﻿using StreamsitePlayer.Player;
+﻿using StreamsitePlayer.Networking;
+using StreamsitePlayer.Player;
 using StreamsitePlayer.Streamsites;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,11 @@ namespace StreamsitePlayer
         void Next();
         void Previous();
         
-
+        TcpServer NetworkConnection
+        {
+            get;
+            set;
+        }
 
         bool IsDisposed
         {

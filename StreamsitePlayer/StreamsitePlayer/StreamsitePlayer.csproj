@@ -86,6 +86,11 @@
     <Compile Include="Forms\StateProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Networking\BufferedSocket.cs" />
+    <Compile Include="Networking\Events\NetworkControlEvent.cs" />
+    <Compile Include="Networking\Events\NetworkEvent.cs" />
+    <Compile Include="Networking\Events\NetworkRequestEvent.cs" />
+    <Compile Include="Networking\TcpServer.cs" />
     <Compile Include="Player\JwPlayer\FormJwPlayer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,6 +197,7 @@
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
