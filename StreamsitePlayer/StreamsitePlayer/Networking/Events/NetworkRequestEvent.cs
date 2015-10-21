@@ -11,10 +11,10 @@ namespace StreamsitePlayer.Networking.Events
         Series = 0,
         Season = 1,
         Episode = 2,
-        PlayerStatus = 4
+        PlayerStatus = 3
     }
 
-    public delegate void OnNetworkRequestEventHandler(object source, NetworkRequestEventArgs e);
+    public delegate void OnNetworkRequestEventHandler(TcpServer source, NetworkRequestEventArgs e);
     public class NetworkRequestEventArgs : NetworkEvent
     {
         public NetworkRequestEvent EventId
@@ -27,7 +27,7 @@ namespace StreamsitePlayer.Networking.Events
             get;
             private set;
         }
-        public NetworkRequestEventArgs(BufferedSocket bufSoc, NetworkRequestEvent eventId, byte[] data) : base(bufSoc)
+        public NetworkRequestEventArgs(BufferedSocket bufSoc, NetworkRequestEvent eventId, byte messageId, byte[] data) : base(bufSoc, messageId)
         {
             EventId = eventId;
             Data = data;

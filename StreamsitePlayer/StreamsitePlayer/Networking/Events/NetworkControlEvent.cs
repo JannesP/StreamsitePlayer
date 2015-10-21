@@ -15,7 +15,7 @@ namespace StreamsitePlayer.Networking.Events
         PlayEpisode = 4
     }
 
-    public delegate void OnNetworkControlEventHandler(object source, NetworkControlEventArgs e);
+    public delegate void OnNetworkControlEventHandler(TcpServer source, NetworkControlEventArgs e);
     public class NetworkControlEventArgs : NetworkEvent
     {
         public NetworkControlEvent EventId
@@ -28,7 +28,7 @@ namespace StreamsitePlayer.Networking.Events
             get;
             private set;
         }
-        public NetworkControlEventArgs(BufferedSocket bufSoc, NetworkControlEvent eventId, byte[] data) : base(bufSoc)
+        public NetworkControlEventArgs(BufferedSocket bufSoc, NetworkControlEvent eventId, byte messageId, byte[] data) : base(bufSoc, messageId)
         {
             EventId = eventId;
             Data = data;

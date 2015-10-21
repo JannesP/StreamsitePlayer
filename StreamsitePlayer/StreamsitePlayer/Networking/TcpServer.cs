@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StreamsitePlayer.Networking
 {
@@ -19,7 +20,10 @@ namespace StreamsitePlayer.Networking
         {
             if (NetworkControl != null)
             {
-                NetworkControl(this, e);
+                if (FormMain.threadTrick.InvokeRequired)
+                {
+                    FormMain.threadTrick.Invoke((MethodInvoker)(() => NetworkControl(this, e)));
+                }
             }
         }
 
@@ -27,7 +31,10 @@ namespace StreamsitePlayer.Networking
         {
             if (NetworkRequest != null)
             {
-                NetworkRequest(this, e);
+                if (FormMain.threadTrick.InvokeRequired)
+                {
+                    FormMain.threadTrick.Invoke((MethodInvoker)(() => NetworkRequest(this, e)));
+                }
             }
         }
 
@@ -89,7 +96,7 @@ namespace StreamsitePlayer.Networking
             }
         }
 
-        public void ServerAcceptTcpClient(IAsyncResult ar)
+        private void ServerAcceptTcpClient(IAsyncResult ar)
         {
             if (!listen) return;
             // Get the listener that handles the client request.
@@ -124,21 +131,23 @@ namespace StreamsitePlayer.Networking
             {
                 byte[] buffer = bufSoc.ReceiveBuffer;
                 NetworkEventType type = (NetworkEventType)buffer[0];
-                int id = buffer[1];
+                int specType = buffer[1];
+                byte messageId = buffer[2];
                 byte[] data = null;
                 if (buffer.Length > 2)
                 {
-                    data = new byte[buffer.Length - 2];
-                    Array.Copy(buffer, 2, data, 0, data.Length);
+                    data = new byte[bytesReceived - 3];
+                    Array.Copy(buffer, 3, data, 0, data.Length);
                 }
+                bufSoc.Socket.BeginReceive(bufSoc.ReceiveBuffer, 0, bufSoc.ReceiveBuffer.Length, SocketFlags.None, ClientReceived, bufSoc);
                 switch (type)
                 {
                     case NetworkEventType.Control:
-                        var controlEvent = new NetworkControlEventArgs(bufSoc, (NetworkControlEvent)id, data);
+                        var controlEvent = new NetworkControlEventArgs(bufSoc, (NetworkControlEvent)specType, messageId, data);
                         OnNetworkControl(controlEvent);
                         break;
                     case NetworkEventType.Request:
-                        var requestEvent = new NetworkRequestEventArgs(bufSoc, (NetworkRequestEvent)id, data);
+                        var requestEvent = new NetworkRequestEventArgs(bufSoc, (NetworkRequestEvent)specType, messageId, data);
                         OnNetworkRequest(requestEvent);
                         break;
                 }
@@ -155,15 +164,20 @@ namespace StreamsitePlayer.Networking
             }
         }
 
+        public void SendToClient(BufferedSocket client, byte[] data)
+        {
+            client.SendBuffer = data;
+            client.Socket.BeginSend(client.SendBuffer, 0, client.SendBuffer.Length, SocketFlags.None, ClientSendCallback, client);
+        }
+
         public void BroadcastMessage(string message)
         {
             // Send the message to all clients
-            byte[] bytes = CHAR_ENCODING.GetBytes(message);
-            if (bytes.Length > MSG_MAX_LENGTH) throw new Exception("Can't send more data then we are allowed to!");
+            byte[] data = CHAR_ENCODING.GetBytes(message);
+            if (data.Length > MSG_MAX_LENGTH) throw new Exception("Can't send more data then we are allowed to!");
             foreach (BufferedSocket bufSoc in clients)
             {
-                bufSoc.SendBuffer = bytes;
-                bufSoc.Socket.BeginSend(bufSoc.SendBuffer, 0, bufSoc.SendBuffer.Length, SocketFlags.Broadcast, ClientSendCallback, bufSoc);
+                SendToClient(bufSoc, data);
             }
         }
 

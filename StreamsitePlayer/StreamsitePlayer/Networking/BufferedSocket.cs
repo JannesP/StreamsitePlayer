@@ -40,16 +40,22 @@ namespace StreamsitePlayer.Networking
         private void Shutdown()
         {
             IsShutdown = true;
-            socket.Shutdown(SocketShutdown.Both);
+            if (socket != null)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+            }
         }
 
         public void Close()
         {
-            if (!IsShutdown)
+            if (socket != null)
             {
-                Shutdown();
+                if (!IsShutdown)
+                {
+                    Shutdown();
+                }
+                socket.Close();
             }
-            socket.Close();
         }
     }
 }

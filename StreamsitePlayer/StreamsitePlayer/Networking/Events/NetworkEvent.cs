@@ -9,7 +9,9 @@ namespace StreamsitePlayer.Networking.Events
     public enum NetworkEventType : byte
     {
         Request = 0,
-        Control = 1
+        Control = 1,
+        Answer = 2,
+        Message = 3
     }
 
     public abstract class NetworkEvent : EventArgs
@@ -19,8 +21,14 @@ namespace StreamsitePlayer.Networking.Events
             get;
             private set;
         }
-        public NetworkEvent(BufferedSocket socket)
+        public byte MessageId
         {
+            get;
+            private set;
+        }
+        public NetworkEvent(BufferedSocket socket, byte messageId)
+        {
+            MessageId = messageId;
             Socket = socket;
         }
     }

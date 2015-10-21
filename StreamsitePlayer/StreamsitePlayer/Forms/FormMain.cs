@@ -17,6 +17,7 @@ namespace StreamsitePlayer
     public partial class FormMain : Form
     {
         public static List<string> streamProviders;
+        public static Control threadTrick;  //very bad workaround for accessing the right thread, but i'm too lazy now and this works for now 
 
         private Control seriesAnchorX;
         private Control seriesAnchorY;
@@ -36,6 +37,7 @@ namespace StreamsitePlayer
         {
             Logger.Log("START", "Creating new FormMain instance.");
             InitializeComponent();
+            threadTrick = comboBoxChangeSeries;
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
         }
 
@@ -62,12 +64,22 @@ namespace StreamsitePlayer
             comboBoxChangeSeries.MouseWheel += ComboBoxChangeSeries_MouseWheel;
         }
 
-        private void TcpServer_NetworkRequest(object source, NetworkRequestEventArgs e)
+        private void TcpServer_NetworkRequest(TcpServer source, NetworkRequestEventArgs e)
         {
-            throw new NotImplementedException();
+            switch (e.EventId)
+            {
+                case NetworkRequestEvent.PlayerStatus:
+                    byte[] data = new byte[4];
+                    data[0] = 2;    //answer
+                    data[1] = 3;    //player_status
+                    data[2] = e.MessageId;    //send id back
+                    data[3] = (player == null || !player.IsPlaying) ? (byte)0 : (byte)1;
+                    source.SendToClient(e.Socket, data);
+                    break;
+            }
         }
 
-        private void TcpServer_NetworkControl(object source, NetworkControlEventArgs e)
+        private void TcpServer_NetworkControl(TcpServer source, NetworkControlEventArgs e)
         {
             switch (e.EventId)
             {
