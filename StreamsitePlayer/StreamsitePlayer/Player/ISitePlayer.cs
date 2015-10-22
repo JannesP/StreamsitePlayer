@@ -20,12 +20,6 @@ namespace StreamsitePlayer
         void Close();
         void Next();
         void Previous();
-        
-        TcpServer NetworkConnection
-        {
-            get;
-            set;
-        }
 
         bool IsDisposed
         {
@@ -59,6 +53,27 @@ namespace StreamsitePlayer
         {
             get;
             set;
+        }
+
+        byte BufferPercent
+        {
+            get;
+        }
+
+        long Position
+        {
+            get;
+            set;
+        }
+
+        long Duration
+        {
+            get;
+        }
+
+        bool IsLoaded
+        {
+            get;
         }
     }
 }

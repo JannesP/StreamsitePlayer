@@ -63,13 +63,12 @@ namespace StreamsitePlayer
 
         public static string GetAppFolder()
         {
-            return System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         }
 
         public static string GetRalativePath(string path)
         {
             return Path.Combine(Environment.CurrentDirectory, path);
         }
-
     }
 }

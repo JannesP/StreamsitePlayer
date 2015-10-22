@@ -103,18 +103,33 @@ namespace StreamsitePlayer.JwPlayer
             }
         }
 
-        public long Length
+        public long Duration
         {
             get
             {
                 
                 try
                 {
-                    return (long)(JSUtil.ExecuteFunctionForDouble("GetLength") * 1000d);
+                    return (long)(JSUtil.ExecuteFunctionForDouble("GetDuration") * 1000d);
                 }
                 catch
                 {
                     return 0L;
+                }
+            }
+        }
+
+        public byte BufferPercent
+        {
+            get
+            {
+                try
+                {
+                    return (byte)(JSUtil.ExecuteFunctionForInt("GetBuffer"));
+                }
+                catch
+                {
+                    return 0;
                 }
             }
         }

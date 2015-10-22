@@ -15,6 +15,7 @@ using StreamsitePlayer.Player;
 using StreamsitePlayer.Utility;
 using StreamsitePlayer.Networking;
 using StreamsitePlayer.Networking.Events;
+using StreamsitePlayer.Networking.Messages;
 
 namespace StreamsitePlayer
 {
@@ -59,7 +60,6 @@ namespace StreamsitePlayer
         ~FormJwPlayer()
         {
             WinAPIHelper.AllowIdle();
-            NetworkConnection = null;
         }
 
         private void FormJwPlayer_GotFocus(object sender, EventArgs e)
@@ -190,61 +190,40 @@ namespace StreamsitePlayer
             }
         }
 
-        private TcpServer networkConnection = null;
-        public TcpServer NetworkConnection
+        public byte BufferPercent
         {
             get
             {
-                return networkConnection;
+                return jwPlayer.BufferPercent;
+            }
+        }
+
+        public long Position
+        {
+            get
+            {
+                return jwPlayer.Position;
             }
 
             set
             {
-                if (networkConnection != null)
-                {
-                    networkConnection.NetworkControl -= NetworkConnection_NetworkControl;
-                    networkConnection.NetworkRequest -= NetworkConnection_NetworkRequest;
-                }
-                networkConnection = value;
-                if (networkConnection != null)
-                {
-                    networkConnection.NetworkControl += NetworkConnection_NetworkControl;
-                    networkConnection.NetworkRequest += NetworkConnection_NetworkRequest;
-                }
+                jwPlayer.Position = value;
             }
         }
 
-        private void NetworkConnection_NetworkRequest(object source, NetworkRequestEventArgs e)
+        public long Duration
         {
-            throw new NotImplementedException();
+            get
+            {
+                return jwPlayer.Duration;
+            }
         }
 
-        private void NetworkConnection_NetworkControl(object source, NetworkControlEventArgs e)
+        public bool IsLoaded
         {
-            switch (e.EventId)
+            get
             {
-                case NetworkControlEvent.PlayPause:
-                    if (IsPlaying)
-                    {
-                        Pause();
-                    }
-                    else
-                    {
-                        Play();
-                    }
-                    break;
-                case NetworkControlEvent.Next:
-                    Next();
-                    break;
-                case NetworkControlEvent.Previous:
-                    Previous();
-                    break;
-                case NetworkControlEvent.PlayEpisode:
-                    throw new NotImplementedException();
-                    break;
-                case NetworkControlEvent.ClosePlayer:
-                    this.Close();
-                    break;
+                return jwPlayer != null && !jwPlayer.IsDisposed && jwPlayer.ReadyState == WebBrowserReadyState.Complete;
             }
         }
 
@@ -271,6 +250,10 @@ namespace StreamsitePlayer
                     currentSeason = streamProvider.GetSeriesCount();
                 }
                 currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
+            }
+            else
+            {
+                currentEpisode--;
             }
             Play(currentSeason, currentEpisode);
         }
@@ -538,7 +521,7 @@ namespace StreamsitePlayer
 
         public void OnReady()
         {
-            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + jwPlayer.Position + "\n\tLength: " + jwPlayer.Length);
+            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + jwPlayer.Position + "\n\tLength: " + jwPlayer.Duration);
             CheckForLateStart();
             jwPlayer.Volume = Settings.GetNumber(Settings.VOLUME);
             jwPlayer.Muted = Settings.GetBool(Settings.MUTED);
@@ -551,7 +534,7 @@ namespace StreamsitePlayer
             int skipSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING);
             if (skipSeconds != 0)
             {
-                if (jwPlayer.Length > (skipSeconds * 1000))
+                if (jwPlayer.Duration > (skipSeconds * 1000))
                 {
                     jwPlayer.Position = skipSeconds * 1000;
                 }

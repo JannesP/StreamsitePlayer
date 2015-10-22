@@ -1,6 +1,7 @@
 ﻿using StreamsitePlayer.Forms;
 using StreamsitePlayer.Networking;
 using StreamsitePlayer.Networking.Events;
+using StreamsitePlayer.Networking.Messages;
 using StreamsitePlayer.Streamsites;
 using StreamsitePlayer.Streamsites.Providers;
 using StreamsitePlayer.Utility;
@@ -69,12 +70,17 @@ namespace StreamsitePlayer
             switch (e.EventId)
             {
                 case NetworkRequestEvent.PlayerStatus:
-                    byte[] data = new byte[4];
-                    data[0] = 2;    //answer
-                    data[1] = 3;    //player_status
-                    data[2] = e.MessageId;    //send id back
-                    data[3] = (player == null || !player.IsPlaying) ? (byte)0 : (byte)1;
-                    source.SendToClient(e.Socket, data);
+                    PlayerStatusMessage psm;
+                    if (player != null && player.IsLoaded)
+                    {
+                        //just cut off the position and length because they SHOULD never exceed the maximum int
+                        psm = new PlayerStatusMessage(e.MessageId, player.IsPlaying, (int)player.Position, (int)player.Duration, player.BufferPercent);
+                    }
+                    else
+                    {
+                        psm = new PlayerStatusMessage(e.MessageId, false, 0, 0, 0);
+                    }
+                    source.SendToClient(e.Socket, psm);
                     break;
             }
         }
@@ -84,7 +90,7 @@ namespace StreamsitePlayer
             switch (e.EventId)
             {
                 case NetworkControlEvent.PlayPause:
-                    if (player != null)
+                    if (player != null && player.IsLoaded)
                     {
                         if (player.IsPlaying)
                         {
@@ -107,6 +113,13 @@ namespace StreamsitePlayer
                     break;
                 case NetworkControlEvent.ClosePlayer:
                     if (player != null) player.Close();
+                    break;
+                case NetworkControlEvent.SeekTo:
+                    if (player != null)
+                    {
+                        int pos = e.Data.ReadInt(0);
+                        player.Position = pos;
+                    }
                     break;
             }
         }

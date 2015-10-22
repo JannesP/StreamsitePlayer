@@ -73,12 +73,12 @@ namespace StreamsitePlayer.Utility.Extensions
 
         public static int ReadInt(this byte[] array, int pos)
         {
-            if (array.Length > (pos + 4))
+            if (array.Length >= (pos + 4))
             {
                 int val = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    val |= (array[pos + i] << i * 8);
+                    val |= (((int)array[pos + i]) << i * 8);
                 }
                 return val;
             }

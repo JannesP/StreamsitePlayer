@@ -26,8 +26,8 @@ namespace StreamsitePlayer.JwPlayer
                 throw new Exception("JSUtil not initialized. Call JSUtil.init(...) before executing!");
             if (JSUtil.browser == null)
                 throw new ArgumentNullException("browser", "Browser reference is null!");
-            if (JSUtil.browser.Document == null)
-                throw new ArgumentException("browser", "Browser is not ready. Browser.Document is null!");
+            if (!JSUtil.browser.IsDisposed && JSUtil.browser.Document == null)
+                throw new ArgumentException("browser", "Browser is not ready. Browser.Document is null or browser got disposed!");
             return (JSUtil.isInitialized && JSUtil.browser != null && JSUtil.browser.Document != null);
         }
 
@@ -102,7 +102,7 @@ namespace StreamsitePlayer.JwPlayer
 
         private static double ResolveDouble(object sysComObject)
         {
-            return (double)sysComObject;
+            return Convert.ToDouble(sysComObject);
         }
 
         private static bool ResolveBool(object sysComObject)

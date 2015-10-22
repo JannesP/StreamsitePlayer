@@ -1,4 +1,5 @@
 ﻿using StreamsitePlayer.Networking.Events;
+using StreamsitePlayer.Networking.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,7 +165,12 @@ namespace StreamsitePlayer.Networking
             }
         }
 
-        public void SendToClient(BufferedSocket client, byte[] data)
+        public void SendToClient(BufferedSocket client, NetworkMessage msg)
+        {
+            SendToClient(client, msg.GetFullMessageBytes());
+        }
+
+        protected void SendToClient(BufferedSocket client, byte[] data)
         {
             client.SendBuffer = data;
             client.Socket.BeginSend(client.SendBuffer, 0, client.SendBuffer.Length, SocketFlags.None, ClientSendCallback, client);

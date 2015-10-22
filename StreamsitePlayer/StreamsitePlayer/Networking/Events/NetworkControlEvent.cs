@@ -12,7 +12,8 @@ namespace StreamsitePlayer.Networking.Events
         ClosePlayer = 1,
         Next = 2,
         Previous = 3,
-        PlayEpisode = 4
+        PlayEpisode = 4,
+        SeekTo = 5
     }
 
     public delegate void OnNetworkControlEventHandler(TcpServer source, NetworkControlEventArgs e);
