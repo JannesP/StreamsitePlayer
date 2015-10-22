@@ -60,5 +60,32 @@ namespace StreamsitePlayer.Utility.Extensions
                 p.ScrollControlIntoView(c);
             }
         }
+
+        public static byte[] ToByteArray(this int val)
+        {
+            byte[] bytes = new byte[4];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = (byte)((val >> i * 8) & 0xFF);
+            }
+            return bytes;
+        }
+
+        public static int ReadInt(this byte[] array, int pos)
+        {
+            if (array.Length > (pos + 4))
+            {
+                int val = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    val |= (array[pos + i] << i * 8);
+                }
+                return val;
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 }
