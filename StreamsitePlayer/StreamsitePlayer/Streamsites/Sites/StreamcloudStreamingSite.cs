@@ -205,7 +205,12 @@ namespace StreamsitePlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                timerReference = new System.Threading.Timer((state) => {
+                    if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                    {
+                        GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
+                    }
+                }, null, 500, -1);
             }
             else
             {
