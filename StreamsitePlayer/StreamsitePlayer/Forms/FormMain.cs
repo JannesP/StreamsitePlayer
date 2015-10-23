@@ -109,7 +109,10 @@ namespace StreamsitePlayer
                     if (player != null) player.Previous();
                     break;
                 case NetworkControlEvent.PlayEpisode:
-                    throw new NotImplementedException();
+                    if (player != null)
+                    {
+                        player.Play(selectedSeason, e.Data.ReadInt(0));
+                    }
                     break;
                 case NetworkControlEvent.ClosePlayer:
                     if (player != null) player.Close();
@@ -120,6 +123,14 @@ namespace StreamsitePlayer
                         int pos = e.Data.ReadInt(0);
                         player.Position = pos;
                     }
+                    break;
+                case NetworkControlEvent.SkipStart:
+                    int newSkipStartValue = e.Data.ReadInt(0);
+                    numericUpDownSkipStart.Value = newSkipStartValue;
+                    break;
+                case NetworkControlEvent.SkipEnd:
+                    int newSkipEndValue = e.Data.ReadInt(0);
+                    numericUpDownSkipEnd.Value = newSkipEndValue;
                     break;
             }
         }
