@@ -97,13 +97,17 @@ namespace StreamsitePlayer.Streamsites.Providers
                 {
                     index = html.IndexOf("<strong>", index);
                 }
+                else
+                {
+                    index = html.IndexOf("<span lang=", index);
+                }
                 name += " (" + html.GetSubstringBetween(index, "\">", "</span>") + ")";
                 e = new Episode(seasonNumber, i + 1, name);
 
                 index = html.IndexOf(STREAMCLOUD_SEARCH, index);
                 if (index != -1)    //check if a streamcloud link is found
                 {
-                    if ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1]))  //check if the streamcloud link is before the next episode.
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
                         string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(index, STREAMCLOUD_SEARCH, "\"");
                         e.AddLink(BsToStreamingSite.NAME, streamcloudSite);
