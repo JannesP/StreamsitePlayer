@@ -316,6 +316,7 @@
             // 
             // buttonBrowseDownloaded
             // 
+            this.buttonBrowseDownloaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBrowseDownloaded.Location = new System.Drawing.Point(612, 130);
             this.buttonBrowseDownloaded.Name = "buttonBrowseDownloaded";
             this.buttonBrowseDownloaded.Size = new System.Drawing.Size(115, 35);
