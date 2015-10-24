@@ -252,7 +252,7 @@ namespace StreamsitePlayer
 
             if (episodeLink != "")
             {
-                requestBrowser = new WebBrowser();
+                requestBrowser = Util.CreatePopuplessBrowser();
 #if DEBUG
                 requestBrowser.Visible = true;
                 requestBrowser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
@@ -260,7 +260,6 @@ namespace StreamsitePlayer
                 requestBrowser.Location = new Point(0, 0);
                 base.Controls.Add(requestBrowser);
 #endif
-                requestBrowser.ScriptErrorsSuppressed = true;
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
                 streamcloudWaitTime = site.GetEstimateWaitTime();
                 site.RequestJwData(this, ++validRequestId);

@@ -7,6 +7,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StreamsitePlayer
 {
@@ -71,5 +72,17 @@ namespace StreamsitePlayer
             return Path.Combine(Environment.CurrentDirectory, path);
         }
 
+        public static WebBrowser CreatePopuplessBrowser()
+        {
+            WebBrowser wb = new WebBrowser();
+            wb.ScriptErrorsSuppressed = true;
+            wb.NewWindow += Wb_NewWindow;
+            return wb;
+        }
+
+        private static void Wb_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+        }
     }
 }
