@@ -23,7 +23,6 @@ namespace StreamsitePlayer
         private int selectedSeason = 1;
         private List<Button> seasonButtons;
         private List<Button> episodeButtons;
-        private static Label labelCurrentlyLoadedS;
         private ISitePlayer player = null;
         private bool autoUpdate = false;
 
@@ -164,7 +163,7 @@ namespace StreamsitePlayer
                     HighlightCurrentEpisode(true);
                 }
             }
-            panelEpisodeButtons.Focus();
+            flowPanelEpisodeButtons.Focus();
         }
 
         private void RefreshSeries(Series series)
@@ -187,21 +186,13 @@ namespace StreamsitePlayer
             currentProvider = null;
             ClearEpisodePanel();
         }
-
-        private static int currentlyLoaded = 0;
+        
         public static void SeriesOpenCallback(Episode episode)
         {
             if (episode == null)
             {
-                currentlyLoaded = 0;
-                labelCurrentlyLoadedS.Visible = false;
                 return;
             }
-            if (currentlyLoaded == 0)
-            {
-                labelCurrentlyLoadedS.Visible = true;
-            }
-            labelCurrentlyLoadedS.Text = "Loaded " + currentlyLoaded++ + " episodes. Last loaded: S" + episode.Season + "E" + episode.Number + " " + episode.Name;
         }
 
         private void ClearEpisodePanel()
@@ -210,7 +201,7 @@ namespace StreamsitePlayer
             {
                 foreach (Control c in seasonButtons)
                 {
-                    panelEpisodeButtons.Controls.Remove(c);
+                    flowPanelSeriesButtons.Controls.Remove(c);
                     c.Dispose();
                 }
             }
@@ -218,7 +209,7 @@ namespace StreamsitePlayer
             {
                 foreach (Control c in episodeButtons)
                 {
-                    panelEpisodeButtons.Controls.Remove(c);
+                    flowPanelEpisodeButtons.Controls.Remove(c);
                     c.Dispose();
                 }
             }
@@ -230,10 +221,10 @@ namespace StreamsitePlayer
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
             ClearEpisodePanel();
-            seasonButtons = BuildButtonsForSeries(panelEpisodeButtons, tooltip); //add new buttons to the window
-            episodeButtons = BuildButtonsForEpisodes(panelEpisodeButtons, selectedSeason, tooltip);
-            panelEpisodeButtons.Controls.AddRange(seasonButtons.ToArray());
-            panelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
+            seasonButtons = BuildButtonsForSeries(flowPanelSeriesButtons, tooltip); //add new buttons to the window
+            episodeButtons = BuildButtonsForEpisodes(flowPanelEpisodeButtons, selectedSeason, tooltip);
+            flowPanelSeriesButtons.Controls.AddRange(seasonButtons.ToArray());
+            flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
             seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
 
             HighlightCurrentEpisode(false);
@@ -245,17 +236,13 @@ namespace StreamsitePlayer
 
         private List<Button> BuildButtonsForSeries(Panel parent, ToolTip tooltip)
         {
-            int startX = 0;
-            int startY = 0;
-
             List<Button> buttons = new List<Button>();
 
             int seriesCount = currentProvider.GetSeriesCount();
-            int fittingInOneRow = (this.Size.Width - PADDING) / (BUTTON_SIZE + PADDING);
             for (int i = 0; i < seriesCount; i++)
             {
                 Button b = CreateNewButton(parent, "S" + (i + 1).ToString(), "Series " + (i + 1), tooltip);
-                b.Location = new Point(startX + (PADDING + BUTTON_SIZE) * (i % fittingInOneRow), startY + (i / fittingInOneRow) * (PADDING + BUTTON_SIZE));
+                b.Height /= 2;
                 b.Click += this.OnSeriesButtonClicked;
                 buttons.Add(b);
             }
@@ -266,17 +253,13 @@ namespace StreamsitePlayer
         {
             List<Button> buttons = new List<Button>();
             if (seasonButtons.Count == 0) return buttons;
-            int startX = seasonButtons[0].Bounds.X;
-            int startY = seasonButtons[seasonButtons.Count - 1].Bounds.Y + seasonButtons[seasonButtons.Count - 1].Bounds.Height + PADDING;
             
             List<Episode> episodes = currentProvider.GetEpisodeList(series);
 
             int episodeCount = episodes.Count;
-            int fittingInOneRow = (this.Size.Width - PADDING) / (BUTTON_SIZE + PADDING);
             for (int i = 0; i < episodeCount; i++)
             {
                 Button b = CreateNewButton(parent, (i + 1).ToString(), episodes[i].Name, tooltip);
-                b.Location = new Point(startX + (PADDING + BUTTON_SIZE) * (i % fittingInOneRow), startY + (i / fittingInOneRow) * (PADDING + BUTTON_SIZE));
                 b.GotFocus += Button_GotFocus;
                 b.Click += this.OnEpisodeButtonClicked;
                 buttons.Add(b);
@@ -286,7 +269,7 @@ namespace StreamsitePlayer
 
         private void Button_GotFocus(object sender, EventArgs e)
         {
-            panelEpisodeButtons.Focus();
+            flowPanelEpisodeButtons.Focus();
         }
 
         private Button CreateNewButton(Panel parent, string text, string tooltipText, ToolTip tip)
@@ -337,8 +320,8 @@ namespace StreamsitePlayer
                 int buttonEpisode = int.Parse(b.Text);
                 if (buttonEpisode == episode)
                 {
-                    panelEpisodeButtons.AutoScroll = true;
-                    panelEpisodeButtons.ScrollToYPosition(b.Bounds.Bottom + BUTTON_SIZE + PADDING * 2);
+                    flowPanelEpisodeButtons.AutoScroll = true;
+                    flowPanelEpisodeButtons.ScrollToYPosition(b.Bounds.Bottom + BUTTON_SIZE + PADDING * 2);
                     b.ForeColor = Color.FromArgb(255, 0, 255);
                     if (player == null)
                     {
@@ -400,7 +383,7 @@ namespace StreamsitePlayer
 
         private void PanelFocus_Click(object sender, EventArgs e)
         {
-            panelEpisodeButtons.Focus();
+            flowPanelEpisodeButtons.Focus();
         }
 
         private void githubToolStripMenuItem_Click(object sender, EventArgs e)
@@ -449,10 +432,9 @@ namespace StreamsitePlayer
                 VersionChecker.CheckForUpdateAsync();
             }
 #endif
-            labelCurrentlyLoadedS = labelCurrentlyLoaded;
             seriesAnchorX = comboBoxChangeSeries;
             seriesAnchorY = numericUpDownSkipEnd;
-            panelEpisodeButtons.Focus();
+            flowPanelEpisodeButtons.Focus();
             LoadSettingValues();
         }
 
