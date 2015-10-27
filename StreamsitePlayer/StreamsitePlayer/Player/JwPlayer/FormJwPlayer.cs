@@ -252,6 +252,12 @@ namespace StreamsitePlayer
 
             if (episodeLink != "")
             {
+                if (requestBrowser != null)
+                {
+                    base.Controls.Remove(requestBrowser);
+                    requestBrowser.Dispose();
+                    requestBrowser = null;
+                }
                 requestBrowser = Util.CreatePopuplessBrowser();
 #if DEBUG
                 requestBrowser.Visible = true;
