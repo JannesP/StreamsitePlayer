@@ -83,6 +83,7 @@
     <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\IUserInformer.cs" />
     <Compile Include="Forms\StateProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>

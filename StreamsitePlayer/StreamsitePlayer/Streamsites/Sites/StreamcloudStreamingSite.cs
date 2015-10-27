@@ -59,15 +59,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             return x;
         }
 
-        public override int GetRemainingPlayTime()
-        {
-            HtmlElement durationLabel = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar_duration");
-            HtmlElement playedLabel = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar_elapsed");
-            int duration = GetSecondsFromString(durationLabel.InnerHtml);
-            int played = GetSecondsFromString(playedLabel.InnerHtml);
-            return duration - played;
-        }
-
         private long startedWaiting = 0; 
         public override int GetRemainingWaitTime()
         {
@@ -98,48 +89,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             return NAME;
         }
 
-        public override bool IsReadyToPlay()
-        {
-            HtmlElement playButton = GetTargetBrowser().Document.GetElementById("mediaplayer_display_button");
-            if (playButton == null)
-            {
-                return false;
-            }
-            if (playButton.Style.Contains("opacity: 1"))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public override bool Pause()
-        {
-            HtmlElement mediaController = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar");
-            if (mediaController == null)
-            {
-                return false;
-            }
-            HtmlElementCollection mediaControls = mediaController.GetElementsByTagName("button");
-            if (mediaControls.Count > 0)
-            {
-                mediaControls[0].InvokeMember("Click");
-                return true;
-            }
-            return false;
-
-        }
-
-        public override bool Play()
-        {
-            HtmlElement playButton = GetTargetBrowser().Document.GetElementById("mediaplayer_display_button");
-            if (playButton != null)
-            {
-                playButton.InvokeMember("Click");
-                return true;
-            }
-            return false;
-        }
-
         private bool ContinueWhenReady()
         {
             if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete) return false;
@@ -160,32 +109,6 @@ namespace StreamsitePlayer.Streamsites.Sites
         }
 
         private bool continued = false;
-        public override void PlayWhenReady()
-        {
-            if (!continued)
-            {
-                continued = ContinueWhenReady();
-                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
-            }
-            else
-            {
-                if (IsReadyToPlay())
-                {
-                    Play();
-                }
-                else
-                {
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
-                }
-            }
-            
-        }
-
-        public override void Maximize()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int GetEstimateWaitTime()
         {
@@ -204,13 +127,8 @@ namespace StreamsitePlayer.Streamsites.Sites
             {
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-                //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
-                timerReference = new System.Threading.Timer((state) => {
-                    if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
-                    {
-                        GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
-                    }
-                }, null, 500, -1);
+
+                RequestJwDataLoop(receiver, requestId);
             }
             else
             {
@@ -218,7 +136,8 @@ namespace StreamsitePlayer.Streamsites.Sites
                 {
                     Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+
+                    RequestJwDataLoop(receiver, requestId);
                 }
                 else
                 {
@@ -226,6 +145,7 @@ namespace StreamsitePlayer.Streamsites.Sites
                     if (htmlText == "")
                     {
                         Logger.Log("SITE_REQUEST_STREAMCLOUD", "htmlText == \"\", failed to get file.");
+                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
                         receiver.ReceiveJwLinks("", requestId);
                         return;
                     }
@@ -233,6 +153,7 @@ namespace StreamsitePlayer.Streamsites.Sites
                     string image = htmlText.GetSubstringBetween(0, "image: \"", "\"");
                     if (file == "" || image == "")
                     {
+                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
                         receiver.ReceiveJwLinks("", requestId);
                         return;
                     }
@@ -243,9 +164,37 @@ namespace StreamsitePlayer.Streamsites.Sites
             }
         }
 
+        private void RequestJwDataLoop(IJwCallbackReceiver receiver, int requestId)
+        {
+            timerReference = new System.Threading.Timer((state) =>
+            {
+                if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
+
+                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
+                {
+                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
+            }
+
+            }, null, 500, -1);
+        }
+
         public override bool IsFileDownloadSupported()
         {
             return true;
+        }
+
+        private void RequestFileLoop(IFileCallbackReceiver receiver, int requestId)
+        {
+            timerReference = new System.Threading.Timer((state) =>
+            {
+                if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
+
+                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
+                {
+                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
+                }
+
+            }, null, 500, -1);
         }
 
         public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
@@ -255,19 +204,26 @@ namespace StreamsitePlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 Console.WriteLine("Continued: " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                {
+                    RequestFileLoop(receiver, requestId);
+                }
             }
             else
             {
                 if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
                 {
                     receiver.FileRequestStatusUpdate(0, 10000, requestId);
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                    RequestFileLoop(receiver, requestId);
                 }
                 else
                 {
                     string htmlText = GetTargetBrowser().DocumentText;
                     string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
+                    if (file == "")
+                    {
+                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
+                    }
                     receiver.ReceiveFileLink(file, requestId);
                 }
             }

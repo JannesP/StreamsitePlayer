@@ -52,21 +52,7 @@ namespace StreamsitePlayer.Streamsites
             return targetBrowser;
         }
 
-        /// <summary>
-        /// Pauses video playback.
-        /// </summary>
-        /// <returns></returns>
-        public abstract bool Pause();
-        /// <summary>
-        /// Resumes video playback.
-        /// </summary>
-        /// <returns></returns>
-        public abstract bool Play();
-        /// <summary>
-        /// Check if the site is ready to instantly play the video.
-        /// </summary>
-        /// <returns>if the video can be played now</returns>
-        public abstract bool IsReadyToPlay();
+        
         /// <summary>
         /// Returns the readable name for the streaming site. eg Steamcloud
         /// </summary>
@@ -83,19 +69,6 @@ namespace StreamsitePlayer.Streamsites
         /// </summary>
         /// <returns>the number in seconds</returns>
         public abstract int GetRemainingWaitTime();
-        /// <summary>
-        /// Checks for the remaining time which has to be played.
-        /// </summary>
-        /// <returns>remaining play time in seconds</returns>
-        public abstract int GetRemainingPlayTime();
-        /// <summary>
-        /// Plays the video when it's ready.
-        /// </summary>
-        public abstract void PlayWhenReady();
-        /// <summary>
-        /// Maximizes the player.
-        /// </summary>
-        public abstract void Maximize();
         /// <summary>
         /// Returns the estimated wait time for the purpose of preloading the next episode.
         /// </summary>

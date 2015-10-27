@@ -53,6 +53,7 @@
             this.comboBoxChangeSeries = new System.Windows.Forms.ComboBox();
             this.flowPanelEpisodeButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.flowPanelSeriesButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.labelUserInformer = new System.Windows.Forms.Label();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -60,13 +61,14 @@
             // 
             // menuStripFormMain
             // 
+            this.menuStripFormMain.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStripFormMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.seriesToolStripMenuItem,
             this.fileToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStripFormMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripFormMain.Name = "menuStripFormMain";
-            this.menuStripFormMain.Size = new System.Drawing.Size(638, 24);
+            this.menuStripFormMain.Size = new System.Drawing.Size(168, 24);
             this.menuStripFormMain.TabIndex = 1;
             this.menuStripFormMain.Text = "menuStripFormMain";
             // 
@@ -283,11 +285,24 @@
             this.flowPanelSeriesButtons.Size = new System.Drawing.Size(613, 38);
             this.flowPanelSeriesButtons.TabIndex = 22;
             // 
+            // labelUserInformer
+            // 
+            this.labelUserInformer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelUserInformer.Location = new System.Drawing.Point(171, 0);
+            this.labelUserInformer.Name = "labelUserInformer";
+            this.labelUserInformer.Size = new System.Drawing.Size(455, 25);
+            this.labelUserInformer.TabIndex = 23;
+            this.labelUserInformer.Text = "This is an extraordinary long message to have enough space if a long message is d" +
+    "isplayed.";
+            this.labelUserInformer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelUserInformer.Visible = false;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 372);
+            this.Controls.Add(this.labelUserInformer);
             this.Controls.Add(this.flowPanelSeriesButtons);
             this.Controls.Add(this.flowPanelEpisodeButtons);
             this.Controls.Add(this.comboBoxChangeSeries);
@@ -342,6 +357,7 @@
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.FlowLayoutPanel flowPanelEpisodeButtons;
         private System.Windows.Forms.FlowLayoutPanel flowPanelSeriesButtons;
+        private System.Windows.Forms.Label labelUserInformer;
     }
 }
 

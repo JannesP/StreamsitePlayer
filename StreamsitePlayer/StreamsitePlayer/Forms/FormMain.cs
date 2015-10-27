@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace StreamsitePlayer
 {
-    public partial class FormMain : Form
+    public partial class FormMain : Form, IUserInformer
     {
         public static List<string> streamProviders;
         public static Control threadTrick;  //very bad workaround for accessing the right thread, but i'm too lazy now and this works for now 
@@ -39,6 +39,7 @@ namespace StreamsitePlayer
             InitializeComponent();
             threadTrick = comboBoxChangeSeries;
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
+            Util.AddUserInformer(this);
         }
 
         private void LoadSettingValues()
@@ -585,6 +586,37 @@ namespace StreamsitePlayer
                     var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
                     RemoveSeries(currSeries);
                 }
+            }
+        }
+
+        public void ShowUserMessage(string message)
+        {
+            if (labelUserInformer.InvokeRequired)
+            {
+                if (!labelUserInformer.IsDisposed && labelUserInformer.IsHandleCreated)
+                {
+                    labelUserInformer.Invoke((MethodInvoker)(() => ShowUserMessage(message)));
+                }
+            }
+            else
+            {
+                labelUserInformer.Text = message;
+                labelUserInformer.Visible = true;
+            }
+        }
+
+        public void HideUserMessage()
+        {
+            if (labelUserInformer.InvokeRequired)
+            {
+                if (!labelUserInformer.IsDisposed && labelUserInformer.IsHandleCreated)
+                {
+                    labelUserInformer.Invoke((MethodInvoker)(() => HideUserMessage()));
+                }
+            }
+            else
+            {
+                labelUserInformer.Visible = false;
             }
         }
     }
