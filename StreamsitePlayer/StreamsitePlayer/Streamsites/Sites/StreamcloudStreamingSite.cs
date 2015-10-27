@@ -172,7 +172,11 @@ namespace StreamsitePlayer.Streamsites.Sites
 
                 if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
                 {
-                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
+                    try
+                    {
+                        GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
+                    }
+                    catch (Exception) { }
                 }
 
             }, null, 500, -1);
@@ -191,7 +195,11 @@ namespace StreamsitePlayer.Streamsites.Sites
 
                 if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
                 {
-                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
+                    try
+                    {
+                        GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
+                    }
+                    catch (Exception) { }
                 }
 
             }, null, 500, -1);
