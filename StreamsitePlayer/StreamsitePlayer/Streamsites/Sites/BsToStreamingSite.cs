@@ -23,14 +23,20 @@ namespace StreamsitePlayer.Streamsites.Sites
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
             string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
-            anchor.Invoke((MethodInvoker)(() => StartStreamcloudJwRequest(streamcloudLink, receiver, requestId)));
+            if (anchor != null && !anchor.IsDisposed)
+            {
+                anchor.Invoke((MethodInvoker)(() => StartStreamcloudJwRequest(streamcloudLink, receiver, requestId)));
+            }
         }
 
         private void RequestStreamcloudFile(Control anchor, string url, IFileCallbackReceiver receiver, int requestId)
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
             string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
-            anchor.Invoke((MethodInvoker)(() => StartStreamcloudFileRequest(streamcloudLink, receiver, requestId)));
+            if (anchor != null && !anchor.IsDisposed)
+            {
+                anchor.Invoke((MethodInvoker)(() => StartStreamcloudFileRequest(streamcloudLink, receiver, requestId)));
+            }
         }
 
         private void StartStreamcloudJwRequest(string streamcloudlink, IJwCallbackReceiver receiver, int requestId)
