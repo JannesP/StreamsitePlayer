@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamsitePlayer.Forms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,8 +12,74 @@ using System.Windows.Forms;
 
 namespace StreamsitePlayer
 {
-    class Util
+    static class Util
     {
+        private static List<IUserInformer> userInformers = new List<IUserInformer>();
+        private static Queue<string> remainingMessages = new Queue<string>();
+        private static System.Threading.Timer userMessageHideTimer;
+
+        public static void AddUserInformer(IUserInformer uinf)
+        {
+            lock (userInformers)
+            {
+                userInformers.Add(uinf);
+            }
+        }
+
+        public static void RemoveUserInformer(IUserInformer uinf)
+        {
+            lock (userInformers)
+            {
+                userInformers.Remove(uinf);
+            }
+        }
+
+        public static void ShowUserInformation(string message)
+        {
+            lock (userInformers)
+            {
+                remainingMessages.Enqueue(message);
+                ShowNextUserInformation();
+            }
+        }
+
+        private static void ShowNextUserInformation()
+        {
+            Logger.Log("USR_INFORM", "Showing new message to user.");
+            lock (userInformers)
+            {
+                if (remainingMessages.Count != 0 && userInformers.Count != 0 && userMessageHideTimer == null)
+                {
+                    string currMsg = remainingMessages.Dequeue();
+                    foreach (var informer in userInformers)
+                    {
+                        informer.ShowUserMessage(currMsg);
+                    }
+                    userMessageHideTimer = new System.Threading.Timer((state) => { HideUserInformation(); }, null, 5000, -1);
+                }
+            }
+        }
+
+        private static void HideUserInformation()
+        {
+            Logger.Log("USR_INFORM", "Hiding message from user.");
+            lock (userInformers)
+            {
+                userMessageHideTimer.Dispose();
+                userMessageHideTimer = null;
+
+                if (userInformers.Count != 0)
+                {
+                    foreach (var informer in userInformers)
+                    {
+                        informer.HideUserMessage();
+                    }
+                }
+
+                ShowNextUserInformation();
+            }
+        }
+
         private static string RequestHtmlSite(string url)
         {
             long start = DateTime.Now.Ticks;

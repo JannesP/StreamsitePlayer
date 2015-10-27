@@ -36,6 +36,7 @@ namespace StreamsitePlayer
             this.progressBarRequestingStatus = new System.Windows.Forms.ProgressBar();
             this.progressBarLoadingNext = new System.Windows.Forms.ProgressBar();
             this.labelEpisode = new System.Windows.Forms.Label();
+            this.labelUserInformer = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelRequestingStatus
@@ -80,11 +81,25 @@ namespace StreamsitePlayer
             this.labelEpisode.Text = "Episode X";
             this.labelEpisode.Visible = false;
             // 
+            // labelUserInformer
+            // 
+            this.labelUserInformer.AutoSize = true;
+            this.labelUserInformer.BackColor = System.Drawing.Color.Black;
+            this.labelUserInformer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserInformer.ForeColor = System.Drawing.Color.White;
+            this.labelUserInformer.Location = new System.Drawing.Point(12, 117);
+            this.labelUserInformer.Name = "labelUserInformer";
+            this.labelUserInformer.Size = new System.Drawing.Size(270, 37);
+            this.labelUserInformer.TabIndex = 10;
+            this.labelUserInformer.Text = "labelUserInformer";
+            this.labelUserInformer.Visible = false;
+            // 
             // FormJwPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 478);
+            this.Controls.Add(this.labelUserInformer);
             this.Controls.Add(this.labelEpisode);
             this.Controls.Add(this.progressBarLoadingNext);
             this.Controls.Add(this.labelRequestingStatus);
@@ -93,6 +108,8 @@ namespace StreamsitePlayer
             this.KeyPreview = true;
             this.Name = "FormJwPlayer";
             this.Text = "StreamsitePlayer loading ...";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormJwPlayer_FormClosing);
+            this.Shown += new System.EventHandler(this.FormJwPlayer_Shown);
             this.Resize += new System.EventHandler(this.FormJwPlayer_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -105,5 +122,6 @@ namespace StreamsitePlayer
         private System.Windows.Forms.ProgressBar progressBarRequestingStatus;
         private System.Windows.Forms.ProgressBar progressBarLoadingNext;
         private System.Windows.Forms.Label labelEpisode;
+        private System.Windows.Forms.Label labelUserInformer;
     }
 }

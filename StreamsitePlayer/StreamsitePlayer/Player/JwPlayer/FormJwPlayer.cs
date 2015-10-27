@@ -13,10 +13,11 @@ using StreamsitePlayer.Streamsites.Sites;
 using StreamsitePlayer.JwPlayer;
 using StreamsitePlayer.Player;
 using StreamsitePlayer.Utility;
+using StreamsitePlayer.Forms;
 
 namespace StreamsitePlayer
 {
-    public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener
+    public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener, IUserInformer
     {
         public event OnEpisodeChangeHandler EpisodeChange;
 
@@ -52,11 +53,6 @@ namespace StreamsitePlayer
 
             this.Size = new Size(964, 576);
             WinAPIHelper.PreventIdle();
-        }
-
-        ~FormJwPlayer()
-        {
-            WinAPIHelper.AllowIdle();
         }
 
         private void FormJwPlayer_GotFocus(object sender, EventArgs e)
@@ -272,10 +268,12 @@ namespace StreamsitePlayer
                 playNextId = validRequestId;
                 progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
                 progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
+                Util.ShowUserInformation("Playing next: " + streamProvider.GetEpisode(season, episode).Number + " - " + streamProvider.GetEpisode(season, episode).Name);
                 OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
             }
             else
             {
+                Util.ShowUserInformation("Didn't find any links for the episode, jumping to the next one.");
                 Next();
             }
             
@@ -347,6 +345,7 @@ namespace StreamsitePlayer
                 if (insertion == "")
                 {
                     Logger.Log("JwLink", "Got no file link");
+                    Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond.");
                     progressBarRequestingStatus.Value = 0;
                 }
                 else
@@ -524,6 +523,59 @@ namespace StreamsitePlayer
 
                 oldClientSize = this.ClientSize;
             }
+        }
+
+        private void FormJwPlayer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            WinAPIHelper.AllowIdle();
+            Util.RemoveUserInformer(this);
+        }
+
+        public void ShowUserMessage(string message)
+        {
+            if (labelUserInformer.InvokeRequired)
+            {
+                if (!labelUserInformer.IsDisposed && labelUserInformer.IsHandleCreated)
+                {
+                    labelUserInformer.Invoke((MethodInvoker)(() => ShowUserMessage(message)));
+                }
+            }
+            else
+            {
+                if (IsPlaying)
+                {
+                    labelUserInformer.BackColor = Color.Black;
+                    labelUserInformer.ForeColor = Color.White;
+                }
+                else
+                {
+                    labelUserInformer.BackColor = Color.FromKnownColor(KnownColor.Control);
+                    labelUserInformer.ForeColor = Color.Black;
+                }
+
+                labelUserInformer.Text = message;
+                labelUserInformer.Visible = true;
+            }
+        }
+
+        public void HideUserMessage()
+        {
+            if (labelUserInformer.InvokeRequired)
+            {
+                if (!labelUserInformer.IsDisposed && labelUserInformer.IsHandleCreated)
+                {
+                    labelUserInformer.Invoke((MethodInvoker)(() => HideUserMessage()));
+                }
+            }
+            else
+            {
+                labelUserInformer.Visible = false;
+            }
+        }
+
+        private void FormJwPlayer_Shown(object sender, EventArgs e)
+        {
+            Util.AddUserInformer(this);
         }
     }
 }
