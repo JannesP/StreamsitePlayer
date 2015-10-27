@@ -28,11 +28,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             throw new NotImplementedException();
         }
 
-        public override int GetRemainingPlayTime()
-        {
-            throw new NotImplementedException();
-        }
-
         public override int GetRemainingWaitTime()
         {
             return 0;
@@ -46,31 +41,6 @@ namespace StreamsitePlayer.Streamsites.Sites
         public override bool IsJwLinkSupported()
         {
             return true;
-        }
-
-        public override bool IsReadyToPlay()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Maximize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool Pause()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool Play()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PlayWhenReady()
-        {
-            throw new NotImplementedException();
         }
 
         private bool iFrameNavigated = false;

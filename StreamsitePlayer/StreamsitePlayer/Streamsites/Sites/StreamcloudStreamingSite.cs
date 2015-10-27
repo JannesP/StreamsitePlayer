@@ -59,15 +59,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             return x;
         }
 
-        public override int GetRemainingPlayTime()
-        {
-            HtmlElement durationLabel = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar_duration");
-            HtmlElement playedLabel = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar_elapsed");
-            int duration = GetSecondsFromString(durationLabel.InnerHtml);
-            int played = GetSecondsFromString(playedLabel.InnerHtml);
-            return duration - played;
-        }
-
         private long startedWaiting = 0; 
         public override int GetRemainingWaitTime()
         {
@@ -98,48 +89,6 @@ namespace StreamsitePlayer.Streamsites.Sites
             return NAME;
         }
 
-        public override bool IsReadyToPlay()
-        {
-            HtmlElement playButton = GetTargetBrowser().Document.GetElementById("mediaplayer_display_button");
-            if (playButton == null)
-            {
-                return false;
-            }
-            if (playButton.Style.Contains("opacity: 1"))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public override bool Pause()
-        {
-            HtmlElement mediaController = GetTargetBrowser().Document.GetElementById("mediaplayer_controlbar");
-            if (mediaController == null)
-            {
-                return false;
-            }
-            HtmlElementCollection mediaControls = mediaController.GetElementsByTagName("button");
-            if (mediaControls.Count > 0)
-            {
-                mediaControls[0].InvokeMember("Click");
-                return true;
-            }
-            return false;
-
-        }
-
-        public override bool Play()
-        {
-            HtmlElement playButton = GetTargetBrowser().Document.GetElementById("mediaplayer_display_button");
-            if (playButton != null)
-            {
-                playButton.InvokeMember("Click");
-                return true;
-            }
-            return false;
-        }
-
         private bool ContinueWhenReady()
         {
             if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete) return false;
@@ -160,32 +109,6 @@ namespace StreamsitePlayer.Streamsites.Sites
         }
 
         private bool continued = false;
-        public override void PlayWhenReady()
-        {
-            if (!continued)
-            {
-                continued = ContinueWhenReady();
-                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
-            }
-            else
-            {
-                if (IsReadyToPlay())
-                {
-                    Play();
-                }
-                else
-                {
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => PlayWhenReady())); }, null, 500, -1);
-                }
-            }
-            
-        }
-
-        public override void Maximize()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int GetEstimateWaitTime()
         {

@@ -53,12 +53,7 @@ namespace StreamsitePlayer.Streamsites.Sites
 
         public override string GetFileName()
         {
-            throw new NotImplementedException();
-        }
-
-        public override int GetRemainingPlayTime()
-        {
-            throw new NotImplementedException();
+            return streamcloudStreamingSite.GetFileName();
         }
 
         public override int GetRemainingWaitTime()
@@ -83,31 +78,6 @@ namespace StreamsitePlayer.Streamsites.Sites
         public override bool IsJwLinkSupported()
         {
             return true;
-        }
-
-        public override bool IsReadyToPlay()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Maximize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool Pause()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool Play()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PlayWhenReady()
-        {
-            throw new NotImplementedException();
         }
 
         public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
