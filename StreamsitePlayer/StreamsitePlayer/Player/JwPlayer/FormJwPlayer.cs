@@ -183,29 +183,61 @@ namespace StreamsitePlayer
             }
         }
 
+        public StreamProvider StreamProvider
+        {
+            get
+            {
+                return streamProvider;
+            }
+
+            set
+            {
+                streamProvider = value;
+                currentEpisode = -1;
+                currentSeason = -1;
+            }
+        }
+
         public void Next()
         {
             nextRequested = true;
-            if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
+            if (currentEpisode != -1)
             {
-                if (++currentSeason > streamProvider.GetSeriesCount())
+                if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
                 {
-                    return;
+                    if (++currentSeason > streamProvider.GetSeriesCount())
+                    {
+                        return;
+                    }
+                    currentEpisode = 1;
                 }
+            }
+            else
+            {
                 currentEpisode = 1;
+                currentSeason = 1;
             }
             Play(currentSeason, currentEpisode);
         }
 
         public void Previous()
         {
-            if (currentEpisode == 1)
+            if (currentEpisode != -1)
             {
-                if (currentSeason == 1)
+                if (currentEpisode == 1)
                 {
-                    currentSeason = streamProvider.GetSeriesCount();
+                    if (currentSeason == 1)
+                    {
+                        currentSeason = streamProvider.GetSeriesCount();
+                    }
+                    currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
                 }
-                currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
+                
+            }
+            else
+            {
+                currentEpisode = 1;
+                currentSeason = 1;
             }
             Play(currentSeason, currentEpisode);
         }

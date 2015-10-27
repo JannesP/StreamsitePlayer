@@ -20,7 +20,11 @@ namespace StreamsitePlayer
         void Next();
         void Previous();
         
-
+        StreamProvider StreamProvider
+        {
+            get;
+            set;
+        }
 
         bool IsDisposed
         {

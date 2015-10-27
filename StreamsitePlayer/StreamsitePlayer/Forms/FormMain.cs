@@ -117,6 +117,10 @@ namespace StreamsitePlayer
             currentProvider = StreamProvider.Create(series.Provider);
             currentProvider.LoadSeries(series);
             if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
+            if (player != null)
+            {
+                player.StreamProvider = currentProvider;
+            }
             Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
             Settings.SaveFileSettings();
             BuildUIForCurrentProvider();
@@ -145,7 +149,7 @@ namespace StreamsitePlayer
             }
         }
 
-        private void OpenSeries(string linkExtension)
+        private void CreateAndSelectSeries(string linkExtension)
         {
             if (currentProvider != null)
             {
@@ -174,7 +178,7 @@ namespace StreamsitePlayer
             seriesToolStripMenuItem.Enabled = false;
             Seriescache.RemoveCachedSeries(series);
             comboBoxChangeSeries.Items.Remove(series);
-            OpenSeries(series.LinkExtension);
+            CreateAndSelectSeries(series.LinkExtension);
         }
 
         private void RemoveSeries(Series series)
@@ -184,6 +188,11 @@ namespace StreamsitePlayer
             seriesToolStripMenuItem.Enabled = false;
             Seriescache.RemoveCachedSeries(series);
             comboBoxChangeSeries.Items.Remove(series);
+            if (player != null && !player.IsDisposed)
+            {
+                player.Close();
+                player = null;
+            }
             currentProvider = null;
             ClearEpisodePanel();
         }
