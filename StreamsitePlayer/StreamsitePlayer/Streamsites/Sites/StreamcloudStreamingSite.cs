@@ -205,7 +205,10 @@ namespace StreamsitePlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 //Logger.Log("SITE_REQUEST_STREAMCLOUD", "Continued: " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                {
+                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                }
             }
             else
             {
@@ -213,7 +216,10 @@ namespace StreamsitePlayer.Streamsites.Sites
                 {
                     Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
                     receiver.JwLinkStatusUpdate(0, 10000, requestId);
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                    if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                    {
+                        timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId))); }, null, 500, -1);
+                    }
                 }
                 else
                 {
@@ -250,14 +256,20 @@ namespace StreamsitePlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 Console.WriteLine("Continued: " + continued);
-                timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                {
+                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                }
             }
             else
             {
                 if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
                 {
                     receiver.FileRequestStatusUpdate(0, 10000, requestId);
-                    timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                    if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
+                    {
+                        timerReference = new System.Threading.Timer((state) => { GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId))); }, null, 500, -1);
+                    }
                 }
                 else
                 {
