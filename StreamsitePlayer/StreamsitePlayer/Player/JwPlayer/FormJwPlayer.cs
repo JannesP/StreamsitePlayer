@@ -264,17 +264,18 @@ namespace StreamsitePlayer
         {
             if (currentEpisode != -1)
             {
-            if (currentEpisode == 1)
-            {
-                if (currentSeason == 1)
+                if (currentEpisode == 1)
                 {
-                    currentSeason = streamProvider.GetSeriesCount();
+                    if (currentSeason == 1)
+                    {
+                        currentSeason = streamProvider.GetSeriesCount();
+                    }
+                    currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
                 }
-                currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
-            }
-            else
-            {
-                currentEpisode--;
+                else
+                {
+                    currentEpisode--;
+                }
             }
             Play(currentSeason, currentEpisode);
         }
