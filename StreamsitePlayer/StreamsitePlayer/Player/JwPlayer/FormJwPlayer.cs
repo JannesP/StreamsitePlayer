@@ -223,22 +223,47 @@ namespace StreamsitePlayer
             }
         }
 
+        public StreamProvider StreamProvider
+        {
+            get
+            {
+                return streamProvider;
+            }
+
+            set
+            {
+                streamProvider = value;
+                currentEpisode = -1;
+                currentSeason = -1;
+            }
+        }
+
         public void Next()
         {
             nextRequested = true;
+            if (currentEpisode != -1)
+            {
             if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
             {
                 if (++currentSeason > streamProvider.GetSeriesCount())
                 {
                     return;
                 }
+                    currentEpisode = 1;
+                }
+            }
+            else
+            {
                 currentEpisode = 1;
+                currentSeason = 1;
             }
             Play(currentSeason, currentEpisode);
         }
 
         public void Previous()
         {
+            if (currentEpisode != -1)
+            {
             if (currentEpisode == 1)
             {
                 if (currentSeason == 1)
