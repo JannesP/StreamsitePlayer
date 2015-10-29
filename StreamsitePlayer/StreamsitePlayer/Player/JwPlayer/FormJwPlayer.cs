@@ -113,7 +113,7 @@ namespace StreamsitePlayer
 
                     this.Resize -= FormJwPlayer_Resize;
                     this.maximized = true;
-                    this.TopMost = true;
+                    this.TopLevel = true;
 
                     this.oldBounds = this.DesktopBounds;
                     this.normalFormBorderStyle = this.FormBorderStyle;
@@ -126,6 +126,7 @@ namespace StreamsitePlayer
 
                     this.Activate();
                     jwPlayer.Focus();
+                    
                     this.Resize += FormJwPlayer_Resize;
 
                     Logger.Log("JW_MAXIMIZING", "Values AFTER fullscreen:");
@@ -136,8 +137,7 @@ namespace StreamsitePlayer
                     this.Resize -= FormJwPlayer_Resize;
                     this.FormBorderStyle = this.normalFormBorderStyle;
                     this.DesktopBounds = oldBounds;
-
-                    this.TopMost = false;
+                    
                     this.Activate();
                     jwPlayer.Focus();
                     this.maximized = false;
