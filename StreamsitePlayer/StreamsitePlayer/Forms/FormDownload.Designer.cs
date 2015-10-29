@@ -52,9 +52,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.labelLinkRequest = new System.Windows.Forms.Label();
             this.buttonRemoveSelected = new System.Windows.Forms.Button();
+            this.buttonBrowseDownloaded = new System.Windows.Forms.Button();
             this.stateProgressBarLinkRequest = new StreamsitePlayer.Forms.StateProgressBar();
             this.stateProgressBarCurrentFile = new StreamsitePlayer.Forms.StateProgressBar();
-            this.buttonBrowseDownloaded = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxEpisodes
@@ -296,6 +296,17 @@
             this.buttonRemoveSelected.UseVisualStyleBackColor = true;
             this.buttonRemoveSelected.Click += new System.EventHandler(this.buttonRemoveSelected_Click);
             // 
+            // buttonBrowseDownloaded
+            // 
+            this.buttonBrowseDownloaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowseDownloaded.Location = new System.Drawing.Point(612, 130);
+            this.buttonBrowseDownloaded.Name = "buttonBrowseDownloaded";
+            this.buttonBrowseDownloaded.Size = new System.Drawing.Size(115, 35);
+            this.buttonBrowseDownloaded.TabIndex = 31;
+            this.buttonBrowseDownloaded.Text = "Open Downloads Folder";
+            this.buttonBrowseDownloaded.UseVisualStyleBackColor = true;
+            this.buttonBrowseDownloaded.Click += new System.EventHandler(this.buttonBrowseDownloaded_Click);
+            // 
             // stateProgressBarLinkRequest
             // 
             this.stateProgressBarLinkRequest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -313,17 +324,6 @@
             this.stateProgressBarCurrentFile.Name = "stateProgressBarCurrentFile";
             this.stateProgressBarCurrentFile.Size = new System.Drawing.Size(519, 23);
             this.stateProgressBarCurrentFile.TabIndex = 16;
-            // 
-            // buttonBrowseDownloaded
-            // 
-            this.buttonBrowseDownloaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseDownloaded.Location = new System.Drawing.Point(612, 130);
-            this.buttonBrowseDownloaded.Name = "buttonBrowseDownloaded";
-            this.buttonBrowseDownloaded.Size = new System.Drawing.Size(115, 35);
-            this.buttonBrowseDownloaded.TabIndex = 31;
-            this.buttonBrowseDownloaded.Text = "Open Downloads Folder";
-            this.buttonBrowseDownloaded.UseVisualStyleBackColor = true;
-            this.buttonBrowseDownloaded.Click += new System.EventHandler(this.buttonBrowseDownloaded_Click);
             // 
             // FormDownload
             // 
