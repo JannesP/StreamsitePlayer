@@ -35,21 +35,20 @@ namespace StreamsitePlayer
         public FormJwPlayer()
         {
             InitializeComponent();
+            this.KeyPreview = true;
             oldClientSize = this.ClientSize;
-            this.Resize += FormJwPlayer_Resize;
             
             jwPlayer = new JwPlayerControl();
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
             jwPlayer.ObjectForScripting = si;
-            jwPlayer.ScriptErrorsSuppressed = true;
-            jwPlayer.ScrollBarsEnabled = false;
 
             JSUtil.Init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
 
             this.GotFocus += FormJwPlayer_GotFocus;
+            this.Resize += FormJwPlayer_Resize;
 
             this.Size = new Size(964, 576);
             WinAPIHelper.PreventIdle();
@@ -493,12 +492,7 @@ namespace StreamsitePlayer
 
         private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
-            {
-                case Keys.Escape:
-                    this.Maximized = false;
-                    break;
-            }
+
         }
 
         public void OnError(string message)

@@ -21,6 +21,9 @@ namespace StreamsitePlayer.JwPlayer
             base.NewWindow += JwPlayerControl_NewWindow;
             base.AllowWebBrowserDrop = false;
             base.IsWebBrowserContextMenuEnabled = false;
+            base.ScriptErrorsSuppressed = true;
+            base.ScrollBarsEnabled = false;
+            base.WebBrowserShortcutsEnabled = false;
         }
 
         public readonly float AspectRatio = 16F / 9F;

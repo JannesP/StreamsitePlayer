@@ -161,7 +161,6 @@
     </Compile>
     <None Include="app.manifest" />
     <None Include="packages.config" />
-    <None Include="Player\JwPlayer\HtmlWrapper\jwplayer\.DS_Store" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -177,16 +176,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon-Player.ico" />
-    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.flash.swf" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
-    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayershaka.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
-    <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\provider.shaka.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
+    <PostBuildEvent>mkdir "$(TargetDir)jwplayer"
+xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
