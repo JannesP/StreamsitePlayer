@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamsitePlayer", "Streams
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "..\Updater\Updater\Updater.csproj", "{A1D7587E-ABD9-48B8-9DB8-011C6035215D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Uninstaller\Uninstaller.csproj", "{4172115C-10BB-49E3-BBC9-264B6DB42CE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
