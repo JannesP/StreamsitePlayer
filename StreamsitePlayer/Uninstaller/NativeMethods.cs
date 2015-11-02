@@ -22,7 +22,7 @@ namespace Uninstaller
             MOVEFILE_WRITE_THROUGH = 0x8
         }
 
-        public static bool ScheduleDelete(string fileFullName)
+        public static bool ScheduledDelete(string fileFullName)
         {
             if (!System.IO.File.Exists(fileFullName))
                 throw new InvalidOperationException("File does not exist.");

@@ -8,6 +8,8 @@ namespace Installer
 {
     static class Program
     {
+        public static Guid UninstallGuid = Guid.Parse("{57f74a7a-02b6-4674-a5fb-ff22820fd36b}");
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

@@ -18,9 +18,15 @@ namespace Uninstaller
         [STAThread]
         static void Main()
         {
+#if !DEBUG
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length == 1)
             {
+                DialogResult dr = MessageBox.Show("Do you really want to uninstall the SeriesPlayer?", "Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                if (dr != DialogResult.Yes)
+                {
+                    return;
+                }
                 string randomName = Guid.NewGuid().ToString() + ".exe";
                 Console.WriteLine(randomName);
                 string randomTempFile = Path.Combine(Path.GetTempPath(), randomName);
@@ -52,13 +58,17 @@ namespace Uninstaller
                     }
                 }
             }
-
-            
+#else
+            path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "testInstall");
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormUninstaller());
+#endif
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
-            NativeMethods.ScheduleDelete(System.Reflection.Assembly.GetEntryAssembly().Location);
+            NativeMethods.ScheduledDelete(System.Reflection.Assembly.GetEntryAssembly().Location);
         }
     }
 }
