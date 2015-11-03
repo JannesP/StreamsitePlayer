@@ -46,6 +46,7 @@ namespace StreamsitePlayer
             JSUtil.Init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
+            base.Controls.SetChildIndex(buttonFullscreen, 11);
 
             this.GotFocus += FormJwPlayer_GotFocus;
             this.Resize += FormJwPlayer_Resize;
@@ -490,11 +491,6 @@ namespace StreamsitePlayer
             this.Maximized = newState;
         }
 
-        private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
         public void OnError(string message)
         {
             Logger.Log("JwPlayerJS", "OnError: " + message);
@@ -602,6 +598,17 @@ namespace StreamsitePlayer
         private void FormJwPlayer_Shown(object sender, EventArgs e)
         {
             Util.AddUserInformer(this);
+        }
+
+        private void buttonFullscreen_Click(object sender, EventArgs e)
+        {
+            this.Maximized = !this.Maximized;
+            nextFullscreen = this.Maximized;
+        }
+
+        private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) this.Maximized = false;
         }
     }
 }
