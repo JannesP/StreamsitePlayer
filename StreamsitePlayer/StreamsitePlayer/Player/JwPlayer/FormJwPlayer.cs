@@ -38,21 +38,21 @@ namespace StreamsitePlayer
         public FormJwPlayer()
         {
             InitializeComponent();
+            this.KeyPreview = true;
             oldClientSize = this.ClientSize;
-            this.Resize += FormJwPlayer_Resize;
             
             jwPlayer = new JwPlayerControl();
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
             jwPlayer.ObjectForScripting = si;
-            jwPlayer.ScriptErrorsSuppressed = true;
-            jwPlayer.ScrollBarsEnabled = false;
 
             JSUtil.Init(ref jwPlayer);
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
+            base.Controls.SetChildIndex(buttonFullscreen, 11);
 
             this.GotFocus += FormJwPlayer_GotFocus;
+            this.Resize += FormJwPlayer_Resize;
 
             this.Size = new Size(964, 576);
             WinAPIHelper.PreventIdle();
@@ -529,16 +529,6 @@ namespace StreamsitePlayer
             this.Maximized = newState;
         }
 
-        private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.Escape:
-                    this.Maximized = false;
-                    break;
-            }
-        }
-
         public void OnError(string message)
         {
             Logger.Log("JwPlayerJS", "OnError: " + message);
@@ -646,6 +636,17 @@ namespace StreamsitePlayer
         private void FormJwPlayer_Shown(object sender, EventArgs e)
         {
             Util.AddUserInformer(this);
+        }
+
+        private void buttonFullscreen_Click(object sender, EventArgs e)
+        {
+            this.Maximized = !this.Maximized;
+            nextFullscreen = this.Maximized;
+        }
+
+        private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) this.Maximized = false;
         }
     }
 }

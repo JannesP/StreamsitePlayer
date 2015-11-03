@@ -144,6 +144,9 @@ namespace StreamsitePlayer
             WebBrowser wb = new WebBrowser();
             wb.ScriptErrorsSuppressed = true;
             wb.NewWindow += Wb_NewWindow;
+            wb.WebBrowserShortcutsEnabled = false;
+            wb.IsWebBrowserContextMenuEnabled = false;
+            wb.AllowWebBrowserDrop = false;
             return wb;
         }
 

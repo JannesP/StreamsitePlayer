@@ -21,6 +21,9 @@ namespace StreamsitePlayer.JwPlayer
             base.NewWindow += JwPlayerControl_NewWindow;
             base.AllowWebBrowserDrop = false;
             base.IsWebBrowserContextMenuEnabled = false;
+            base.ScriptErrorsSuppressed = true;
+            base.ScrollBarsEnabled = false;
+            base.WebBrowserShortcutsEnabled = false;
         }
 
         public readonly float AspectRatio = 16F / 9F;
@@ -180,7 +183,14 @@ namespace StreamsitePlayer.JwPlayer
 
         private void DisplayHtml(string html)
         {
+            if (File.Exists(JW_TEMP_SITE_PATH))
+            {
+                FileInfo fi1 = new FileInfo(JW_TEMP_SITE_PATH);
+                fi1.Attributes &= ~FileAttributes.Hidden;
+            }
             File.WriteAllText(JW_TEMP_SITE_PATH, html);
+            FileInfo fi = new FileInfo(JW_TEMP_SITE_PATH);
+            fi.Attributes |= FileAttributes.Hidden;
             string path = Path.Combine("file:///" + Util.GetAppFolder(), JW_TEMP_SITE_PATH);
             base.Navigate(new Uri(path));
             while (base.ReadyState != WebBrowserReadyState.Complete)

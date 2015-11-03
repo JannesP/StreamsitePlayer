@@ -37,6 +37,7 @@ namespace StreamsitePlayer
             this.progressBarLoadingNext = new System.Windows.Forms.ProgressBar();
             this.labelEpisode = new System.Windows.Forms.Label();
             this.labelUserInformer = new System.Windows.Forms.Label();
+            this.buttonFullscreen = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelRequestingStatus
@@ -94,11 +95,22 @@ namespace StreamsitePlayer
             this.labelUserInformer.Text = "labelUserInformer";
             this.labelUserInformer.Visible = false;
             // 
+            // buttonFullscreen
+            // 
+            this.buttonFullscreen.Location = new System.Drawing.Point(832, 443);
+            this.buttonFullscreen.Name = "buttonFullscreen";
+            this.buttonFullscreen.Size = new System.Drawing.Size(100, 23);
+            this.buttonFullscreen.TabIndex = 11;
+            this.buttonFullscreen.Text = "Toggle Fullscreen";
+            this.buttonFullscreen.UseVisualStyleBackColor = true;
+            this.buttonFullscreen.Click += new System.EventHandler(this.buttonFullscreen_Click);
+            // 
             // FormJwPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 478);
+            this.Controls.Add(this.buttonFullscreen);
             this.Controls.Add(this.labelUserInformer);
             this.Controls.Add(this.labelEpisode);
             this.Controls.Add(this.progressBarLoadingNext);
@@ -110,7 +122,7 @@ namespace StreamsitePlayer
             this.Text = "StreamsitePlayer loading ...";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormJwPlayer_FormClosing);
             this.Shown += new System.EventHandler(this.FormJwPlayer_Shown);
-            this.Resize += new System.EventHandler(this.FormJwPlayer_Resize);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormJwPlayer_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,5 +135,6 @@ namespace StreamsitePlayer
         private System.Windows.Forms.ProgressBar progressBarLoadingNext;
         private System.Windows.Forms.Label labelEpisode;
         private System.Windows.Forms.Label labelUserInformer;
+        private System.Windows.Forms.Button buttonFullscreen;
     }
 }
