@@ -88,8 +88,27 @@ namespace Uninstaller
                 if (dir.Exists) dir.DeleteWithSubFolders();
             }
 
+            RemoveShortcuts();
+
             DirectoryInfo dirInfo = new DirectoryInfo(Program.path);
             if (dirInfo.IsDirectoryEmpty()) dirInfo.DeleteWithSubFolders();
+        }
+
+        private void RemoveShortcuts()
+        {
+            string startMenuFolderAll = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
+            string startMenuFolder = Environment.GetFolderPath(Environment.SpecialFolder.StartMenu);
+            
+
+            string linkPath = Path.Combine(startMenuFolder, "SeriesPlayer.lnk");
+            if (File.Exists(linkPath)) File.Delete(linkPath);
+            linkPath = Path.Combine(startMenuFolderAll, "SeriesPlayer.lnk");
+            if (File.Exists(linkPath)) File.Delete(linkPath);
+
+            string desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            linkPath = Path.Combine(desktopFolder, "SeriesPlayer.lnk");
+            if (File.Exists(linkPath)) File.Delete(linkPath);
+
         }
 
         private void backgroundWorkerUninstall_ProgressChanged(object sender, ProgressChangedEventArgs e)
