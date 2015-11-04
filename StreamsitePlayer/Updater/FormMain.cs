@@ -20,7 +20,7 @@ namespace Updater
         public const string CACHE_DIR = "updatecache";
         public const string CACHE_FILE = CACHE_DIR + @"\cache.zip";
         public const string DECOMPRESS_DIR = CACHE_DIR + @"\decompressed";
-        public const string EXECUTABLE = "StreamsitePlayer.exe";
+        public const string EXECUTABLE = "SeriesPlayer.exe";
         public static string VERSION = "";
 
         private string cacheDir;
@@ -106,8 +106,12 @@ namespace Updater
             {
                 Logger.Log("SUCCESS", "The program was patched without problems.");
                 CleanCacheDir();
-                Logger.Log("STARTING", "Starting the new version of the main program!");
-                Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                RegEditor.CreateUninstaller(Environment.CurrentDirectory);
+                if (Program.startAfterUpdate)
+                {
+                    Logger.Log("STARTING", "Starting the new version of the main program!");
+                    Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                }
                 Application.Exit();
             }
         }

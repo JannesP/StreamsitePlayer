@@ -9,6 +9,8 @@ namespace Updater
 {
     static class Program
     {
+        public static bool startAfterUpdate = true;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -74,6 +76,11 @@ namespace Updater
                 else if (arg.Contains("-ver="))
                 {
                     FormMain.VERSION = arg.Replace("-ver=", "");
+                }
+                else if (arg == "-nostart")
+                {
+                    Logger.Log("ARGS", "Received -nostart.");
+                    startAfterUpdate = false;
                 }
                 else
                 {
