@@ -97,6 +97,7 @@ namespace StreamsitePlayer
             // 
             // buttonFullscreen
             // 
+            this.buttonFullscreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonFullscreen.Location = new System.Drawing.Point(832, 443);
             this.buttonFullscreen.Name = "buttonFullscreen";
             this.buttonFullscreen.Size = new System.Drawing.Size(100, 23);
