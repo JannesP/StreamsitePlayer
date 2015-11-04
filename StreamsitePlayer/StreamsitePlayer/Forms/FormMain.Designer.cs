@@ -1,4 +1,4 @@
-﻿namespace StreamsitePlayer
+﻿namespace SeriesPlayer
 {
     partial class FormMain
     {

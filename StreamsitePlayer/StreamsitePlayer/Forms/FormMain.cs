@@ -1,8 +1,8 @@
-﻿using StreamsitePlayer.Forms;
-using StreamsitePlayer.Streamsites;
-using StreamsitePlayer.Streamsites.Providers;
-using StreamsitePlayer.Utility;
-using StreamsitePlayer.Utility.Extensions;
+﻿using SeriesPlayer.Forms;
+using SeriesPlayer.Streamsites;
+using SeriesPlayer.Streamsites.Providers;
+using SeriesPlayer.Utility;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     public partial class FormMain : Form, IUserInformer
     {
@@ -415,7 +415,7 @@ namespace StreamsitePlayer
             }
             else if (e.UpdateRequired)
             {
-                DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Program.VERSION + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Util.GetCurrentVersion() + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dr == DialogResult.Yes)
                 {
                     Process.Start(Path.Combine(Util.GetAppFolder(), "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id + " -ver=" + e.NewVersion);
@@ -425,7 +425,7 @@ namespace StreamsitePlayer
             }
             else if (!e.UpdateRequired && !autoUpdate)
             {
-                MessageBox.Show("You got the newest version " + Program.VERSION + " installed :)", "No update found!", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                MessageBox.Show("You got the newest version " + Util.GetCurrentVersion() + " installed :)", "No update found!", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
             }
 
             autoUpdate = false;
@@ -450,7 +450,7 @@ namespace StreamsitePlayer
 
         private void versionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("You are currently using version " + Program.VERSION + "!", "Version " + Program.VERSION, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("You are currently using version " + Util.GetCurrentVersion() + "!", "Version " + Util.GetCurrentVersion(), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void buttonDownload_Click(object sender, EventArgs e)

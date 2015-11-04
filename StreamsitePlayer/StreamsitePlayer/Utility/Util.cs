@@ -1,16 +1,17 @@
-﻿using StreamsitePlayer.Forms;
+﻿using SeriesPlayer.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     static class Util
     {
@@ -150,6 +151,11 @@ namespace StreamsitePlayer
         private static void Wb_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
+        }
+
+        public static string GetCurrentVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
 }

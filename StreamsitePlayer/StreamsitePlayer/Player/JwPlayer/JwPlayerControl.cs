@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.JwPlayer
+namespace SeriesPlayer.JwPlayer
 {
     class JwPlayerControl : WebBrowser
     {

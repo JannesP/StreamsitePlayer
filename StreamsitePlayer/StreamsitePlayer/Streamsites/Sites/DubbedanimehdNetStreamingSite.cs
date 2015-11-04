@@ -1,4 +1,4 @@
-﻿using StreamsitePlayer.Utility.Extensions;
+﻿using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.Streamsites.Sites
+namespace SeriesPlayer.Streamsites.Sites
 {
     class DubbedanimehdNetStreamingSite : StreamingSite
     {

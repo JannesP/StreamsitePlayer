@@ -1,11 +1,11 @@
-﻿using StreamsitePlayer.Streamsites;
+﻿using SeriesPlayer.Streamsites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Player
+namespace SeriesPlayer.Player
 {
     public delegate void OnEpisodeChangeHandler(object source, EpisodeChangeEventArgs e);
     public class EpisodeChangeEventArgs : EventArgs

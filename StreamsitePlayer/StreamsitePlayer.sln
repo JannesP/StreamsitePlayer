@@ -4,12 +4,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamsitePlayer", "StreamsitePlayer\StreamsitePlayer.csproj", "{9F5251CE-AFB6-4FB0-B6E8-6DC877D97A0E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1D7587E-ABD9-48B8-9DB8-011C6035215D} = {A1D7587E-ABD9-48B8-9DB8-011C6035215D}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "..\Updater\Updater\Updater.csproj", "{A1D7587E-ABD9-48B8-9DB8-011C6035215D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{A1D7587E-ABD9-48B8-9DB8-011C6035215D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Uninstaller\Uninstaller.csproj", "{4172115C-10BB-49E3-BBC9-264B6DB42CE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35166CC4-3188-4183-9422-9D9FC8A8CB7F}"
+	ProjectSection(SolutionItems) = preProject
+		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

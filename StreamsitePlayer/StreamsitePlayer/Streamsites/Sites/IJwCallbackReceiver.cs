@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Streamsites.Sites
+namespace SeriesPlayer.Streamsites.Sites
 {
     interface IJwCallbackReceiver
     {

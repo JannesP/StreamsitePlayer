@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using StreamsitePlayer.Streamsites;
-using StreamsitePlayer.Streamsites.Sites;
-using StreamsitePlayer.JwPlayer;
-using StreamsitePlayer.Player;
-using StreamsitePlayer.Utility;
-using StreamsitePlayer.Forms;
+using SeriesPlayer.Streamsites;
+using SeriesPlayer.Streamsites.Sites;
+using SeriesPlayer.JwPlayer;
+using SeriesPlayer.Player;
+using SeriesPlayer.Utility;
+using SeriesPlayer.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener, IUserInformer
     {

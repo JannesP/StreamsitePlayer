@@ -1,7 +1,7 @@
-﻿using StreamsitePlayer.Utility.TaskbarStatus;
+﻿using SeriesPlayer.Utility.TaskbarStatus;
 using System;
 
-namespace StreamsitePlayer.Utility
+namespace SeriesPlayer.Utility
 {
     public class TaskbarManager
     {

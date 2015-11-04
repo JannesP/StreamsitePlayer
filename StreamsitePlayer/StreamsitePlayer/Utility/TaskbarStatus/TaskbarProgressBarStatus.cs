@@ -1,4 +1,4 @@
-﻿namespace StreamsitePlayer.Utility.TaskbarProgressBarStatus
+﻿namespace SeriesPlayer.Utility.TaskbarProgressBarStatus
 {
     public enum TaskbarProgressBarState
     {
