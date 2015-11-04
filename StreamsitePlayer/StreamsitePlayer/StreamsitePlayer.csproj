@@ -212,7 +212,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(TargetDir)jwplayer"
-xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
+xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y
+if $(ConfigurationName) == Release (
+   xcopy "$(SolutionDir)Uninstaller\bin\$(ConfigurationName)\uninst.exe" "$(TargetDir)" /Y
+   xcopy "$(SolutionDir)Updater\bin\$(ConfigurationName)\updater.exe" "$(TargetDir)" /Y
+   xcopy "$(SolutionDir)Installer\bin\$(ConfigurationName)\SeriesPlayerInstaller.exe" "$(TargetDir)" /Y
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y</PreBuildEvent>

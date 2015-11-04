@@ -53,7 +53,7 @@ namespace Updater
             Logger.Log("CANCEL", "Patch cancelled. Removing temporary files!");
             CleanCacheDir();
             MessageBox.Show("Failed to update. For detailed information open the latest log file.\nIf you think this is a bug, please report on github or personally.", "Error, aborted update!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Application.Exit();
+            Environment.Exit(-1);
         }
 
         private void CleanCacheDir()
@@ -109,8 +109,12 @@ namespace Updater
                 RegEditor.CreateUninstaller(Environment.CurrentDirectory);
                 if (Program.startAfterUpdate)
                 {
-                    Logger.Log("STARTING", "Starting the new version of the main program!");
-                    Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                    try
+                    {
+                        Logger.Log("STARTING", "Starting the new version of the main program!");
+                        Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                    }
+                    catch { }
                 }
                 Application.Exit();
             }

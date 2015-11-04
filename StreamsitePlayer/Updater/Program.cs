@@ -17,10 +17,11 @@ namespace Updater
         [STAThread]
         static void Main()
         {
+#if !DEBUG
             Application.ThreadException += Application_ThreadException; //catch all exceptions to log them all.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
+#endif
             ParseCommandLine();
             Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
@@ -32,15 +33,15 @@ namespace Updater
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.Log("Exception!", e.ExceptionObject.GetType().ToString() + "\n" + ((Exception)e.ExceptionObject).StackTrace);
-            MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Application.Exit();
+            MessageBox.Show("Ran into unexpected exception. Please report this!" + e.ExceptionObject.GetType().ToString() + "\n" + ((Exception)e.ExceptionObject).StackTrace, "Unexpected exception in SeriesPlayer updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(-1);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             Logger.Log("Exception!", e.Exception.GetType().ToString() + "\n" + e.Exception.StackTrace);
-            MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Application.Exit();
+            MessageBox.Show("Ran into unexpected exception. Please report this!\n" + e.Exception.GetType().ToString() + "\n" + e.Exception.StackTrace, "Unexpected exception in SeriesPlayer updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(-1);
         }
 
         private static void ParseCommandLine()
