@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Updater
+namespace Uninstaller
 {
     class RegEditor
     {
@@ -31,20 +31,17 @@ namespace Updater
                     try
                     {
                         string guidText = UninstallGuid.ToString("B").ToUpper();
-                        key = parent.CreateSubKey(guidText, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        key = parent.OpenSubKey(guidText, true) ??
+                              parent.CreateSubKey(guidText);
 
                         if (key == null)
                         {
-                            Logger.Log("REGISTRY", "key == null");
                             throw new Exception(String.Format("Unable to create uninstaller '{0}\\{1}'", UNINSTALL_REG_KEY_PATH, guidText));
                         }
 
-                        AssemblyName asm = Assembly.GetExecutingAssembly().GetName();
-                        Logger.Log("REGISTRY", asm.FullName);
+                        AssemblyName asm = AssemblyName.GetAssemblyName(Path.Combine(instFolder, UNINSTALL_FILE_NAME));
                         Version v = asm.Version;
-                        Logger.Log("REGISTRY", v.ToString());
 
-                        Logger.Log("REGISTRY", "Writing sub keys.");
                         key.SetValue("DisplayName", Application.ProductName);
                         key.SetValue("ApplicationVersion", v.ToString());
                         key.SetValue("Publisher", "");
@@ -55,7 +52,6 @@ namespace Updater
                         key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
                         key.SetValue("UninstallString", Path.Combine(instFolder, UNINSTALL_FILE_NAME));
                         key.SetValue("NoModify", 1, RegistryValueKind.DWord);
-                        Logger.Log("REGISTRY", "Finished writing sub keys.");
                     }
                     finally
                     {
@@ -65,10 +61,7 @@ namespace Updater
                         }
                     }
                 }
-                catch (Exception e)
-                {
-                    Logger.Log("REGISTRY", e.GetType().ToString() + ": " + e.Message + "\n\t" + e.StackTrace);
-                }
+                catch { }
             }
         }
 

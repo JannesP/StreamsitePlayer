@@ -89,6 +89,7 @@ namespace Uninstaller
             }
 
             RemoveShortcuts();
+            RegEditor.RemoveUninstaller();
 
             DirectoryInfo dirInfo = new DirectoryInfo(Program.path);
             if (dirInfo.IsDirectoryEmpty()) dirInfo.DeleteWithSubFolders();

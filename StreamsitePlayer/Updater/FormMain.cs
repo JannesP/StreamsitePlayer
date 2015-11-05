@@ -102,21 +102,11 @@ namespace Updater
 
             Logger.Log("WEBCLIENT", "Finished file download.");
             DecompressZip();
+            RegEditor.CreateUninstaller(Environment.CurrentDirectory);
             CopyNewFiles();
             if (!canceled)
             {
                 Logger.Log("SUCCESS", "The program was patched without problems.");
-                //CleanCacheDir();
-                RegEditor.CreateUninstaller(Environment.CurrentDirectory);
-                if (Program.startAfterUpdate)
-                {
-                    try
-                    {
-                        Logger.Log("STARTING", "Starting the new version of the main program!");
-                        Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
-                    }
-                    catch { }
-                }
                 Application.Exit();
             }
         }
@@ -133,7 +123,10 @@ namespace Updater
             psi.Arguments += "-waitforpid=" + Process.GetCurrentProcess().Id;
             psi.Arguments += " -src=\"" + decompressDir + "\"";
             psi.Arguments += " -dst=\"" + Environment.CurrentDirectory + "\"";
-            psi.Arguments += " -start=\"" + Path.Combine(Environment.CurrentDirectory, EXECUTABLE) + "\"";
+            if (Program.startAfterUpdate)
+            {
+                psi.Arguments += " -start=\"" + Path.Combine(Environment.CurrentDirectory, EXECUTABLE) + "\"";
+            }
             Console.WriteLine(psi.Arguments);
             psi.UseShellExecute = false;
             Process.Start(psi);
