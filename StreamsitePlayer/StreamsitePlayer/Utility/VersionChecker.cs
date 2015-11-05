@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Utility
+namespace SeriesPlayer.Utility
 {
     static class VersionChecker
     {
@@ -53,7 +53,7 @@ namespace StreamsitePlayer.Utility
                 return;
             }
             newVersion = e.Result.Replace("\n", "");
-            if (!Program.VERSION.Equals(e.Result.Replace("\n", "")))
+            if (!Util.GetCurrentVersion().Equals(e.Result.Replace("\n", "")))
             {
                 Logger.Log("UPDATE", "Successfully checked for update. Update needed, downloading changelog ...");
                 using (WebClient webClientChangelog = new WebClient())

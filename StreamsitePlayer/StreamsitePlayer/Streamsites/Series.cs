@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Streamsites
+namespace SeriesPlayer.Streamsites
 {
     public class Series : IEquatable<Series>
     {

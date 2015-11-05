@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     static class Program
     {
@@ -27,8 +27,6 @@ namespace StreamsitePlayer
         private const int TARGET_IE_VERSION = IE11;
         private const string IE_VERSION_REG_PATH = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 
-        public const string VERSION = "1.4.3b";
-
 
         /// <summary>
         /// The main entry point for the application.
@@ -38,7 +36,7 @@ namespace StreamsitePlayer
         {
             Environment.CurrentDirectory = Util.GetAppFolder();
 
-            Logger.Log("PREINIT", "Started version " + VERSION);
+            Logger.Log("PREINIT", "Started version " + Util.GetCurrentVersion());
 
             SetWebBrowserVersion();
             DisableWebbrowserClick();

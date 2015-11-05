@@ -1,4 +1,4 @@
-﻿using StreamsitePlayer.Streamsites.Sites;
+﻿using SeriesPlayer.Streamsites.Sites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.Streamsites.Providers
+namespace SeriesPlayer.Streamsites.Providers
 {
     class TestProvider : StreamProvider
     {

@@ -1,4 +1,4 @@
-﻿namespace StreamsitePlayer.Forms
+﻿namespace SeriesPlayer.Forms
 {
     partial class FormDownload
     {
@@ -53,8 +53,8 @@
             this.labelLinkRequest = new System.Windows.Forms.Label();
             this.buttonRemoveSelected = new System.Windows.Forms.Button();
             this.buttonBrowseDownloaded = new System.Windows.Forms.Button();
-            this.stateProgressBarLinkRequest = new StreamsitePlayer.Forms.StateProgressBar();
-            this.stateProgressBarCurrentFile = new StreamsitePlayer.Forms.StateProgressBar();
+            this.stateProgressBarLinkRequest = new SeriesPlayer.Forms.StateProgressBar();
+            this.stateProgressBarCurrentFile = new SeriesPlayer.Forms.StateProgressBar();
             this.SuspendLayout();
             // 
             // listBoxEpisodes

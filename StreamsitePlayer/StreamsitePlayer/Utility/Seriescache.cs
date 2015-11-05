@@ -1,4 +1,4 @@
-﻿using StreamsitePlayer.Streamsites;
+﻿using SeriesPlayer.Streamsites;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     static class Seriescache
     {

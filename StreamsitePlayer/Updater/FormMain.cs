@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Compression;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Updater
 {
@@ -20,7 +21,7 @@ namespace Updater
         public const string CACHE_DIR = "updatecache";
         public const string CACHE_FILE = CACHE_DIR + @"\cache.zip";
         public const string DECOMPRESS_DIR = CACHE_DIR + @"\decompressed";
-        public const string EXECUTABLE = "StreamsitePlayer.exe";
+        public const string EXECUTABLE = "SeriesPlayer.exe";
         public static string VERSION = "";
 
         private string cacheDir;
@@ -53,7 +54,7 @@ namespace Updater
             Logger.Log("CANCEL", "Patch cancelled. Removing temporary files!");
             CleanCacheDir();
             MessageBox.Show("Failed to update. For detailed information open the latest log file.\nIf you think this is a bug, please report on github or personally.", "Error, aborted update!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Application.Exit();
+            Environment.Exit(-1);
         }
 
         private void CleanCacheDir()
@@ -105,25 +106,37 @@ namespace Updater
             if (!canceled)
             {
                 Logger.Log("SUCCESS", "The program was patched without problems.");
-                CleanCacheDir();
-                Logger.Log("STARTING", "Starting the new version of the main program!");
-                Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                //CleanCacheDir();
+                RegEditor.CreateUninstaller(Environment.CurrentDirectory);
+                if (Program.startAfterUpdate)
+                {
+                    try
+                    {
+                        Logger.Log("STARTING", "Starting the new version of the main program!");
+                        Process.Start(Path.Combine(Environment.CurrentDirectory, EXECUTABLE), "-nopatch");
+                    }
+                    catch { }
+                }
                 Application.Exit();
             }
         }
 
         private void CopyNewFiles()
         {
+            byte[] exe = Properties.Resources.UpdaterHelper;
+            string tempFile = Path.GetTempPath();
+            tempFile = Path.Combine(tempFile, Guid.NewGuid().ToString() + ".exe");
+            WriteBytesToFile(tempFile, exe);
+
             buttonCancel.Enabled = false;
-            try
-            {
-                DirectoryCopy(decompressDir, Environment.CurrentDirectory);
-            }
-            catch (IOException ex)
-            {
-                Logger.Log("DIRCOPY", ex.GetType() + "\n\t" + ex.StackTrace);
-                Cancel();
-            }
+            ProcessStartInfo psi = new ProcessStartInfo(tempFile);
+            psi.Arguments += "-waitforpid=" + Process.GetCurrentProcess().Id;
+            psi.Arguments += " -src=\"" + decompressDir + "\"";
+            psi.Arguments += " -dst=\"" + Environment.CurrentDirectory + "\"";
+            psi.Arguments += " -start=\"" + Path.Combine(Environment.CurrentDirectory, EXECUTABLE) + "\"";
+            Console.WriteLine(psi.Arguments);
+            psi.UseShellExecute = false;
+            Process.Start(psi);
         }
 
         private static void DirectoryCopy(string sourceDirName, string destDirName)
@@ -198,6 +211,15 @@ namespace Updater
         {
             canceled = true;
             buttonCancel.Enabled = false;
+        }
+
+        public void WriteBytesToFile(string fileName, byte[] bytes)
+        {
+            using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                file.Write(bytes, 0, bytes.Length);
+            }
+            
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using StreamsitePlayer.Streamsites;
-using StreamsitePlayer.Streamsites.Sites;
-using StreamsitePlayer.Utility;
-using StreamsitePlayer.Utility.TaskbarProgressBarStatus;
+﻿using SeriesPlayer.Streamsites;
+using SeriesPlayer.Streamsites.Sites;
+using SeriesPlayer.Utility;
+using SeriesPlayer.Utility.TaskbarProgressBarStatus;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.Forms
+namespace SeriesPlayer.Forms
 {
     public partial class FormDownload : Form, IFileCallbackReceiver
     {

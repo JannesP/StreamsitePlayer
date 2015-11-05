@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace StreamsitePlayer.Forms
+namespace SeriesPlayer.Forms
 {
     public class StateProgressBar : ProgressBar
     {
