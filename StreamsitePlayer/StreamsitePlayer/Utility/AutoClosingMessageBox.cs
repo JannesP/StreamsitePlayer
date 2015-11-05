@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.Utility
+namespace SeriesPlayer.Utility
 {
     //copied and edited class from http://stackoverflow.com/questions/14522540/close-a-messagebox-after-several-seconds
     public class AutoClosingMessageBox

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Networking.Messages
+namespace SeriesPlayer.Networking.Messages
 {
     public class NetworkMessage
     {

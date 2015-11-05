@@ -1,12 +1,12 @@
-﻿using StreamsitePlayer.Networking.Events;
-using StreamsitePlayer.Utility.Extensions;
+﻿using SeriesPlayer.Networking.Events;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Networking.Messages
+namespace SeriesPlayer.Networking.Messages
 {
     class PlayerStatusMessage : NetworkMessage
     {

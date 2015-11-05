@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     public static class Settings
     {

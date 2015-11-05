@@ -8,17 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using StreamsitePlayer.Forms;
-using StreamsitePlayer.Streamsites;
-using StreamsitePlayer.Streamsites.Sites;
-using StreamsitePlayer.JwPlayer;
-using StreamsitePlayer.Player;
-using StreamsitePlayer.Utility;
-using StreamsitePlayer.Networking;
-using StreamsitePlayer.Networking.Events;
-using StreamsitePlayer.Networking.Messages;
+using SeriesPlayer.Streamsites;
+using SeriesPlayer.Streamsites.Sites;
+using SeriesPlayer.JwPlayer;
+using SeriesPlayer.Player;
+using SeriesPlayer.Utility;
+using SeriesPlayer.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener, IUserInformer
     {
@@ -243,12 +240,12 @@ namespace StreamsitePlayer
             nextRequested = true;
             if (currentEpisode != -1)
             {
-            if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
-            {
-                if (++currentSeason > streamProvider.GetSeriesCount())
+                if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
                 {
-                    return;
-                }
+                    if (++currentSeason > streamProvider.GetSeriesCount())
+                    {
+                        return;
+                    }
                     currentEpisode = 1;
                 }
             }
@@ -272,8 +269,8 @@ namespace StreamsitePlayer
                     }
                     currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
                 }
-                else
-                {
+            else
+            {
                     currentEpisode--;
                 }
             }

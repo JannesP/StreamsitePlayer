@@ -1,13 +1,13 @@
-﻿using StreamsitePlayer.Networking;
-using StreamsitePlayer.Player;
-using StreamsitePlayer.Streamsites;
+﻿using SeriesPlayer.Networking;
+using SeriesPlayer.Player;
+using SeriesPlayer.Streamsites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     interface ISitePlayer
     {

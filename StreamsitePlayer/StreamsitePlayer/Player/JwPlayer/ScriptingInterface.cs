@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.JwPlayer
+namespace SeriesPlayer.JwPlayer
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class ScriptingInterface

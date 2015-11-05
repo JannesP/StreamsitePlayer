@@ -1,4 +1,4 @@
-﻿namespace StreamsitePlayer.Forms
+﻿namespace SeriesPlayer.Forms
 {
     partial class FormLoadingIndicator
     {

@@ -7,11 +7,26 @@
     <ProjectGuid>{9F5251CE-AFB6-4FB0-B6E8-6DC877D97A0E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StreamsitePlayer</RootNamespace>
-    <AssemblyName>StreamsitePlayer</AssemblyName>
+    <RootNamespace>SeriesPlayer</RootNamespace>
+    <AssemblyName>SeriesPlayer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>StreamsitePlayer.Program</StartupObject>
+    <StartupObject>SeriesPlayer.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -114,6 +129,7 @@
     <Compile Include="Player\EpisodeChangeEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Streamsites\Providers\DubbedanimehdNetProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\BsToStreamingSite.cs" />
@@ -165,6 +181,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
     <None Include="packages.config" />
@@ -187,11 +204,30 @@
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(TargetDir)jwplayer"
-xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y</PostBuildEvent>
+xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y
+if $(ConfigurationName) == Release (
+   xcopy "$(SolutionDir)Uninstaller\bin\$(ConfigurationName)\uninst.exe" "$(TargetDir)" /Y
+   xcopy "$(SolutionDir)Updater\bin\$(ConfigurationName)\updater.exe" "$(TargetDir)" /Y
+   xcopy "$(SolutionDir)Installer\bin\$(ConfigurationName)\SeriesPlayerInstaller.exe" "$(TargetDir)" /Y
+)</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

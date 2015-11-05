@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Networking.Events
+namespace SeriesPlayer.Networking.Events
 {
     public enum NetworkRequestEvent
     {

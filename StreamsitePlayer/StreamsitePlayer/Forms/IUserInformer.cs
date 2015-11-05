@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamsitePlayer.Forms
+namespace SeriesPlayer.Forms
 {
     interface IUserInformer
     {

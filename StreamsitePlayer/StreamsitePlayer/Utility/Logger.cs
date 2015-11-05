@@ -1,4 +1,4 @@
-﻿using StreamsitePlayer;
+﻿using SeriesPlayer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     class Logger
     {

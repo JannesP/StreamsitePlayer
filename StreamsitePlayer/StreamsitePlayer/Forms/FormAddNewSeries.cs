@@ -1,5 +1,5 @@
-﻿using StreamsitePlayer.Streamsites;
-using StreamsitePlayer.Streamsites.Providers;
+﻿using SeriesPlayer.Streamsites;
+using SeriesPlayer.Streamsites.Providers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using StreamsitePlayer.Utility.Extensions;
+using SeriesPlayer.Utility.Extensions;
 
-namespace StreamsitePlayer.Forms
+namespace SeriesPlayer.Forms
 {
     public partial class FormAddNewSeries : Form
     {

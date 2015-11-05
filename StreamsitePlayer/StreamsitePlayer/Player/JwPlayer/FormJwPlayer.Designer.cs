@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace StreamsitePlayer
+namespace SeriesPlayer
 {
     partial class FormJwPlayer
     {

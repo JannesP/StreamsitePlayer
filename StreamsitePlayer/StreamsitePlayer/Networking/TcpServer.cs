@@ -1,5 +1,5 @@
-﻿using StreamsitePlayer.Networking.Events;
-using StreamsitePlayer.Networking.Messages;
+﻿using SeriesPlayer.Networking.Events;
+using SeriesPlayer.Networking.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StreamsitePlayer.Networking
+namespace SeriesPlayer.Networking
 {
     public class TcpServer
     {

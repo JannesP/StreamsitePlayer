@@ -4,8 +4,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamsitePlayer", "StreamsitePlayer\StreamsitePlayer.csproj", "{9F5251CE-AFB6-4FB0-B6E8-6DC877D97A0E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3} = {4172115C-10BB-49E3-BBC9-264B6DB42CE3}
+		{A1D7587E-ABD9-48B8-9DB8-011C6035215D} = {A1D7587E-ABD9-48B8-9DB8-011C6035215D}
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D} = {61ACD691-3673-43E4-AA8F-954A8CD2BE0D}
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B} = {9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "..\Updater\Updater\Updater.csproj", "{A1D7587E-ABD9-48B8-9DB8-011C6035215D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{A1D7587E-ABD9-48B8-9DB8-011C6035215D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B} = {9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Uninstaller\Uninstaller.csproj", "{4172115C-10BB-49E3-BBC9-264B6DB42CE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35166CC4-3188-4183-9422-9D9FC8A8CB7F}"
+	ProjectSection(SolutionItems) = preProject
+		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdaterHelper", "UpdaterHelper\UpdaterHelper.csproj", "{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +41,18 @@ Global
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D7587E-ABD9-48B8-9DB8-011C6035215D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61ACD691-3673-43E4-AA8F-954A8CD2BE0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4172115C-10BB-49E3-BBC9-264B6DB42CE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7269E4-6D45-4CF4-9F5E-166066E0AC4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
