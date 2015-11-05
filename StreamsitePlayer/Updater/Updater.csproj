@@ -94,6 +94,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -129,7 +130,9 @@
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)StreamsitePlayer\$(OutDir)$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y</PreBuildEvent>
+    <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y
+xcopy "$(SolutionDir)UpdaterHelper\$(OutDir)UpdaterHelper.exe" "$(ProjectDir)" /Y
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

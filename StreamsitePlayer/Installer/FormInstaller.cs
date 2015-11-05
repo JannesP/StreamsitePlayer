@@ -211,7 +211,15 @@ namespace Installer
             {
                 if (Directory.Exists(folderBrowserDialogInstallationFolder.SelectedPath))
                 {
-                    textBoxInstallationDir.Text = folderBrowserDialogInstallationFolder.SelectedPath;
+                    if (folderBrowserDialogInstallationFolder.SelectedPath.EndsWith("\\SeriesPlayer") || folderBrowserDialogInstallationFolder.SelectedPath.EndsWith("\\SeriesPlayer\\"))
+                    {
+                        textBoxInstallationDir.Text = folderBrowserDialogInstallationFolder.SelectedPath;
+                    }
+                    else
+                    {
+                        textBoxInstallationDir.Text = Path.Combine(folderBrowserDialogInstallationFolder.SelectedPath, "SeriesPlayer");
+                    }
+                    
                 }
             }
         }

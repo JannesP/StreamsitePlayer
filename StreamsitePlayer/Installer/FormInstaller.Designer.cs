@@ -201,7 +201,7 @@
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(3, 58);
+            this.progressBar.Location = new System.Drawing.Point(3, 68);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(544, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
@@ -215,7 +215,7 @@
             this.panelProgress.Controls.Add(this.progressBar);
             this.panelProgress.Location = new System.Drawing.Point(13, 9);
             this.panelProgress.Name = "panelProgress";
-            this.panelProgress.Size = new System.Drawing.Size(551, 138);
+            this.panelProgress.Size = new System.Drawing.Size(551, 148);
             this.panelProgress.TabIndex = 9;
             // 
             // FormInstaller
