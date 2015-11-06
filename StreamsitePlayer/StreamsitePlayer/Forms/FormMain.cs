@@ -132,6 +132,22 @@ namespace SeriesPlayer
                     int newSkipEndValue = e.Data.ReadInt(0);
                     numericUpDownSkipEnd.Value = newSkipEndValue;
                     break;
+                case NetworkControlEvent.ToggleFullscreen:
+                    if (player != null)
+                    {
+                        player.Maximized = !player.Maximized;
+                    }
+                    break;
+                case NetworkControlEvent.Volume:
+                    if (player != null)
+                    {
+                        player.Volume = e.Data[0];
+                    }
+                    else
+                    {
+                        Settings.WriteValue(Settings.VOLUME, e.Data[0]);
+                    }
+                    break;
             }
         }
 

@@ -87,5 +87,20 @@ namespace SeriesPlayer.Utility.Extensions
                 return 0;
             }
         }
+
+        public static string ToReadableString(this byte[] array)
+        {
+            string readable = "[ ";
+            for (int i = 0; i < array.Length; i++)
+            {
+                readable += array[i].ToString();
+                if (i != (array.Length - 1))
+                {
+                    readable += ", ";
+                }
+            }
+
+            return readable + " ]";
+        }
     }
 }

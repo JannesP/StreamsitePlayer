@@ -235,6 +235,19 @@ namespace SeriesPlayer
             }
         }
 
+        public int Volume
+        {
+            get
+            {
+                return jwPlayer.Volume;
+            }
+
+            set
+            {
+                jwPlayer.Volume = value;
+            }
+        }
+
         public void Next()
         {
             nextRequested = true;

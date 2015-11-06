@@ -1,5 +1,6 @@
 ﻿using SeriesPlayer.Networking.Events;
 using SeriesPlayer.Networking.Messages;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,10 +106,11 @@ namespace SeriesPlayer.Networking
             try
             {
                 Socket client = listener.EndAcceptSocket(ar);
+                Logger.Log("TcpListener", "Accepted client from: " + client.RemoteEndPoint.ToString());
                 byte[] buffer = new byte[MSG_MAX_LENGTH];
                 BufferedSocket bufSoc = new BufferedSocket(client, buffer);
                 clients.Add(bufSoc);
-                bufSoc.Socket.BeginReceive(bufSoc.ReceiveBuffer, 0, bufSoc.ReceiveBuffer.Length, SocketFlags.None, ClientReceived, bufSoc);
+                bufSoc.BeginReceive(bufSoc.ReceiveBuffer, 0, bufSoc.ReceiveBuffer.Length, SocketFlags.None, ClientReceived);
             }
             catch (ObjectDisposedException)
             {
@@ -122,10 +124,16 @@ namespace SeriesPlayer.Networking
         private void ClientReceived(IAsyncResult ar)
         {
             BufferedSocket bufSoc = (BufferedSocket)ar.AsyncState;
-            int bytesReceived = bufSoc.Socket.EndReceive(ar);
+            int bytesReceived = bufSoc.EndReceive(ar);
             if (bytesReceived == 0) //client wants to disconnect
             {
+                Logger.Log("TcpListener", "Client " + bufSoc.Socket.RemoteEndPoint + " disconnected.");
                 bufSoc.Close();
+                clients.Remove(bufSoc);
+            }
+            else if (bytesReceived == -1)
+            {
+                Logger.Log("TcpListener", "Some client was disposed before disconnect ... probably my mistake, have to take a look at it.");
                 clients.Remove(bufSoc);
             }
             else
@@ -139,8 +147,9 @@ namespace SeriesPlayer.Networking
                 {
                     data = new byte[bytesReceived - 3];
                     Array.Copy(buffer, 3, data, 0, data.Length);
+                    //Logger.Log("TcpListener", "Got packet from " + bufSoc.Socket.RemoteEndPoint.ToString() + " with following data: " + buffer.ToReadableString() + ".");
                 }
-                bufSoc.Socket.BeginReceive(bufSoc.ReceiveBuffer, 0, bufSoc.ReceiveBuffer.Length, SocketFlags.None, ClientReceived, bufSoc);
+                bufSoc.BeginReceive(bufSoc.ReceiveBuffer, 0, bufSoc.ReceiveBuffer.Length, SocketFlags.None, ClientReceived);
                 switch (type)
                 {
                     case NetworkEventType.Control:
@@ -158,7 +167,7 @@ namespace SeriesPlayer.Networking
         private void ClientSendCallback(IAsyncResult ar)
         {
             BufferedSocket bufSoc = (BufferedSocket)ar.AsyncState;
-            int sendBytes = bufSoc.Socket.EndSend(ar);
+            int sendBytes = bufSoc.EndSend(ar);
             if (sendBytes < bufSoc.SendBuffer.Length)
             {
                 Logger.Log("NETWORKING", "Failed to send all of the data to " + bufSoc.Socket.RemoteEndPoint.ToString() + " ... " + (bufSoc.SendBuffer.Length - sendBytes) + " bytes are missing!");
@@ -172,8 +181,7 @@ namespace SeriesPlayer.Networking
 
         protected void SendToClient(BufferedSocket client, byte[] data)
         {
-            client.SendBuffer = data;
-            client.Socket.BeginSend(client.SendBuffer, 0, client.SendBuffer.Length, SocketFlags.None, ClientSendCallback, client);
+            client.BeginSend(data, 0, data.Length, SocketFlags.None, ClientSendCallback);
         }
 
         public void BroadcastMessage(string message)

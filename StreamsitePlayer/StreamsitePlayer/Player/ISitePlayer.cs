@@ -81,5 +81,11 @@ namespace SeriesPlayer
         {
             get;
         }
+
+        int Volume
+        {
+            set;
+            get;
+        }
     }
 }

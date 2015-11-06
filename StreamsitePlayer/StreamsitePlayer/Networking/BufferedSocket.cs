@@ -9,7 +9,17 @@ namespace SeriesPlayer.Networking
 {
     public class BufferedSocket
     {
-        private Socket socket;
+        private bool isReadyToSend = true;
+        private Queue<SendData> sendQueue = new Queue<SendData>();
+
+        private class SendData
+        {
+            public byte[] Buffer { get; set; }
+            public int Offset { get; set; }
+            public int Size { get; set; }
+            public SocketFlags Flags { get; set; }
+            public AsyncCallback Callback { get; set; }
+        }
 
         public Socket Socket
         {
@@ -29,6 +39,99 @@ namespace SeriesPlayer.Networking
             set;
         }
 
+        public IAsyncResult BeginReceive(byte[] buffer, int offset, int size, SocketFlags flags, AsyncCallback callback)
+        {
+            if (Socket != null)
+            {
+                return Socket.BeginReceive(buffer, offset, size, flags, callback, this);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public int EndReceive(IAsyncResult asyncResult)
+        {
+            if (Socket != null)
+            {
+                try
+                {
+                    return Socket.EndReceive(asyncResult);
+                }
+                catch (ObjectDisposedException)
+                {
+                    return -1;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void BeginSend(byte[] buffer, int offset, int size, SocketFlags flags, AsyncCallback callback)
+        {
+            BeginSend(buffer, offset, size, flags, callback, false);
+        }
+
+        private void BeginSend(byte[] buffer, int offset, int size, SocketFlags flags, AsyncCallback callback, bool queuedSend)
+        {
+            if (Socket != null)
+            {
+                if (isReadyToSend || queuedSend)
+                {
+                    isReadyToSend = false;
+                    SendBuffer = buffer;
+                    Socket.BeginSend(SendBuffer, offset, size, flags, callback, this);
+                }
+                else
+                {
+                    SendData sd = new SendData();
+                    sd.Buffer = buffer;
+                    sd.Offset = offset;
+                    sd.Size = size;
+                    sd.Flags = flags;
+                    sd.Callback = callback;
+                    sendQueue.Enqueue(sd);
+                }
+            }
+        }
+
+        private bool CheckForQueuedSend()
+        {
+            if (sendQueue.Count != 0)
+            {
+                SendData sd = sendQueue.Dequeue();
+                BeginSend(sd.Buffer, sd.Offset, sd.Size, sd.Flags, sd.Callback, true);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int EndSend(IAsyncResult asyncResult)
+        {
+            if (Socket != null)
+            {
+                if (!CheckForQueuedSend())
+                {
+                    isReadyToSend = true;
+                }
+                return Socket.EndSend(asyncResult);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public bool IsShutdown { get; private set; }
 
         public BufferedSocket(Socket socket, byte[] buffer)
@@ -40,21 +143,22 @@ namespace SeriesPlayer.Networking
         private void Shutdown()
         {
             IsShutdown = true;
-            if (socket != null)
+            if (Socket != null)
             {
-                socket.Shutdown(SocketShutdown.Both);
+                Socket.Shutdown(SocketShutdown.Both);
+                Socket.Close();
             }
         }
 
         public void Close()
         {
-            if (socket != null)
+            if (Socket != null)
             {
                 if (!IsShutdown)
                 {
                     Shutdown();
                 }
-                socket.Close();
+                Socket.Close();
             }
         }
     }

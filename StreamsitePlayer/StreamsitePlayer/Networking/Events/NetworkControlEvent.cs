@@ -15,7 +15,9 @@ namespace SeriesPlayer.Networking.Events
         PlayEpisode = 4,
         SeekTo = 5,
         SkipStart = 6,
-        SkipEnd = 7
+        SkipEnd = 7,
+        ToggleFullscreen = 8,
+        Volume = 9
     }
 
     public delegate void OnNetworkControlEventHandler(TcpServer source, NetworkControlEventArgs e);
