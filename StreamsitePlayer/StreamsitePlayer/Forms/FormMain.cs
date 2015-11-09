@@ -74,13 +74,27 @@ namespace SeriesPlayer
                     if (player != null && player.IsLoaded)
                     {
                         //just cut off the position and length because they SHOULD never exceed the maximum int
-                        psm = new PlayerStatusMessage(e.MessageId, player.IsPlaying, (int)player.Position, (int)player.Duration, player.BufferPercent);
+                        psm = new PlayerStatusMessage(e.MessageId, player.IsPlaying, (int)player.Position, (int)player.Duration, player.BufferPercent, (byte)player.Volume);
                     }
                     else
                     {
-                        psm = new PlayerStatusMessage(e.MessageId, false, 0, 0, 0);
+                        byte volume = (byte)Settings.GetNumber(Settings.VOLUME);
+                        psm = new PlayerStatusMessage(e.MessageId, false, 0, 0, 0, volume);
                     }
                     source.SendToClient(e.Socket, psm);
+                    break;
+                case NetworkRequestEvent.EpisodeList:
+                    if (currentProvider != null)
+                    {
+                        Series s = currentProvider.GetSeries();
+                        foreach (List<Episode> season in s.Seasons)
+                        {
+                            foreach(Episode episode in season)
+                            {
+                                source.SendToClient(e.Socket, new EpisodeListNetworkMessage(e.MessageId, episode));
+                            }
+                        }
+                    }
                     break;
             }
         }

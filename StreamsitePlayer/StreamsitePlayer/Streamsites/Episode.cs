@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SeriesPlayer.Networking;
+using SeriesPlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,47 +43,23 @@ namespace SeriesPlayer.Streamsites
         {
             return links;
         }
-
-        private int season;
+        
         public int Season
         {
-            get
-            {
-                return season;
-            }
-
-            set
-            {
-                season = value;
-            }
+            get;
+            set;
         }
-
-        private int number;
+        
         public int Number
         {
-            get
-            {
-                return number;
-            }
-
-            set
-            {
-                number = value;
-            }
+            get;
+            set;
         }
-
-        private string name;
+        
         public string Name
         {
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                name = value;
-            }
+            get;
+            set;
         }
 
         public override string ToString()
@@ -89,5 +67,27 @@ namespace SeriesPlayer.Streamsites
             return "E" + this.Number + " " + this.Name;
         }
 
+
+        public byte[] GetByteData()
+        {
+            byte[] nameBytes = Encoding.UTF8.GetBytes(Name);
+            byte[] numberBytes = Number.ToByteArray();
+            byte[] seasonBytes = Season.ToByteArray();
+
+            int arraySize = nameBytes.Length + numberBytes.Length + seasonBytes.Length;
+            if (arraySize > TcpServer.MSG_MAX_LENGTH)
+            {
+                byte[] buffer = new byte[TcpServer.MSG_MAX_LENGTH - numberBytes.Length - seasonBytes.Length];
+                Array.Copy(nameBytes, buffer, buffer.Length);
+                nameBytes = buffer;
+                arraySize = TcpServer.MSG_MAX_LENGTH;
+            }
+
+            byte[] byteData = new byte[arraySize];
+            Array.Copy(seasonBytes, byteData, seasonBytes.Length);
+            Array.Copy(numberBytes, 0, byteData, 4, numberBytes.Length);
+            Array.Copy(nameBytes, 0, byteData, 8, nameBytes.Length);
+            return byteData;
+        }
     }
 }

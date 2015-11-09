@@ -8,9 +8,9 @@ namespace SeriesPlayer.Networking.Events
 {
     public enum NetworkRequestEvent
     {
-        Series = 0,
-        Season = 1,
-        Episode = 2,
+        EpisodeList = 0,
+        SeasonCount = 1,
+        CurrentEpisode = 2,
         PlayerStatus = 3
     }
 

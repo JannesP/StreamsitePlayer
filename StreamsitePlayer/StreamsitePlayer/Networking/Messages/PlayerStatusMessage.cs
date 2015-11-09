@@ -10,18 +10,19 @@ namespace SeriesPlayer.Networking.Messages
 {
     class PlayerStatusMessage : NetworkMessage
     {
-        public PlayerStatusMessage(byte messageId, bool isPlaying, int position, int duration, byte bufferPercent)
+        public PlayerStatusMessage(byte messageId, bool isPlaying, int position, int duration, byte bufferPercent, byte volume)
         {
             base.Id = messageId;
             base.TypeVal = (byte)NetworkEventType.Answer;
             base.SpecificTypeVal = (byte)NetworkRequestEvent.PlayerStatus;
             byte[] positionBytes = position.ToByteArray();
             byte[] durationBytes = duration.ToByteArray();
-            byte[] data = new byte[10];
+            byte[] data = new byte[11];
             data[0] = (byte)(isPlaying ? 1 : 0);
             Array.Copy(positionBytes, 0, data, 1, positionBytes.Length);
             Array.Copy(durationBytes, 0, data, 5, durationBytes.Length);
             data[9] = bufferPercent;
+            data[10] = volume;
             base.Data = data;
         }
     }

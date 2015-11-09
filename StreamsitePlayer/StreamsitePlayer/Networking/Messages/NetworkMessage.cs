@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SeriesPlayer.Networking.Messages
 {
-    public class NetworkMessage
+    public abstract class NetworkMessage
     {
         protected byte[] Data
         {

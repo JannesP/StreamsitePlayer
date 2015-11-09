@@ -43,7 +43,7 @@ namespace SeriesPlayer.Networking
         // Thread signal. 
         public static ManualResetEvent tcpClientConnected = new ManualResetEvent(false);
 
-        private const int MSG_MAX_LENGTH = 512;
+        public const int MSG_MAX_LENGTH = 512;
         private static Encoding CHAR_ENCODING = Encoding.UTF8;
 
         private List<BufferedSocket> clients = new List<BufferedSocket>();
