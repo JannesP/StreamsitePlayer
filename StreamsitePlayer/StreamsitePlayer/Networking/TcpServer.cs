@@ -176,7 +176,14 @@ namespace SeriesPlayer.Networking
 
         public void SendToClient(BufferedSocket client, NetworkMessage msg)
         {
-            SendToClient(client, msg.GetFullMessageBytes());
+            byte[] msgData = msg.GetFullMessageBytes();
+            byte[] length = msgData.Length.ToByteArray();
+            byte[] completeMsg = new byte[length.Length + msgData.Length];
+
+            Array.Copy(length, completeMsg, length.Length);
+            Array.Copy(msgData, 0, completeMsg, length.Length, msgData.Length);
+
+            SendToClient(client, completeMsg);
         }
 
         protected void SendToClient(BufferedSocket client, byte[] data)
