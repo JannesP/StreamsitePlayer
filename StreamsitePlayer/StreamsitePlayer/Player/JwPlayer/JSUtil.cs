@@ -87,17 +87,17 @@ namespace SeriesPlayer.JwPlayer
 
         private static string ResolveString(object sysComObject)
         {
-            return sysComObject.ToString();
+            return Convert.ToString(sysComObject);
         }
 
         private static int ResolveInt(object sysComObject)
         {
-            return (int)sysComObject;
+            return Convert.ToInt32(sysComObject);
         }
 
         private static long ResolveLong(object sysComObject)
         {
-            return (long)sysComObject;
+            return Convert.ToInt64(sysComObject);
         }
 
         private static double ResolveDouble(object sysComObject)
@@ -107,7 +107,7 @@ namespace SeriesPlayer.JwPlayer
 
         private static bool ResolveBool(object sysComObject)
         {
-            return (bool)sysComObject;
+            return Convert.ToBoolean(sysComObject);
         }
     }
 }
