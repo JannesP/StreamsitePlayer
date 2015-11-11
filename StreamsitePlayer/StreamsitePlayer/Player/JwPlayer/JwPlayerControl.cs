@@ -141,7 +141,14 @@ namespace SeriesPlayer.JwPlayer
         {
             get
             {
-                return JSUtil.ExecuteFunctionForInt("GetVolume");
+                try
+                {
+                    return JSUtil.ExecuteFunctionForInt("GetVolume");
+                }
+                catch
+                {
+                    return Settings.GetNumber(Settings.VOLUME);
+                }
             }
             set
             {
