@@ -37,6 +37,57 @@
 			playerInstance.on('volume', OnVolumeChange);
 			playerInstance.on('error', OnError);
 			playerInstance.on('setupError', OnSetupError);
+            
+			
+			function registerWheelListeners() {
+			    var elements = document.getElementsByClassName("jw-slider-time");
+			    window.external.Log("jw-slider-time elements: " + elements.length);
+			    if (elements.length == 1) {
+			        for (var i = 0; i < elements.length; i++) {
+			            elements[i].addEventListener("mousewheel", seekbar_scroll);
+			        }
+			    }
+
+			    elements = document.getElementsByClassName("jw-video");
+			    window.external.Log("jw-video elements: " + elements.length);
+			    if (elements.length == 1) {
+			        for (var i = 0; i < elements.length; i++) {
+			            elements[i].addEventListener("mousewheel", volume_scroll);
+			        }
+			    }
+
+			    elements = document.getElementsByClassName("jw-icon-volume");
+			    window.external.Log("jw-icon-volume elements: " + elements.length);
+			    if (elements.length == 2) {
+			        for (var i = 0; i < elements.length; i++) {
+			            elements[i].addEventListener("mousewheel", volume_scroll);
+			        }
+			    }
+			}
+
+			function volume_scroll(e) {
+			    var up = e.wheelDelta > 0;
+
+			    const VOL_STEP = 5;
+			    var vol = GetVolume();
+			    vol += up ? VOL_STEP : -VOL_STEP;
+			    if (vol < 0) vol = 0;
+			    if (vol > 100) vol = 100;
+			    SetVolume(vol);
+			}
+
+			function seekbar_scroll(e) {
+			    var up = e.wheelDelta > 0;
+
+			    var duration = GetLength();
+			    const SCROLL_STEP = Math.ceil(duration / 150);
+			    var currPos = GetPosition();
+
+			    currPos += up ? SCROLL_STEP : -SCROLL_STEP;
+			    SetPosition(currPos);
+
+			    window.external.Log("got seekbar wheel event. Scrolled " + (up ? "up" : "down"));
+			}
 
 			function OnVolumeChange(event) {
 			    window.external.OnVolumeChange(event.volume);
@@ -47,6 +98,7 @@
 			}
 
 			function OnReady() {
+			    registerWheelListeners();
 			    window.external.OnReady();
 			}
 
