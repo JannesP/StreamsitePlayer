@@ -101,6 +101,11 @@ namespace UpdaterHelper
             foreach (FileInfo file in files)
             {
                 string temppath = Path.Combine(destDirName, file.Name);
+                FileInfo fi = new FileInfo(temppath);
+                if (fi.Exists)
+                {
+                    fi.Attributes &= ~FileAttributes.Hidden;
+                }
                 file.CopyTo(temppath, true);
             }
 
