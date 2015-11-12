@@ -24,6 +24,12 @@ namespace SeriesPlayer.JwPlayer
             base.ScriptErrorsSuppressed = true;
             base.ScrollBarsEnabled = false;
             base.WebBrowserShortcutsEnabled = false;
+            base.GotFocus += JwPlayerControl_GotFocus;
+        }
+
+        private void JwPlayerControl_GotFocus(object sender, EventArgs e)
+        {
+            Focus();
         }
 
         public readonly float AspectRatio = 16F / 9F;
@@ -148,6 +154,7 @@ namespace SeriesPlayer.JwPlayer
 
         public new void Focus()
         {
+            Logger.Log("JwPlayer", "Got focus.");
             base.Focus();
             try
             {
