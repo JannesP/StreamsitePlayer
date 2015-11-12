@@ -71,7 +71,7 @@ namespace SeriesPlayer
             {
                 case NetworkRequestEvent.PlayerStatus:
                     PlayerStatusMessage psm;
-                    if (player != null && player.IsLoaded)
+                    if (player != null && !player.IsDisposed && player.IsLoaded)
                     {
                         //just cut off the position and length because they SHOULD never exceed the maximum int
                         psm = new PlayerStatusMessage(e.MessageId, player.IsPlaying, (int)player.Position, (int)player.Duration, player.BufferPercent, (byte)player.Volume);
@@ -101,43 +101,8 @@ namespace SeriesPlayer
 
         private void TcpServer_NetworkControl(TcpServer source, NetworkControlEventArgs e)
         {
-            switch (e.EventId)
+            switch (e.EventId)  //happens always
             {
-                case NetworkControlEvent.PlayPause:
-                    if (player != null && player.IsLoaded)
-                    {
-                        if (player.IsPlaying)
-                        {
-                            player.Pause();
-                        }
-                        else
-                        {
-                            player.Play();
-                        }
-                    }
-                    break;
-                case NetworkControlEvent.Next:
-                    if (player != null) player.Next();
-                    break;
-                case NetworkControlEvent.Previous:
-                    if (player != null) player.Previous();
-                    break;
-                case NetworkControlEvent.PlayEpisode:
-                    if (player != null)
-                    {
-                        player.Play(selectedSeason, e.Data.ReadInt(0));
-                    }
-                    break;
-                case NetworkControlEvent.ClosePlayer:
-                    if (player != null) player.Close();
-                    break;
-                case NetworkControlEvent.SeekTo:
-                    if (player != null)
-                    {
-                        int pos = e.Data.ReadInt(0);
-                        player.Position = pos;
-                    }
-                    break;
                 case NetworkControlEvent.SkipStart:
                     int newSkipStartValue = e.Data.ReadInt(0);
                     numericUpDownSkipStart.Value = newSkipStartValue;
@@ -146,23 +111,56 @@ namespace SeriesPlayer
                     int newSkipEndValue = e.Data.ReadInt(0);
                     numericUpDownSkipEnd.Value = newSkipEndValue;
                     break;
-                case NetworkControlEvent.ToggleFullscreen:
-                    if (player != null)
-                    {
-                        player.Maximized = !player.Maximized;
-                    }
-                    break;
-                case NetworkControlEvent.Volume:
-                    if (player != null)
-                    {
-                        player.Volume = e.Data[0];
-                    }
-                    else
-                    {
-                        Settings.WriteValue(Settings.VOLUME, e.Data[0]);
-                    }
-                    break;
             }
+
+            if (player != null && !player.IsDisposed && player.IsLoaded)    //player available
+            {
+                switch (e.EventId)
+                {
+                    case NetworkControlEvent.PlayPause:
+                        if (player.IsPlaying)
+                        {
+                            player.Pause();
+                        }
+                        else
+                        {
+                            player.Play();
+                        }
+                        break;
+                    case NetworkControlEvent.Next:
+                        player.Next();
+                        break;
+                    case NetworkControlEvent.Previous:
+                        player.Previous();
+                        break;
+                    case NetworkControlEvent.PlayEpisode:
+                        player.Play(selectedSeason, e.Data.ReadInt(0));
+                        break;
+                    case NetworkControlEvent.ClosePlayer:
+                        player.Close();
+                        break;
+                    case NetworkControlEvent.SeekTo:
+                        int pos = e.Data.ReadInt(0);
+                        player.Position = pos;
+                        break;
+                    case NetworkControlEvent.ToggleFullscreen:
+                        player.Maximized = !player.Maximized;
+                        break;
+                    case NetworkControlEvent.Volume:
+                        player.Volume = e.Data[0];
+                        break;
+                }
+            }
+            else    //player not available
+            {
+                switch (e.EventId)
+                {
+                    case NetworkControlEvent.Volume:
+                        Settings.WriteValue(Settings.VOLUME, e.Data[0]);
+                        break;
+                }
+            }
+            
         }
 
         private void ComboBoxChangeSeries_SelectedIndexChanged(object sender, EventArgs e)
