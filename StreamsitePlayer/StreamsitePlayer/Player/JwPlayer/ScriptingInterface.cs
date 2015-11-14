@@ -19,6 +19,8 @@ namespace SeriesPlayer.JwPlayer
             void OnReady();
             void OnVolumeChange(int newVolume);
             void OnMuteChange(bool muted);
+            void OnPrevious();
+            void OnNext();
         }
         
         public IJwEventListener receiver = null;
@@ -93,6 +95,22 @@ namespace SeriesPlayer.JwPlayer
             if (receiver != null)
             {
                 receiver.OnMuteChange(muted);
+            }
+        }
+
+        public void OnPrevious()
+        {
+            if (receiver != null)
+            {
+                receiver.OnPrevious();
+            }
+        }
+
+        public void OnNext()
+        {
+            if (receiver != null)
+            {
+                receiver.OnNext();
             }
         }
 

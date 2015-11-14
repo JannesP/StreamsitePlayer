@@ -203,13 +203,22 @@ namespace SeriesPlayer
             nextRequested = true;
             if (currentEpisode != -1)
             {
-                if (++currentEpisode > streamProvider.GetEpisodeCount(currentSeason))
+                if (currentEpisode + 1 > streamProvider.GetEpisodeCount(currentSeason))
                 {
-                    if (++currentSeason > streamProvider.GetSeriesCount())
+                    if (currentSeason + 1 > streamProvider.GetSeriesCount())
                     {
+                        Util.ShowUserInformation("Already playing the last episode.");
                         return;
                     }
-                    currentEpisode = 1;
+                    else
+                    {
+                        currentEpisode = 1;
+                        currentSeason++;
+                    }
+                }
+                else
+                {
+                    currentEpisode++;
                 }
             }
             else
@@ -228,9 +237,14 @@ namespace SeriesPlayer
                 {
                     if (currentSeason == 1)
                     {
-                        currentSeason = streamProvider.GetSeriesCount();
+                        Util.ShowUserInformation("Already playing the first episode.");
+                        return;
                     }
-                    currentEpisode = streamProvider.GetEpisodeCount(currentSeason);
+                    currentEpisode = streamProvider.GetEpisodeCount(--currentSeason);
+                }
+                else
+                {
+                    currentEpisode--;
                 }
                 
             }
@@ -370,11 +384,11 @@ namespace SeriesPlayer
             }
         }
 
-        public void ReceiveJwLinks(string insertion, int requestId)
+        public void ReceiveJwLinks(string file, int requestId)
         {
             if (requestId == playNextId)
             {
-                if (insertion == "")
+                if (file == "")
                 {
                     Logger.Log("JwLink", "Got no file link");
                     Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond.");
@@ -382,13 +396,14 @@ namespace SeriesPlayer
                 }
                 else
                 {
-                    Logger.Log("JwLink", "Received link for playNextId " + playNextId + "with the insertion " + insertion);
+                    Logger.Log("JwLink", "Received link for playNextId " + playNextId + " with the file " + file);
 #if DEBUG
                     base.Controls.Remove(requestBrowser);
 #endif
                     if (!requestBrowser.IsDisposed) requestBrowser.Dispose();
                     nextFullscreen = jwPlayer.Maximized;
-                    jwPlayer.Play(insertion);
+                    Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
+                    jwPlayer.Play(file, "Season " + newEpisode.Season + " Episode " + newEpisode.Number + " - " + newEpisode.Name);
                     jwPlayer.Visible = true;
                     jwPlayer.Focus();
 
@@ -397,59 +412,6 @@ namespace SeriesPlayer
                     progressBarLoadingNext.Visible = false;
                     this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
                     nextRequested = false;
-
-                    UpdateLabelEpisode();
-                }
-            }
-        }
-
-        System.Threading.Timer timerLabelEpisodeHiding;
-        private const long LABEL_EPISODE_DISPLAY_TIME = 7000;
-        private void UpdateLabelEpisode()
-        {
-            if (labelEpisode.InvokeRequired)
-            {
-                labelEpisode.Invoke((MethodInvoker)(() =>
-                {
-                    labelEpisode.Visible = true;
-                    labelEpisode.Text = "Episode " + currentEpisode;
-                }));
-            }
-            else
-            {
-                labelEpisode.Visible = true;
-                labelEpisode.Text = "Episode " + currentEpisode;
-            }
-
-            Logger.Log("LABEL_EPISODE_HIDING", "Timer set for HideLabelEpisode() to " + LABEL_EPISODE_DISPLAY_TIME + "ms");
-            timerLabelEpisodeHiding = new System.Threading.Timer((state) => HideLabelEpisode(), null, LABEL_EPISODE_DISPLAY_TIME, -1);
-        }
-
-        private void HideLabelEpisode()
-        {
-            Logger.Log("LABEL_EPISODE_HIDING", "HideLabelEpisode() called.");
-            if (labelEpisode.InvokeRequired)
-            {
-                Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.InvokeRequired true");
-                labelEpisode.Invoke((MethodInvoker)(() =>
-                {
-                    Logger.Log("LABEL_EPISODE_HIDING", "invoke successful");
-                    if (!labelEpisode.IsDisposed)
-                    {
-                        Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.IsDisposed false, hiding label");
-                        labelEpisode.Visible = false;
-                        labelEpisode.Text = "Episode X";
-                    }
-                }));
-            }
-            else
-            {
-                Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.InvokeRequired false");
-                if (!labelEpisode.IsDisposed)
-                {
-                    Logger.Log("LABEL_EPISODE_HIDING", "labelEpisode.IsDisposed false, hiding label");
-                    labelEpisode.Visible = false;
-                    labelEpisode.Text = "Episode X";
                 }
             }
         }
@@ -609,6 +571,16 @@ namespace SeriesPlayer
         private void FormJwPlayer_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) this.Maximized = false;
+        }
+
+        public void OnPrevious()
+        {
+            Previous();
+        }
+
+        public void OnNext()
+        {
+            Next();
         }
     }
 }

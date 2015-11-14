@@ -16,7 +16,7 @@ namespace SeriesPlayer.Streamsites.Sites
         /// <param name="max">maximum or starting time in ms</param>
         void JwLinkStatusUpdate(int remainingTime, int max, int rqeuestId);
 
-        void ReceiveJwLinks(string insertion, int requestId);
+        void ReceiveJwLinks(string file, int requestId);
 
     }
 }

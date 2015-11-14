@@ -9,7 +9,32 @@
     right: 0px;
     bottom: 0px;
     left: 0px;
-    z-index: 1000;
     margin: 0px;
     position: fixed;
+}
+
+/*display title*/
+.jw-title { 
+	display: block;
+}
+.jw-flag-user-inactive.jw-state-playing .jw-title, .jw-flag-user-inactive.jw-state-buffering .jw-title {
+	display: none;
+}
+
+/*display next and prev buttons*/
+.jw-icon-next, .jw-icon-prev {
+	display: inline !important;
+}
+
+/*display play icon while paused*/
+.jw-display-icon-container.jw-background-color.jw-reset {
+	display: table;
+}
+.jwplayer.jw-state-paused .jw-icon-display:before {
+	content: "\e60e";
+	font-family: 'jw-icons';
+	padding-left: 5px;
+}
+.jwplayer.jw-state-playing .jw-display-icon-container {
+	display: none;
 }

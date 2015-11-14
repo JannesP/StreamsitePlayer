@@ -159,7 +159,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     }
                     string insertion = "file:\"" + file + "\",";   //file:"http://.../",
                     insertion += "\nimage:\"" + image + "\"";   //image:"http://.../"
-                    receiver.ReceiveJwLinks(insertion, requestId);
+                    receiver.ReceiveJwLinks(file, requestId);
                 }
             }
         }
