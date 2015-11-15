@@ -415,12 +415,20 @@ namespace SeriesPlayer
             }
             else if (e.UpdateRequired)
             {
-                DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Util.GetCurrentVersion() + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dr == DialogResult.Yes)
+                DirectoryInfo dirInfo = new DirectoryInfo(Util.GetAppFolder());
+                if (dirInfo.HasWritePermission())
                 {
-                    Process.Start(Path.Combine(Util.GetAppFolder(), "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id + " -ver=" + e.NewVersion);
-                    Application.Exit();
-                    return;
+                    DialogResult dr = MessageBox.Show("Found new version. Do you want to restart and update now?\n\n" + e.Changelog, Util.GetCurrentVersion() + "->" + e.NewVersion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dr == DialogResult.Yes)
+                    {
+                        Process.Start(Path.Combine(Util.GetAppFolder(), "Updater.exe"), "-waitforpid=" + Process.GetCurrentProcess().Id + " -ver=" + e.NewVersion);
+                        Application.Exit();
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("A new version was found but write access to the program folder is needed, please restart as admin.", Util.GetCurrentVersion() + "->" + e.NewVersion, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else if (!e.UpdateRequired && !autoUpdate)

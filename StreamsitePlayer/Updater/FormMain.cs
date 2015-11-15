@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.IO.Compression;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.AccessControl;
 
 namespace Updater
 {
@@ -38,6 +39,13 @@ namespace Updater
             cacheDir = Path.Combine(Environment.CurrentDirectory, CACHE_DIR);
             cacheFile = Path.Combine(Environment.CurrentDirectory, CACHE_FILE);
             decompressDir = Path.Combine(Environment.CurrentDirectory, DECOMPRESS_DIR);
+
+            if (!new DirectoryInfo(Environment.CurrentDirectory).HasWritePermission())
+            {
+                Logger.Log("WriteAccess", "We don't have write access in the current directory. Aborting ...");
+                canceled = true;
+            }
+
             InitializeComponent();
         }
 
