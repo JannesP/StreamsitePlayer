@@ -15,7 +15,14 @@ namespace SeriesPlayer.Networking.Messages
             base.Id = messageId;
             base.TypeVal = (byte)NetworkEventType.Answer;
             base.SpecificTypeVal = (byte)NetworkRequestEvent.EpisodeList;
-            base.Data = episode.GetByteData();
+            if (episode == null)
+            {
+                base.Data = new byte[] { 1, 2, 3, 4 };  //end marker
+            }
+            else
+            {
+                base.Data = episode.GetByteData();
+            }
         }
     }
 }

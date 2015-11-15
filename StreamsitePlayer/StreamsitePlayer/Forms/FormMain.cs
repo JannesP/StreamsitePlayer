@@ -94,6 +94,7 @@ namespace SeriesPlayer
                                 source.SendToClient(e.Socket, new EpisodeListNetworkMessage(e.MessageId, episode));
                             }
                         }
+                        source.SendToClient(e.Socket, new EpisodeListNetworkMessage(e.MessageId, null)); //send last episode marker
                     }
                     break;
             }
@@ -157,6 +158,12 @@ namespace SeriesPlayer
                 {
                     case NetworkControlEvent.Volume:
                         Settings.WriteValue(Settings.VOLUME, e.Data[0]);
+                        break;
+                    case NetworkControlEvent.PlayEpisode:
+                        player = new FormJwPlayer();
+                        player.Open(currentProvider);
+                        player.EpisodeChange += Player_EpisodeChange;
+                        player.Play(selectedSeason, e.Data.ReadInt(0));
                         break;
                 }
             }
@@ -234,6 +241,10 @@ namespace SeriesPlayer
             }
             Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
             Settings.SaveFileSettings();
+            if (tcpServer != null)
+            {
+                tcpServer.BroadcastInfo(InfoNetworkMessage.InfoMessage.SeriesChanged);
+            }
             BuildUIForCurrentProvider();
             HighlightCurrentEpisode(true);
         }

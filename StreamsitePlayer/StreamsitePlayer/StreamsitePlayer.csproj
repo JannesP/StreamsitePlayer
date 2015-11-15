@@ -107,6 +107,7 @@
     <Compile Include="Networking\Events\NetworkEvent.cs" />
     <Compile Include="Networking\Events\NetworkRequestEvent.cs" />
     <Compile Include="Networking\Messages\EpisodeListNetworkMessage.cs" />
+    <Compile Include="Networking\Messages\InfoNetworkMessage.cs" />
     <Compile Include="Networking\Messages\NetworkMessage.cs" />
     <Compile Include="Networking\Messages\PlayerStatusMessage.cs" />
     <Compile Include="Networking\TcpServer.cs" />

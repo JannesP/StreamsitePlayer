@@ -11,7 +11,7 @@ namespace SeriesPlayer.Networking.Events
         Request = 0,
         Control = 1,
         Answer = 2,
-        Message = 3
+        Info = 3
     }
 
     public abstract class NetworkEvent : EventArgs

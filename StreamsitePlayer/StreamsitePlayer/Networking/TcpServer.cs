@@ -191,14 +191,11 @@ namespace SeriesPlayer.Networking
             client.BeginSend(data, 0, data.Length, SocketFlags.None, ClientSendCallback);
         }
 
-        public void BroadcastMessage(string message)
+        public void BroadcastInfo(InfoNetworkMessage.InfoMessage msg)
         {
-            // Send the message to all clients
-            byte[] data = CHAR_ENCODING.GetBytes(message);
-            if (data.Length > MSG_MAX_LENGTH) throw new Exception("Can't send more data then we are allowed to!");
             foreach (BufferedSocket bufSoc in clients)
             {
-                SendToClient(bufSoc, data);
+                SendToClient(bufSoc, new InfoNetworkMessage(0, msg));
             }
         }
 

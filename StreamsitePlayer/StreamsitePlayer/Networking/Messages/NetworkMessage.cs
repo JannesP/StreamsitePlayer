@@ -34,6 +34,7 @@ namespace SeriesPlayer.Networking.Messages
 
         public byte[] GetFullMessageBytes()
         {
+            if (Data == null) Data = new byte[0];
             byte[] message = new byte[3 + Data.Length];
             message[0] = TypeVal;
             message[1] = SpecificTypeVal;
