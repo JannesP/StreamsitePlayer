@@ -19,10 +19,15 @@
 		<div id="myvideo" tabindex="0">Loading the player...</div>
 		<script type="text/javascript">
             jwplayer("myvideo").setup({
-				provider: "http",
-				--insertion--,
-				width: "100%",
-				aspectratio: "16:9",
+                playlist: [
+                    {
+                        file: "--file--",
+                        title: "--title--",
+                        "default": true
+                    }
+                ],
+				displaytitle: true,
+                displaydescription: false,
                 autostart: true
 			});
 		</script>
@@ -37,8 +42,44 @@
 			playerInstance.on('volume', OnVolumeChange);
 			playerInstance.on('error', OnError);
 			playerInstance.on('setupError', OnSetupError);
-            
-			
+
+
+			function setupNextPrev() {
+			    var element = document.getElementsByClassName("jw-icon-prev")[0];
+			    element = copyReplaceElement(element);
+			    element.addEventListener("click", prevClick);
+			    element = document.getElementsByClassName("jw-icon-next")[0];
+			    element = copyReplaceElement(element);
+			    element.addEventListener("click", nextClick);
+			}
+
+			function prevClick(e) {
+			    if (e.which == 1) {
+			        OnPrevious();
+			    }
+			}
+
+			function nextClick(e) {
+			    if (e.which == 1) {
+			        OnNext();
+			    }
+			}
+
+			function OnPrevious() {
+			    window.external.OnPrevious();
+			}
+
+			function OnNext() {
+			    window.external.OnNext();
+			}
+
+			function copyReplaceElement(element) {
+			    var old_element = element;
+			    var new_element = old_element.cloneNode(true);
+			    old_element.parentNode.replaceChild(new_element, old_element);
+			    return new_element;
+			}
+
 			function registerWheelListeners() {
 			    var elements = document.getElementsByClassName("jw-slider-time");
 			    window.external.Log("jw-slider-time elements: " + elements.length);
@@ -98,6 +139,7 @@
 			}
 
 			function OnReady() {
+			    setupNextPrev();
 			    registerWheelListeners();
 			    window.external.OnReady();
 			}

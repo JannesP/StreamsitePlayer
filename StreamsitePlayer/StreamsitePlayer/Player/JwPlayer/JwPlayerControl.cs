@@ -185,11 +185,12 @@ namespace SeriesPlayer.JwPlayer
             catch { }
         }
 
-        public void Play(string insertion)
+        public void Play(string file, string title)
         {
             string curDir = Directory.GetCurrentDirectory();
             string html = File.ReadAllText(JW_SITE_PATH);
-            html = html.Replace("--insertion--", insertion);
+            html = html.Replace("--file--", file);
+            html = html.Replace("--title--", title);
             html = html.Replace("--key--", Settings.GetString(Settings.JW_KEY));
             DisplayHtml(html); //blocks until the site is laoded!
             Play();

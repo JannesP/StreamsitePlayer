@@ -76,11 +76,10 @@ namespace SeriesPlayer.Streamsites.Sites
                     GetTargetBrowser().Dispose();
                     return;
                 }
-                string insertion = "file:\"" + file + "\"";   //file:"http://.../"
                 Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
                 if (jwReceiver != null)
                 {
-                    jwReceiver.ReceiveJwLinks(insertion, requestId);
+                    jwReceiver.ReceiveJwLinks(file, requestId);
                 }
                 GetTargetBrowser().Dispose();
             }
