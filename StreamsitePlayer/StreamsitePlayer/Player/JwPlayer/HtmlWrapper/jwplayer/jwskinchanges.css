@@ -34,7 +34,13 @@
 	content: "\e60e";
 	font-family: 'jw-icons';
 	padding-left: 5px;
+    opacity: .9;
 }
 .jwplayer.jw-state-playing .jw-display-icon-container {
 	display: none;
+}
+
+.jw-skin-seven .jw-display-icon-container {
+	padding: 0 0;
+	opacity: .83;
 }
