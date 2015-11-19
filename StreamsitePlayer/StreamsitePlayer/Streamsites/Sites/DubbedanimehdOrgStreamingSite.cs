@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
-    class DubbedanimehdNetStreamingSite : StreamingSite
+    class DubbedanimehdOrgStreamingSite : StreamingSite
     {
-        public DubbedanimehdNetStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public DubbedanimehdOrgStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
             this.link = link;
