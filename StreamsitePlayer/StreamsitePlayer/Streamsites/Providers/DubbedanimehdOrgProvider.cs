@@ -9,21 +9,21 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Providers
 {
-    class DubbedanimehdNetProvider : StreamProvider
+    class DubbedanimehdOrgProvider : StreamProvider
     {
         public const string NAME = "dubbedanimehd";
-        private const string URL_PRE = "http://www.dubbedanimehd.net/watch/";
+        private const string URL_PRE = "http://www.dubbedanimehd.org/watch/";
 
-        private string[] VALID_SITES = { DubbedanimehdNetStreamingSite.NAME };
+        private string[] VALID_SITES = { DubbedanimehdOrgStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
-            return "http://www.dubbedanimehd.net/watch/???/";
+            return "http://www.dubbedanimehd.org/watch/???/";
         }
 
         public override string GetReadableSiteName()
         {
-            return "dubbedanimehd.net";
+            return "dubbedanimehd.org";
         }
 
         public override string[] GetValidStreamingSites()
@@ -62,7 +62,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = new Episode();
                 string link = linkList[i];
 
-                e.AddLink(DubbedanimehdNetStreamingSite.NAME, link);
+                e.AddLink(DubbedanimehdOrgStreamingSite.NAME, link);
                 e.Number = episodes.Count + 1;
                 e.Name = "Episode " + e.Number.ToString();
                 e.Season = 0;
@@ -76,7 +76,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://www.dubbedanimehd.net/dubbed-anime";
+            return "http://www.dubbedanimehd.org/dubbed-anime";
         }
 
         public override bool IsSearchSupported()

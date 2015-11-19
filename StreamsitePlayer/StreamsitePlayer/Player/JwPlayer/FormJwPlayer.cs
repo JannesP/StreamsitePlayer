@@ -447,7 +447,11 @@ namespace SeriesPlayer
                     if (!requestBrowser.IsDisposed) requestBrowser.Dispose();
                     nextFullscreen = jwPlayer.Maximized;
                     Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
-                    jwPlayer.Play(file, "Season " + newEpisode.Season + " Episode " + newEpisode.Number + " - " + newEpisode.Name);
+                    string displayTitle = (newEpisode.Season == 0 ? "" : "Season " + newEpisode.Season + " ");
+                    string episodeString = "Episode " + newEpisode.Number;
+                    displayTitle += episodeString;
+                    displayTitle += episodeString == newEpisode.Name ? "" : " - " + newEpisode.Name;
+                    jwPlayer.Play(file, displayTitle);
                     jwPlayer.Visible = true;
                     jwPlayer.Focus();
 
