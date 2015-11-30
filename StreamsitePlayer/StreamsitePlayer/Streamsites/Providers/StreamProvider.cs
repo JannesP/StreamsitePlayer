@@ -23,8 +23,8 @@ namespace SeriesPlayer.Streamsites
             VALID_PROVIDERS = new List<string>();
             VALID_PROVIDERS.Add(BsToStreamProvider.NAME);
             Logger.Log("START", "Added " + BsToStreamProvider.NAME);
-            VALID_PROVIDERS.Add(DubbedanimehdOrgProvider.NAME);
-            Logger.Log("START", "Added " + DubbedanimehdOrgProvider.NAME);
+            VALID_PROVIDERS.Add(DubbedanimehdTvProvider.NAME);
+            Logger.Log("START", "Added " + DubbedanimehdTvProvider.NAME);
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
             Logger.Log("START", "Added " + TestProvider.NAME);
@@ -146,8 +146,8 @@ namespace SeriesPlayer.Streamsites
                     return new BsToStreamProvider();
                 case TestProvider.NAME:
                     return new TestProvider();
-                case DubbedanimehdOrgProvider.NAME:
-                    return new DubbedanimehdOrgProvider();
+                case DubbedanimehdTvProvider.NAME:
+                    return new DubbedanimehdTvProvider();
                 default:
                     return null;
             }

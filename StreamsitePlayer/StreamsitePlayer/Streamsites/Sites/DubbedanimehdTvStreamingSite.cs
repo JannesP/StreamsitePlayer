@@ -8,12 +8,12 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
-    class DubbedanimehdOrgStreamingSite : StreamingSite
+    class DubbedanimehdTvStreamingSite : StreamingSite
     {
-        public DubbedanimehdOrgStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public DubbedanimehdTvStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
-            this.link = link;
+            this.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.tv").Replace("dubbedanimehd.net", "dubbedanimehd.tv");
         }
 
         public const string NAME = "dubbedanimehd";
