@@ -9,21 +9,21 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Providers
 {
-    class DubbedanimehdOrgProvider : StreamProvider
+    class DubbedanimehdTvProvider : StreamProvider
     {
         public const string NAME = "dubbedanimehd";
-        private const string URL_PRE = "http://www.dubbedanimehd.org/watch/";
+        private const string URL_PRE = "http://www.dubbedanimehd.tv/watch/";
 
-        private string[] VALID_SITES = { DubbedanimehdOrgStreamingSite.NAME };
+        private string[] VALID_SITES = { DubbedanimehdTvStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
-            return "http://www.dubbedanimehd.org/watch/???/";
+            return "http://www.dubbedanimehd.tv/watch/???/";
         }
 
         public override string GetReadableSiteName()
         {
-            return "dubbedanimehd.org";
+            return "dubbedanimehd.tv";
         }
 
         public override string[] GetValidStreamingSites()
@@ -62,7 +62,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = new Episode();
                 string link = linkList[i];
 
-                e.AddLink(DubbedanimehdOrgStreamingSite.NAME, link);
+                e.AddLink(DubbedanimehdTvStreamingSite.NAME, link);
                 e.Number = episodes.Count + 1;
                 e.Name = "Episode " + e.Number.ToString();
                 e.Season = 0;
@@ -76,7 +76,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://www.dubbedanimehd.org/dubbed-anime";
+            return "http://www.dubbedanimehd.tv/dubbed-anime";
         }
 
         public override bool IsSearchSupported()
@@ -89,7 +89,7 @@ namespace SeriesPlayer.Streamsites.Providers
             var index = new Dictionary<string, string>();
             string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
 
-            const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.org/watch/";
+            const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.tv/watch/";
             const string END_LINK = "' title='";
             const string BEGINNING_NAME = "'>";
             const string END_NAME = "</a></li>";

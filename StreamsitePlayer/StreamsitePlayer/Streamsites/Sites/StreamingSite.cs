@@ -19,8 +19,8 @@ namespace SeriesPlayer.Streamsites
             {
                 case StreamcloudStreamingSite.NAME:
                     return new StreamcloudStreamingSite(targetBrowser, link);
-                case DubbedanimehdOrgStreamingSite.NAME:
-                    return new DubbedanimehdOrgStreamingSite(targetBrowser, link);
+                case DubbedanimehdTvStreamingSite.NAME:
+                    return new DubbedanimehdTvStreamingSite(targetBrowser, link);
                 case BsToStreamingSite.NAME:
                     return new BsToStreamingSite(targetBrowser, link);
                 default:
