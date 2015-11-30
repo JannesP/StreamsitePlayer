@@ -97,6 +97,7 @@ namespace SeriesPlayer
             comboBoxChangeSeries.Items.Clear();
             comboBoxChangeSeries.Items.AddRange(series.ToArray());
             comboBoxChangeSeries.Items.Add("-- add new --");
+            comboBoxChangeSeries.SelectedIndexChanged -= ComboBoxChangeSeries_SelectedIndexChanged;
             comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
 
             if (lastSeries != null)
