@@ -42,47 +42,23 @@ namespace SeriesPlayer.Streamsites
         {
             return links;
         }
-
-        private int season;
+        
         public int Season
         {
-            get
-            {
-                return season;
-            }
-
-            set
-            {
-                season = value;
-            }
+            get;
+            set;
         }
-
-        private int number;
+        
         public int Number
         {
-            get
-            {
-                return number;
-            }
-
-            set
-            {
-                number = value;
-            }
+            get;
+            set;
         }
-
-        private string name;
+        
         public string Name
         {
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                name = value;
-            }
+            get;
+            set;
         }
 
         public long PlayLocation
