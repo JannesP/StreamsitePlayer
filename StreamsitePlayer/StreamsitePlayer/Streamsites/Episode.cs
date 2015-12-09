@@ -17,6 +17,7 @@ namespace SeriesPlayer.Streamsites
             Season = season;
             Number = number;
             Name = name;
+            PlayLocation = 0L;
         }
 
         public Episode AddLink(string siteName, string link)
@@ -82,6 +83,12 @@ namespace SeriesPlayer.Streamsites
             {
                 name = value;
             }
+        }
+
+        public long PlayLocation
+        {
+            get;
+            set;
         }
 
         public override string ToString()

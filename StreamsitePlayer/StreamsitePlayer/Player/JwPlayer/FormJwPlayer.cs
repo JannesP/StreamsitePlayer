@@ -201,6 +201,7 @@ namespace SeriesPlayer
         public void Next()
         {
             nextRequested = true;
+            streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = 0L;
             if (currentEpisode != -1)
             {
                 if (currentEpisode + 1 > streamProvider.GetEpisodeCount(currentSeason))
@@ -423,6 +424,10 @@ namespace SeriesPlayer
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
         {
             lastPosition = timePlayed;
+            if (!nextRequested)
+            {
+                streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = timePlayed;
+            }
             CheckForAutoplay(timeLeft);
         }
 
@@ -480,13 +485,27 @@ namespace SeriesPlayer
         private void CheckForLateStart()
         {
             int skipSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING);
-            if (skipSeconds != 0)
+            long episodeLocation = streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation;
+            if (!nextRequested && Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION) && episodeLocation > skipSeconds)
             {
-                if (jwPlayer.Length > (skipSeconds * 1000))
+                episodeLocation = episodeLocation > 5000L ? episodeLocation - 5000L : 0L;   //start playback 5 seconds before
+                if (jwPlayer.Length > episodeLocation)
                 {
-                    jwPlayer.Position = skipSeconds * 1000;
+                    jwPlayer.Position = episodeLocation;
+                    Util.ShowUserInformation("Playing from last position.");
                 }
             }
+            else
+            {
+                if (skipSeconds != 0)
+                {
+                    if (jwPlayer.Length > (skipSeconds * 1000))
+                    {
+                        jwPlayer.Position = skipSeconds * 1000;
+                    }
+                }
+            }
+            
         }
 
         public void OnVolumeChange(int newVolume)
@@ -561,7 +580,7 @@ namespace SeriesPlayer
             }
         }
 
-        private void FormJwPlayer_Shown(object sender, EventArgs e)
+        private void FormJwPlayer_Load(object sender, EventArgs e)
         {
             Util.AddUserInformer(this);
         }

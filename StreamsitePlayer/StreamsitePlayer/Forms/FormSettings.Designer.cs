@@ -37,6 +37,7 @@
             this.checkBoxAutoUpdate = new System.Windows.Forms.CheckBox();
             this.buttonOpenAppFolder = new System.Windows.Forms.Button();
             this.buttonResetJwKey = new System.Windows.Forms.Button();
+            this.checkBoxRememberLocation = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -72,7 +73,7 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(498, 40);
+            this.buttonSave.Location = new System.Drawing.Point(498, 60);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 3;
@@ -83,7 +84,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(415, 40);
+            this.buttonCancel.Location = new System.Drawing.Point(415, 60);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
@@ -105,7 +106,8 @@
             // 
             // buttonOpenAppFolder
             // 
-            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 40);
+            this.buttonOpenAppFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 60);
             this.buttonOpenAppFolder.Name = "buttonOpenAppFolder";
             this.buttonOpenAppFolder.Size = new System.Drawing.Size(117, 23);
             this.buttonOpenAppFolder.TabIndex = 6;
@@ -115,8 +117,8 @@
             // 
             // buttonResetJwKey
             // 
-            this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResetJwKey.Location = new System.Drawing.Point(388, 9);
+            this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResetJwKey.Location = new System.Drawing.Point(388, 10);
             this.buttonResetJwKey.Name = "buttonResetJwKey";
             this.buttonResetJwKey.Size = new System.Drawing.Size(70, 23);
             this.buttonResetJwKey.TabIndex = 7;
@@ -124,11 +126,22 @@
             this.buttonResetJwKey.UseVisualStyleBackColor = true;
             this.buttonResetJwKey.Click += new System.EventHandler(this.buttonResetJwKey_Click);
             // 
+            // checkBoxRememberLocation
+            // 
+            this.checkBoxRememberLocation.AutoSize = true;
+            this.checkBoxRememberLocation.Location = new System.Drawing.Point(15, 62);
+            this.checkBoxRememberLocation.Name = "checkBoxRememberLocation";
+            this.checkBoxRememberLocation.Size = new System.Drawing.Size(164, 17);
+            this.checkBoxRememberLocation.TabIndex = 8;
+            this.checkBoxRememberLocation.Text = "Remember last play location?";
+            this.checkBoxRememberLocation.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(585, 75);
+            this.ClientSize = new System.Drawing.Size(585, 95);
+            this.Controls.Add(this.checkBoxRememberLocation);
             this.Controls.Add(this.buttonResetJwKey);
             this.Controls.Add(this.buttonOpenAppFolder);
             this.Controls.Add(this.checkBoxAutoUpdate);
@@ -158,5 +171,6 @@
         private System.Windows.Forms.CheckBox checkBoxAutoUpdate;
         private System.Windows.Forms.Button buttonOpenAppFolder;
         private System.Windows.Forms.Button buttonResetJwKey;
+        private System.Windows.Forms.CheckBox checkBoxRememberLocation;
     }
 }

@@ -33,6 +33,7 @@ namespace SeriesPlayer.Forms
             parent.Enabled = false;
             textBoxJwKey.Text = Settings.GetString(Settings.JW_KEY);
             checkBoxAutoUpdate.Checked = Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES);
+            checkBoxRememberLocation.Checked = Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION);
             this.Focus();
         }
 
@@ -50,6 +51,7 @@ namespace SeriesPlayer.Forms
         {
             Settings.WriteValue(Settings.JW_KEY, textBoxJwKey.Text);
             Settings.WriteValue(Settings.AUTOCHECK_FOR_UPDATES, checkBoxAutoUpdate.Checked);
+            Settings.WriteValue(Settings.REMEMBER_PLAY_LOCATION, checkBoxRememberLocation.Checked);
             Settings.SaveFileSettings();
             base.Close();
         }

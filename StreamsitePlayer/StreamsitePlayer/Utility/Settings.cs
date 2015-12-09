@@ -24,6 +24,7 @@ namespace SeriesPlayer
         public const string VOLUME = "volume";
         public const string MUTED = "muted";
         public const string AUTOCHECK_FOR_UPDATES = "updateCheckAtStartup";
+        public const string REMEMBER_PLAY_LOCATION = "rememberPlayLocation";
 
         private static class Defaults
         {
@@ -44,6 +45,7 @@ namespace SeriesPlayer
                 defaults.Add(VOLUME, "100");
                 defaults.Add(MUTED, "false");
                 defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
+                defaults.Add(REMEMBER_PLAY_LOCATION, "true");
             }
 
             public static string GetValue(string key)
