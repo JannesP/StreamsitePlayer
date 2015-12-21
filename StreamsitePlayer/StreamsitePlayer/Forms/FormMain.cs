@@ -231,13 +231,26 @@ namespace SeriesPlayer
             Size s = base.Size;
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
+
+            WinAPIHelper.SuspendDrawing(this.Handle);
+            flowPanelSeriesButtons.SuspendLayout();
+            flowPanelEpisodeButtons.SuspendLayout();
+
             ClearEpisodePanel();
-            seasonButtons = BuildButtonsForSeries(flowPanelSeriesButtons, tooltip); //add new buttons to the window
+
+            seasonButtons = BuildButtonsForSeries(flowPanelSeriesButtons, tooltip);
             episodeButtons = BuildButtonsForEpisodes(flowPanelEpisodeButtons, selectedSeason, tooltip);
+            
             flowPanelSeriesButtons.Controls.AddRange(seasonButtons.ToArray());
-            flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
+            flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());
+
             seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
 
+            flowPanelEpisodeButtons.ResumeLayout();
+            flowPanelSeriesButtons.ResumeLayout();
+            WinAPIHelper.ResumeDrawing(this.Handle);
+            Refresh();  //force redraw
+            
             HighlightCurrentEpisode(false);
 
             downloadToolStripMenuItem.Enabled = true;
