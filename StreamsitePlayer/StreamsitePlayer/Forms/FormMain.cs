@@ -550,5 +550,21 @@ namespace SeriesPlayer
                 labelUserInformer.Visible = false;
             }
         }
+
+        private void FormMain_Layout(object sender, LayoutEventArgs e)
+        {
+            ResizeFlowPanelEpisodeButtons();
+        }
+
+        private void flowPanelSeriesButtons_SizeChanged(object sender, EventArgs e)
+        {
+            ResizeFlowPanelEpisodeButtons();
+        }
+        
+        private void ResizeFlowPanelEpisodeButtons()
+        {
+            flowPanelEpisodeButtons.Location = new Point(flowPanelSeriesButtons.Location.X, flowPanelSeriesButtons.Location.Y + flowPanelSeriesButtons.Size.Height + PADDING);
+            flowPanelEpisodeButtons.Size = new Size(flowPanelSeriesButtons.Size.Width, this.ClientSize.Height - flowPanelEpisodeButtons.Location.Y - PADDING * 2);
+        }
     }
 }
