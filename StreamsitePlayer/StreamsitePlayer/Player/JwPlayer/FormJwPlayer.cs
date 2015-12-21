@@ -25,7 +25,7 @@ namespace SeriesPlayer
         StreamProvider streamProvider;
         private int currentEpisode;
         private int currentSeason;
-        private int streamcloudWaitTime;
+        private int siteWaitTime;
         private bool maximized = false;
         private JwPlayerControl jwPlayer;
         private bool nextRequested = false;
@@ -310,7 +310,7 @@ namespace SeriesPlayer
                 base.Controls.Add(requestBrowser);
 #endif
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
-                streamcloudWaitTime = site.GetEstimateWaitTime();
+                siteWaitTime = site.GetEstimateWaitTime();
                 site.RequestJwData(this, ++validRequestId);
                 playNextId = validRequestId;
                 progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
@@ -445,11 +445,11 @@ namespace SeriesPlayer
                 if (timeLeft <= 1000) jwPlayer.Pause();
                 if (!nextRequested)
                 {
-                    if (timeLeft <= (1000 + streamcloudWaitTime))
+                    if (timeLeft <= (1000 + siteWaitTime))
                     {
                         Next();
                     }
-                    else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + streamcloudWaitTime)))
+                    else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + siteWaitTime)))
                     {
                         Next();
                     }
@@ -518,23 +518,10 @@ namespace SeriesPlayer
             Settings.WriteValue(Settings.MUTED, muted);
         }
 
-        private Size oldClientSize;
-        private void FormJwPlayer_Resize(object sender, EventArgs e)
-        {
-            if (!this.maximized)
-            {
-                int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
-                int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
-
-                this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
-
-                oldClientSize = this.ClientSize;
-            }
-        }
-
         private void FormJwPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
             WinAPIHelper.AllowIdle();
+            WinAPIHelper.ResumeDrawing(this.Handle);
             Util.RemoveUserInformer(this);
         }
 
@@ -604,6 +591,66 @@ namespace SeriesPlayer
         public void OnNext()
         {
             Next();
+        }
+
+        private Size oldClientSize;
+        private bool isResizeHandled = false;
+        private bool wasMoved = false;
+        private bool wasResized = false;
+        //need this instead of resizeBegin cause that is also fired when form is moved.
+        private void FormJwPlayer_Resize(object sender, EventArgs e)
+        {
+            switch (WindowState)
+            {
+                case FormWindowState.Normal:
+                    wasResized = true;
+                    if (!isResizeHandled)
+                    {
+                        Logger.Log("PLAYER_RESIZE", "isResizeHandled");
+                        isResizeHandled = true;
+                    }
+                    break;
+                case FormWindowState.Maximized:
+                    Logger.Log("PLAYER_RESIZE", "Player is maximized.");
+                    break;
+                case FormWindowState.Minimized:
+                    Logger.Log("PLAYER_RESIZE", "Player is minimized.");
+                    break;
+            }
+        }
+
+        private void FormJwPlayer_ResizeEnd(object sender, EventArgs e)
+        {
+            if (isResizeHandled && !wasMoved && wasResized)
+            {
+                isResizeHandled = false;
+                SuspendLayout();
+                if (!this.maximized)
+                {
+                    int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
+                    int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
+
+                    if (heightChange >= widthChange)
+                    {
+                        this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
+                    }
+                    else
+                    {
+                        this.ClientSize = new Size(this.ClientSize.Width, (int)((float)this.ClientSize.Width / jwPlayer.AspectRatio));
+                    }
+
+                    oldClientSize = this.ClientSize;
+                }
+                ResumeLayout();
+            }
+            wasMoved = false;
+            wasResized = false;
+            oldClientSize = this.ClientSize;
+        }
+
+        private void FormJwPlayer_Move(object sender, EventArgs e)
+        {
+            wasMoved = true;
         }
     }
 }
