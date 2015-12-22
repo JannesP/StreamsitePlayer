@@ -81,5 +81,21 @@ namespace SeriesPlayer.Utility.Extensions
                 p.ScrollControlIntoView(c);
             }
         }
+
+        public static void AddAll<T>(this ICollection<T> target, IEnumerable<T> source)
+        {
+            if (target == null)
+                throw new ArgumentNullException("target");
+            if (source == null)
+                throw new ArgumentNullException("source");
+            foreach (T element in source)
+            {
+                try
+                {
+                    target.Add(element);
+                }
+                catch { }
+            }
+        }
     }
 }

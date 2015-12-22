@@ -23,6 +23,8 @@ namespace SeriesPlayer.Streamsites
                     return new DubbedanimehdTvStreamingSite(targetBrowser, link);
                 case BsToStreamingSite.NAME:
                     return new BsToStreamingSite(targetBrowser, link);
+                case ToonMeStreamingSite.NAME:
+                    return new ToonMeStreamingSite(targetBrowser, link);
                 default:
                     Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
                     return null;

@@ -311,8 +311,8 @@ namespace SeriesPlayer
 #endif
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
                 siteWaitTime = site.GetEstimateWaitTime();
-                site.RequestJwData(this, ++validRequestId);
-                playNextId = validRequestId;
+                playNextId = ++validRequestId;
+                site.RequestJwData(this, validRequestId);
                 progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
                 progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
                 Util.ShowUserInformation("Playing next: " + streamProvider.GetEpisode(season, episode).Number + " - " + streamProvider.GetEpisode(season, episode).Name);
