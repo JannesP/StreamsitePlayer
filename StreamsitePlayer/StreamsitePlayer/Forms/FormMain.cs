@@ -224,6 +224,7 @@ namespace SeriesPlayer
                     c.Dispose();
                 }
             }
+            buttonOpenHoster.Enabled = false;
         }
 
         private void BuildUIForCurrentProvider()
@@ -248,6 +249,7 @@ namespace SeriesPlayer
 
             flowPanelEpisodeButtons.ResumeLayout();
             flowPanelSeriesButtons.ResumeLayout();
+            buttonOpenHoster.Enabled = true;
             WinAPIHelper.ResumeDrawing(this.Handle);
             Refresh();  //force redraw
             
@@ -578,6 +580,15 @@ namespace SeriesPlayer
         {
             flowPanelEpisodeButtons.Location = new Point(flowPanelSeriesButtons.Location.X, flowPanelSeriesButtons.Location.Y + flowPanelSeriesButtons.Size.Height + PADDING);
             flowPanelEpisodeButtons.Size = new Size(flowPanelSeriesButtons.Size.Width, this.ClientSize.Height - flowPanelEpisodeButtons.Location.Y - PADDING * 2);
+        }
+
+        private void buttonOpenHoster_Click(object sender, EventArgs e)
+        {
+            if (currentProvider != null)
+            {
+                Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
+                Util.ShowUserInformation("Opened " + currentProvider.GetWebsiteLink() + " in your default browser.");
+            }
         }
     }
 }
