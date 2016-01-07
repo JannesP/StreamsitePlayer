@@ -54,7 +54,10 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
-            receiver.ReceiveJwLinks(GetFileLink(), requestId);
+            string jwString = GetFileLink();
+            jwString += "\",\ntype: \"mp4";
+
+            receiver.ReceiveJwLinks(jwString, requestId);
         }
 
         private string GetFileLink()
@@ -62,9 +65,13 @@ namespace SeriesPlayer.Streamsites.Sites
             string link = "";
 
             string page = Util.RequestSimplifiedHtmlSite(base.link);
-            string iFrame = page.GetSubstringBetween(0, "<iframe width=\"700\" height=\"420\" src=\"", "\" ");
+            string iFrame = page.GetSubstringBetween(0, "<iframe src=\"", "\" ");
             iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
-            link = iFrame.GetSubstringBetween(0, "file: \"", "\",");
+            link = iFrame.GetSubstringBetween(0, "},{file: \"", "\",");
+            if (link == "")
+            {
+                link = iFrame.GetSubstringBetween(0, "file: \"", "\",");
+            }
 
             return link;
         }
