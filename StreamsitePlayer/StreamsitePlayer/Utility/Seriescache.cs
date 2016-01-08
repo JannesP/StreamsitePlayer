@@ -43,6 +43,7 @@ namespace SeriesPlayer
                         sw.WriteLine("name." + episode.Name);   //name.whatever
                         sw.WriteLine("season." + episode.Season);   //season.whatever
                         sw.WriteLine("episode." + episode.Number);
+                        sw.WriteLine("playLocation." + episode.PlayLocation);
                         Dictionary<string, string> links = episode.GetAllAvailableLinks();
                         for (int i = 0; i < links.Count; i++)
                         {
@@ -112,6 +113,10 @@ namespace SeriesPlayer
                             break;
                         case "lastPlayedEpisode":
                             if (int.TryParse(parts[1], out res)) lastPlayedEpisode = res;
+                            break;
+                        case "playLocation":
+                            long resL;
+                            if (long.TryParse(parts[1], out resL)) currEpisode.PlayLocation = resL;
                             break;
                     }
                 }

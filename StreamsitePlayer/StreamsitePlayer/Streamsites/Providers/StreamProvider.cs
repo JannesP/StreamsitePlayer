@@ -17,6 +17,9 @@ namespace SeriesPlayer.Streamsites
 
         public static List<string> VALID_PROVIDERS;
 
+        protected Series series;
+        protected string siteLinkExtension = "";
+
         static StreamProvider()
         {
             Logger.Log("START", "Adding streaming providers.");
@@ -25,14 +28,36 @@ namespace SeriesPlayer.Streamsites
             Logger.Log("START", "Added " + BsToStreamProvider.NAME);
             VALID_PROVIDERS.Add(DubbedanimehdTvProvider.NAME);
             Logger.Log("START", "Added " + DubbedanimehdTvProvider.NAME);
+            VALID_PROVIDERS.Add(ToonMeStreamProvider.NAME);
+            Logger.Log("START", "Added " + ToonMeStreamProvider.NAME);
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
             Logger.Log("START", "Added " + TestProvider.NAME);
 #endif
         }
 
-        protected Series series;
-        protected string siteLinkExtension = "";
+        /// <summary>
+        /// Creates a new instance of the specified provider.
+        /// </summary>
+        /// <param name="name">The unique name of the provider [XxxxStreamProvider.NAME]</param>
+        /// <returns>A StreamProvider instance.</returns>
+        public static StreamProvider Create(string name)
+        {
+            switch (name)
+            {
+                case BsToStreamProvider.NAME:
+                    return new BsToStreamProvider();
+                case TestProvider.NAME:
+                    return new TestProvider();
+                case DubbedanimehdTvProvider.NAME:
+                    return new DubbedanimehdTvProvider();
+                case ToonMeStreamProvider.NAME:
+                    return new ToonMeStreamProvider();
+                default:
+                    return null;
+            }
+        }
+        
         /// <summary>
         /// Returns the linkExtension which was passed in the constructor.
         /// </summary>
@@ -131,26 +156,6 @@ namespace SeriesPlayer.Streamsites
         public Series GetSeries()
         {
             return series;
-        }
-
-        /// <summary>
-        /// Creates a new instance of the specified provider.
-        /// </summary>
-        /// <param name="name">The unique name of the provider [XxxxStreamProvider.NAME]</param>
-        /// <returns>A StreamProvider instance.</returns>
-        public static StreamProvider Create(string name)
-        {
-            switch (name)
-            {
-                case BsToStreamProvider.NAME:
-                    return new BsToStreamProvider();
-                case TestProvider.NAME:
-                    return new TestProvider();
-                case DubbedanimehdTvProvider.NAME:
-                    return new DubbedanimehdTvProvider();
-                default:
-                    return null;
-            }
         }
 
         /// <summary>

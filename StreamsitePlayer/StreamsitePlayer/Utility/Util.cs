@@ -83,24 +83,29 @@ namespace SeriesPlayer
 
         private static string RequestHtmlSite(string url)
         {
+            string responseFromServer = "";
             long start = DateTime.Now.Ticks;
             // Create a request for the URL. 
-            WebRequest request = WebRequest.Create(url);
-            Logger.Log("UA", ((HttpWebRequest)request).UserAgent);
-            // Get the response.
-            WebResponse response = request.GetResponse();
-            // Display the status.
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-            // Get the stream containing content returned by the server.
-            Stream dataStream = response.GetResponseStream();
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
-            string responseFromServer = reader.ReadToEnd();
-            // Clean up the streams and the response.
-            reader.Close();
-            response.Close();
-            Console.WriteLine("HttpRequest of " + url + " took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
+            try {
+                WebRequest request = WebRequest.Create(url);
+            
+                Logger.Log("UA", ((HttpWebRequest)request).UserAgent);
+                // Get the response.
+                WebResponse response = request.GetResponse();
+                // Display the status.
+                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                // Get the stream containing content returned by the server.
+                Stream dataStream = response.GetResponseStream();
+                // Open the stream using a StreamReader for easy access.
+                StreamReader reader = new StreamReader(dataStream);
+                // Read the content.
+                responseFromServer = reader.ReadToEnd();
+                // Clean up the streams and the response.
+                reader.Close();
+                response.Close();
+                Console.WriteLine("HttpRequest of " + url + " took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
+            }
+            catch { }
             return responseFromServer;
         }
 
@@ -112,7 +117,7 @@ namespace SeriesPlayer
             requestedRaw = requestedRaw.Replace("\n", "");
             requestedRaw = requestedRaw.Replace("    ", "");
             Console.WriteLine("Cutting unnececcery things out took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
-            requestedRaw = WebUtility.HtmlDecode(requestedRaw);
+            //requestedRaw = WebUtility.HtmlDecode(requestedRaw);
             return requestedRaw;
         }
 

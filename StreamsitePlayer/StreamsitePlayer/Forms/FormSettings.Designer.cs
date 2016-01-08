@@ -111,7 +111,7 @@
             // buttonOpenAppFolder
             // 
             this.buttonOpenAppFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 81);
+            this.buttonOpenAppFolder.Location = new System.Drawing.Point(265, 60);
             this.buttonOpenAppFolder.Name = "buttonOpenAppFolder";
             this.buttonOpenAppFolder.Size = new System.Drawing.Size(117, 23);
             this.buttonOpenAppFolder.TabIndex = 6;
@@ -122,7 +122,7 @@
             // buttonResetJwKey
             // 
             this.buttonResetJwKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResetJwKey.Location = new System.Drawing.Point(388, 9);
+            this.buttonResetJwKey.Location = new System.Drawing.Point(388, 10);
             this.buttonResetJwKey.Name = "buttonResetJwKey";
             this.buttonResetJwKey.Size = new System.Drawing.Size(70, 23);
             this.buttonResetJwKey.TabIndex = 7;
@@ -173,6 +173,16 @@
             this.checkBoxRemoteControl.Text = "Activate remote control? (via android app)";
             this.checkBoxRemoteControl.UseVisualStyleBackColor = true;
             // 
+            // checkBoxRememberLocation
+            // 
+            this.checkBoxRememberLocation.AutoSize = true;
+            this.checkBoxRememberLocation.Location = new System.Drawing.Point(15, 62);
+            this.checkBoxRememberLocation.Name = "checkBoxRememberLocation";
+            this.checkBoxRememberLocation.Size = new System.Drawing.Size(164, 17);
+            this.checkBoxRememberLocation.TabIndex = 8;
+            this.checkBoxRememberLocation.Text = "Remember last play location?";
+            this.checkBoxRememberLocation.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,6 +191,8 @@
             this.Controls.Add(this.checkBoxRemoteControl);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.numericUpDownPort);
+            this.ClientSize = new System.Drawing.Size(585, 95);
+            this.Controls.Add(this.checkBoxRememberLocation);
             this.Controls.Add(this.buttonResetJwKey);
             this.Controls.Add(this.buttonOpenAppFolder);
             this.Controls.Add(this.checkBoxAutoUpdate);
@@ -214,5 +226,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDownPort;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkBoxRemoteControl;
+        private System.Windows.Forms.CheckBox checkBoxRememberLocation;
     }
 }

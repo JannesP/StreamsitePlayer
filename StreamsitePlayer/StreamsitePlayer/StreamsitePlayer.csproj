@@ -133,12 +133,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Streamsites\Providers\DubbedanimehdTvProvider.cs" />
+    <Compile Include="Streamsites\Providers\ToonMeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\BsToStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdTvStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\IFileCallbackReceiver.cs" />
+    <Compile Include="Streamsites\Sites\ToonMeStreamingSite.cs" />
     <Compile Include="Utility\AutoClosingMessageBox.cs" />
     <Compile Include="Utility\MyExtensions.cs" />
+    <Compile Include="Utility\NativeMethods.cs" />
     <Compile Include="Utility\Seriescache.cs" />
     <Compile Include="Player\ISitePlayer.cs" />
     <Compile Include="Utility\Settings.cs" />

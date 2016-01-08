@@ -111,8 +111,10 @@ namespace SeriesPlayer
             this.Name = "FormJwPlayer";
             this.Text = "StreamsitePlayer loading ...";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormJwPlayer_FormClosing);
-            this.Shown += new System.EventHandler(this.FormJwPlayer_Shown);
+            this.Load += new System.EventHandler(this.FormJwPlayer_Load);
+            this.ResizeEnd += new System.EventHandler(this.FormJwPlayer_ResizeEnd);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormJwPlayer_KeyDown);
+            this.Move += new System.EventHandler(this.FormJwPlayer_Move);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -54,6 +54,7 @@
             this.flowPanelEpisodeButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.flowPanelSeriesButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.labelUserInformer = new System.Windows.Forms.Label();
+            this.buttonOpenHoster = new System.Windows.Forms.Button();
             this.menuStripFormMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipStart)).BeginInit();
@@ -62,6 +63,7 @@
             // menuStripFormMain
             // 
             this.menuStripFormMain.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStripFormMain.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStripFormMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.seriesToolStripMenuItem,
             this.fileToolStripMenuItem,
@@ -168,7 +170,7 @@
             // 
             this.checkBoxAutoplay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxAutoplay.AutoSize = true;
-            this.checkBoxAutoplay.Location = new System.Drawing.Point(231, 29);
+            this.checkBoxAutoplay.Location = new System.Drawing.Point(308, 29);
             this.checkBoxAutoplay.Name = "checkBoxAutoplay";
             this.checkBoxAutoplay.Size = new System.Drawing.Size(67, 17);
             this.checkBoxAutoplay.TabIndex = 10;
@@ -219,7 +221,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(464, 30);
+            this.label5.Location = new System.Drawing.Point(489, 30);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 13);
             this.label5.TabIndex = 16;
@@ -230,7 +232,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(356, 30);
+            this.label6.Location = new System.Drawing.Point(381, 30);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 15;
@@ -245,7 +247,7 @@
             0,
             0,
             0});
-            this.numericUpDownSkipStart.Location = new System.Drawing.Point(411, 28);
+            this.numericUpDownSkipStart.Location = new System.Drawing.Point(436, 28);
             this.numericUpDownSkipStart.Maximum = new decimal(new int[] {
             600,
             0,
@@ -266,9 +268,7 @@
             // 
             // flowPanelEpisodeButtons
             // 
-            this.flowPanelEpisodeButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowPanelEpisodeButtons.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.flowPanelEpisodeButtons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowPanelEpisodeButtons.Location = new System.Drawing.Point(12, 99);
             this.flowPanelEpisodeButtons.Name = "flowPanelEpisodeButtons";
@@ -279,11 +279,13 @@
             // 
             this.flowPanelSeriesButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowPanelSeriesButtons.AutoSize = true;
             this.flowPanelSeriesButtons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowPanelSeriesButtons.Location = new System.Drawing.Point(13, 55);
             this.flowPanelSeriesButtons.Name = "flowPanelSeriesButtons";
             this.flowPanelSeriesButtons.Size = new System.Drawing.Size(613, 38);
             this.flowPanelSeriesButtons.TabIndex = 22;
+            this.flowPanelSeriesButtons.SizeChanged += new System.EventHandler(this.flowPanelSeriesButtons_SizeChanged);
             // 
             // labelUserInformer
             // 
@@ -297,11 +299,23 @@
             this.labelUserInformer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.labelUserInformer.Visible = false;
             // 
+            // buttonOpenHoster
+            // 
+            this.buttonOpenHoster.Enabled = false;
+            this.buttonOpenHoster.Location = new System.Drawing.Point(220, 27);
+            this.buttonOpenHoster.Name = "buttonOpenHoster";
+            this.buttonOpenHoster.Size = new System.Drawing.Size(75, 23);
+            this.buttonOpenHoster.TabIndex = 24;
+            this.buttonOpenHoster.Text = "Open Hoster";
+            this.buttonOpenHoster.UseVisualStyleBackColor = true;
+            this.buttonOpenHoster.Click += new System.EventHandler(this.buttonOpenHoster_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 372);
+            this.Controls.Add(this.buttonOpenHoster);
             this.Controls.Add(this.labelUserInformer);
             this.Controls.Add(this.flowPanelSeriesButtons);
             this.Controls.Add(this.flowPanelEpisodeButtons);
@@ -316,13 +330,13 @@
             this.Controls.Add(this.menuStripFormMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripFormMain;
-            this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(654, 410);
+            this.MinimumSize = new System.Drawing.Size(652, 404);
             this.Name = "FormMain";
             this.Text = "SeriesPlayer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.Click += new System.EventHandler(this.PanelFocus_Click);
+            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FormMain_Layout);
             this.menuStripFormMain.ResumeLayout(false);
             this.menuStripFormMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSkipEnd)).EndInit();
@@ -358,6 +372,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowPanelEpisodeButtons;
         private System.Windows.Forms.FlowLayoutPanel flowPanelSeriesButtons;
         private System.Windows.Forms.Label labelUserInformer;
+        private System.Windows.Forms.Button buttonOpenHoster;
     }
 }
 

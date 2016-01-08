@@ -115,6 +115,8 @@
 			    if (vol < 0) vol = 0;
 			    if (vol > 100) vol = 100;
 			    SetVolume(vol);
+                //weird workaround to prevent the player to jump from 0->20 instead of 0->5
+			    if (GetVolume() != vol) SetVolume(vol);
 			}
 
 			function seekbar_scroll(e) {

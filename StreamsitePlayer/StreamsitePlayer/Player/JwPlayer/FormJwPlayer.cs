@@ -25,7 +25,7 @@ namespace SeriesPlayer
         StreamProvider streamProvider;
         private int currentEpisode;
         private int currentSeason;
-        private int streamcloudWaitTime;
+        private int siteWaitTime;
         private bool maximized = false;
         private JwPlayerControl jwPlayer;
         private bool nextRequested = false;
@@ -251,6 +251,7 @@ namespace SeriesPlayer
         public void Next()
         {
             nextRequested = true;
+            streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = 0L;
             if (currentEpisode != -1)
             {
                 if (currentEpisode + 1 > streamProvider.GetEpisodeCount(currentSeason))
@@ -296,6 +297,12 @@ namespace SeriesPlayer
                 {
                     currentEpisode--;
                 }
+                
+            }
+            else
+            {
+                currentEpisode = 1;
+                currentSeason = 1;
             }
             Play(currentSeason, currentEpisode);
         }
@@ -353,9 +360,9 @@ namespace SeriesPlayer
                 base.Controls.Add(requestBrowser);
 #endif
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
-                streamcloudWaitTime = site.GetEstimateWaitTime();
-                site.RequestJwData(this, ++validRequestId);
-                playNextId = validRequestId;
+                siteWaitTime = site.GetEstimateWaitTime();
+                playNextId = ++validRequestId;
+                site.RequestJwData(this, validRequestId);
                 progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
                 progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
                 Util.ShowUserInformation("Playing next: " + streamProvider.GetEpisode(season, episode).Number + " - " + streamProvider.GetEpisode(season, episode).Name);
@@ -467,6 +474,10 @@ namespace SeriesPlayer
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
         {
             lastPosition = timePlayed;
+            if (!nextRequested)
+            {
+                streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = timePlayed;
+            }
             CheckForAutoplay(timeLeft);
         }
 
@@ -484,11 +495,11 @@ namespace SeriesPlayer
                 if (timeLeft <= 1000) jwPlayer.Pause();
                 if (!nextRequested)
                 {
-                    if (timeLeft <= (1000 + streamcloudWaitTime))
+                    if (timeLeft <= (1000 + siteWaitTime))
                     {
                         Next();
                     }
-                    else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + streamcloudWaitTime)))
+                    else if ((this.SkipEndSeconds != 0) && (timeLeft < ((SkipEndSeconds * 1000) + siteWaitTime)))
                     {
                         Next();
                     }
@@ -524,6 +535,18 @@ namespace SeriesPlayer
         private void CheckForLateStart()
         {
             int skipSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING);
+            long episodeLocation = streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation;
+            if (!nextRequested && Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION) && episodeLocation > skipSeconds)
+            {
+                episodeLocation = episodeLocation > 5000L ? episodeLocation - 5000L : 0L;   //start playback 5 seconds before
+                if (jwPlayer.Duration > episodeLocation)
+                {
+                    jwPlayer.Position = episodeLocation;
+                    Util.ShowUserInformation("Playing from last position.");
+                }
+            }
+            else
+            {
             if (skipSeconds != 0)
             {
                 if (jwPlayer.Duration > (skipSeconds * 1000))
@@ -531,6 +554,8 @@ namespace SeriesPlayer
                     jwPlayer.Position = skipSeconds * 1000;
                 }
             }
+        }
+
         }
 
         public void OnVolumeChange(int newVolume)
@@ -543,23 +568,10 @@ namespace SeriesPlayer
             Settings.WriteValue(Settings.MUTED, muted);
         }
 
-        private Size oldClientSize;
-        private void FormJwPlayer_Resize(object sender, EventArgs e)
-        {
-            if (!this.maximized)
-            {
-                int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
-                int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
-
-                this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
-
-                oldClientSize = this.ClientSize;
-            }
-        }
-
         private void FormJwPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
             WinAPIHelper.AllowIdle();
+            WinAPIHelper.ResumeDrawing(this.Handle);
             Util.RemoveUserInformer(this);
         }
 
@@ -605,7 +617,7 @@ namespace SeriesPlayer
             }
         }
 
-        private void FormJwPlayer_Shown(object sender, EventArgs e)
+        private void FormJwPlayer_Load(object sender, EventArgs e)
         {
             Util.AddUserInformer(this);
         }
@@ -629,6 +641,66 @@ namespace SeriesPlayer
         public void OnNext()
         {
             Next();
+        }
+
+        private Size oldClientSize;
+        private bool isResizeHandled = false;
+        private bool wasMoved = false;
+        private bool wasResized = false;
+        //need this instead of resizeBegin cause that is also fired when form is moved.
+        private void FormJwPlayer_Resize(object sender, EventArgs e)
+        {
+            switch (WindowState)
+            {
+                case FormWindowState.Normal:
+                    wasResized = true;
+                    if (!isResizeHandled)
+                    {
+                        Logger.Log("PLAYER_RESIZE", "isResizeHandled");
+                        isResizeHandled = true;
+                    }
+                    break;
+                case FormWindowState.Maximized:
+                    Logger.Log("PLAYER_RESIZE", "Player is maximized.");
+                    break;
+                case FormWindowState.Minimized:
+                    Logger.Log("PLAYER_RESIZE", "Player is minimized.");
+                    break;
+            }
+        }
+
+        private void FormJwPlayer_ResizeEnd(object sender, EventArgs e)
+        {
+            if (isResizeHandled && !wasMoved && wasResized)
+            {
+                isResizeHandled = false;
+                SuspendLayout();
+                if (!this.maximized)
+                {
+                    int widthChange = Math.Abs(this.ClientSize.Width - oldClientSize.Width);
+                    int heightChange = Math.Abs(this.ClientSize.Height - oldClientSize.Height);
+
+                    if (heightChange >= widthChange)
+                    {
+                        this.ClientSize = new Size((int)((float)this.ClientSize.Height * jwPlayer.AspectRatio), this.ClientSize.Height);
+                    }
+                    else
+                    {
+                        this.ClientSize = new Size(this.ClientSize.Width, (int)((float)this.ClientSize.Width / jwPlayer.AspectRatio));
+                    }
+
+                    oldClientSize = this.ClientSize;
+                }
+                ResumeLayout();
+            }
+            wasMoved = false;
+            wasResized = false;
+            oldClientSize = this.ClientSize;
+        }
+
+        private void FormJwPlayer_Move(object sender, EventArgs e)
+        {
+            wasMoved = true;
         }
     }
 }

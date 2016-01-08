@@ -18,11 +18,15 @@ namespace SeriesPlayer.Utility.Extensions
         /// <returns>returns an empty string if either first or second were not found</returns>
         public static string GetSubstringBetween(this string stringToSearch, int startIndex, string first, string second, out int endIndex)
         {
-            int firstIndex = stringToSearch.IndexOf(first, startIndex) + first.Length;
-            if ((firstIndex - first.Length) == -1)
+            int firstIndex = stringToSearch.IndexOf(first, startIndex);
+            if ((firstIndex) == -1)
             {
                 endIndex = -1;
                 return "";
+            }
+            else
+            {
+                firstIndex += first.Length;
             }
             int secondIndex = stringToSearch.IndexOf(second, firstIndex + 1);
             if (secondIndex == -1)
@@ -122,6 +126,22 @@ namespace SeriesPlayer.Utility.Extensions
             }
 
             return readable + " ]";
+        }
+
+        public static void AddAll<T>(this ICollection<T> target, IEnumerable<T> source)
+        {
+            if (target == null)
+                throw new ArgumentNullException("target");
+            if (source == null)
+                throw new ArgumentNullException("source");
+            foreach (T element in source)
+            {
+                try
+                {
+                    target.Add(element);
+                }
+                catch { }
+            }
         }
     }
 }

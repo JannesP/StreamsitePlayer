@@ -215,6 +215,7 @@ namespace SeriesPlayer
             comboBoxChangeSeries.Items.Clear();
             comboBoxChangeSeries.Items.AddRange(series.ToArray());
             comboBoxChangeSeries.Items.Add("-- add new --");
+            comboBoxChangeSeries.SelectedIndexChanged -= ComboBoxChangeSeries_SelectedIndexChanged;
             comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
 
             if (lastSeries != null)
@@ -345,6 +346,7 @@ namespace SeriesPlayer
                     c.Dispose();
                 }
             }
+            buttonOpenHoster.Enabled = false;
         }
 
         private void BuildUIForCurrentProvider()
@@ -352,13 +354,27 @@ namespace SeriesPlayer
             Size s = base.Size;
             ToolTip tooltip = new ToolTip();
             tooltip.InitialDelay = 100;
+
+            WinAPIHelper.SuspendDrawing(this.Handle);
+            flowPanelSeriesButtons.SuspendLayout();
+            flowPanelEpisodeButtons.SuspendLayout();
+
             ClearEpisodePanel();
-            seasonButtons = BuildButtonsForSeries(flowPanelSeriesButtons, tooltip); //add new buttons to the window
+
+            seasonButtons = BuildButtonsForSeries(flowPanelSeriesButtons, tooltip);
             episodeButtons = BuildButtonsForEpisodes(flowPanelEpisodeButtons, selectedSeason, tooltip);
+            
             flowPanelSeriesButtons.Controls.AddRange(seasonButtons.ToArray());
-            flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());   
+            flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());
+
             seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
 
+            flowPanelEpisodeButtons.ResumeLayout();
+            flowPanelSeriesButtons.ResumeLayout();
+            buttonOpenHoster.Enabled = true;
+            WinAPIHelper.ResumeDrawing(this.Handle);
+            Refresh();  //force redraw
+            
             HighlightCurrentEpisode(false);
 
             downloadToolStripMenuItem.Enabled = true;
@@ -673,6 +689,31 @@ namespace SeriesPlayer
             else
             {
                 labelUserInformer.Visible = false;
+            }
+        }
+
+        private void FormMain_Layout(object sender, LayoutEventArgs e)
+        {
+            ResizeFlowPanelEpisodeButtons();
+        }
+
+        private void flowPanelSeriesButtons_SizeChanged(object sender, EventArgs e)
+        {
+            ResizeFlowPanelEpisodeButtons();
+        }
+        
+        private void ResizeFlowPanelEpisodeButtons()
+        {
+            flowPanelEpisodeButtons.Location = new Point(flowPanelSeriesButtons.Location.X, flowPanelSeriesButtons.Location.Y + flowPanelSeriesButtons.Size.Height + PADDING);
+            flowPanelEpisodeButtons.Size = new Size(flowPanelSeriesButtons.Size.Width, this.ClientSize.Height - flowPanelEpisodeButtons.Location.Y - PADDING * 2);
+        }
+
+        private void buttonOpenHoster_Click(object sender, EventArgs e)
+        {
+            if (currentProvider != null)
+            {
+                Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
+                Util.ShowUserInformation("Opened " + currentProvider.GetWebsiteLink() + " in your default browser.");
             }
         }
     }

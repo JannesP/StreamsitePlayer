@@ -19,6 +19,7 @@ namespace SeriesPlayer.Streamsites
             Season = season;
             Number = number;
             Name = name;
+            PlayLocation = 0L;
         }
 
         public Episode AddLink(string siteName, string link)
@@ -43,20 +44,14 @@ namespace SeriesPlayer.Streamsites
         {
             return links;
         }
-        
+
         public int Season
         {
             get;
             set;
-        }
-        
+            }
+
         public int Number
-        {
-            get;
-            set;
-        }
-        
-        public string Name
         {
             get;
             set;
@@ -67,6 +62,11 @@ namespace SeriesPlayer.Streamsites
             return "E" + this.Number + " " + this.Name;
         }
 
+        public string Name
+        {
+            get;
+            set;
+        }
 
         public byte[] GetByteData()
         {
@@ -88,6 +88,12 @@ namespace SeriesPlayer.Streamsites
             Array.Copy(numberBytes, 0, byteData, 4, numberBytes.Length);
             Array.Copy(nameBytes, 0, byteData, 8, nameBytes.Length);
             return byteData;
+        }
+
+        public long PlayLocation
+        {
+            get;
+            set;
         }
     }
 }

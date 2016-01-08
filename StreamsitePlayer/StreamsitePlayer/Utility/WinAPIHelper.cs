@@ -49,7 +49,15 @@ namespace SeriesPlayer.Utility
             }
         }
         
+        public static void SuspendDrawing(IntPtr hWnd)
+        {
+            NativeMethods.SendMessage(hWnd, NativeMethods.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+        }
 
+        public static void ResumeDrawing(IntPtr hWnd)
+        {
+            NativeMethods.SendMessage(hWnd, NativeMethods.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+        }
 
     }
 }

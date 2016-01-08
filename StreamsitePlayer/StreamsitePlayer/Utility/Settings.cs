@@ -26,6 +26,7 @@ namespace SeriesPlayer
         public const string AUTOCHECK_FOR_UPDATES = "updateCheckAtStartup";
         public const string REMOTE_CONTROL_PORT = "remoteControlPort";
         public const string REMOTE_CONTROL_ACTIVATED = "remoteControlActive";
+        public const string REMEMBER_PLAY_LOCATION = "rememberPlayLocation";
 
         private static class Defaults
         {
@@ -48,6 +49,7 @@ namespace SeriesPlayer
                 defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
                 defaults.Add(REMOTE_CONTROL_PORT, "8003");
                 defaults.Add(REMOTE_CONTROL_ACTIVATED, "true");
+                defaults.Add(REMEMBER_PLAY_LOCATION, "true");
             }
 
             public static string GetValue(string key)
