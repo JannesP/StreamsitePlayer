@@ -210,9 +210,9 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/StreamsitePlayer/Uninstaller/testInstallation
-/StreamsitePlayer/Updater/Properties/SharedAssemblyInfo.cs
-/StreamsitePlayer/Installer/Properties/SharedAssemblyInfo.cs
-/StreamsitePlayer/StreamsitePlayer/Properties/SharedAssemblyInfo.cs
-/StreamsitePlayer/Uninstaller/Properties/SharedAssemblyInfo.cs
-/StreamsitePlayer/Updater/UpdaterHelper.exe
+StreamsitePlayer/Uninstaller/testInstallation
+StreamsitePlayer/Updater/Properties/SharedAssemblyInfo.cs
+StreamsitePlayer/Installer/Properties/SharedAssemblyInfo.cs
+StreamsitePlayer/StreamsitePlayer/Properties/SharedAssemblyInfo.cs
+StreamsitePlayer/Uninstaller/Properties/SharedAssemblyInfo.cs
+StreamsitePlayer/Updater/UpdaterHelper.exe
