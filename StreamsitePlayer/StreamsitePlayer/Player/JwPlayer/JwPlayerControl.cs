@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeriesPlayer.Utility.ExtendedBrowser;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.JwPlayer
 {
-    class JwPlayerControl : WebBrowser
+    class JwPlayerControl : PopuplessBrowser
     {
         private const string JW_SITE_PATH = @"jwplayer\player.html";
         private const string JW_TEMP_SITE_PATH = @"jwplayer\tempPlayer.html";
@@ -18,7 +19,6 @@ namespace SeriesPlayer.JwPlayer
             base.Dock = DockStyle.Fill;
             base.Location = new System.Drawing.Point(0, 0);
             base.Name = "jwPlayer";
-            base.NewWindow += JwPlayerControl_NewWindow;
             base.AllowWebBrowserDrop = false;
             base.IsWebBrowserContextMenuEnabled = false;
             base.ScriptErrorsSuppressed = true;
@@ -33,11 +33,6 @@ namespace SeriesPlayer.JwPlayer
         }
 
         public readonly float AspectRatio = 16F / 9F;
-
-        private void JwPlayerControl_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;    //disable any popups
-        }
 
         public bool IsPlaying
         {
@@ -208,10 +203,6 @@ namespace SeriesPlayer.JwPlayer
             fi.Attributes |= FileAttributes.Hidden;
             string path = Path.Combine("file:///" + Util.GetAppFolder(), JW_TEMP_SITE_PATH);
             base.Navigate(new Uri(path));
-            while (base.ReadyState != WebBrowserReadyState.Complete)
-            {
-                Application.DoEvents();
-            }
         }
 
     }

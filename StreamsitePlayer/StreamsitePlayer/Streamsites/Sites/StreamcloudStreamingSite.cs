@@ -159,6 +159,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     }
                     string insertion = "file:\"" + file + "\",";   //file:"http://.../",
                     insertion += "\nimage:\"" + image + "\"";   //image:"http://.../"
+                    targetBrowser.DocumentCompleted -= TargetBrowser_DocumentCompleted;
                     receiver.ReceiveJwLinks(file, requestId);
                 }
             }
@@ -232,6 +233,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     {
                         Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
                     }
+                    targetBrowser.DocumentCompleted -= TargetBrowser_DocumentCompleted;
                     receiver.ReceiveFileLink(file, requestId);
                 }
             }

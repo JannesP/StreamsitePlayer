@@ -117,7 +117,7 @@ namespace SeriesPlayer
             requestedRaw = requestedRaw.Replace("\n", "");
             requestedRaw = requestedRaw.Replace("    ", "");
             Console.WriteLine("Cutting unnececcery things out took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
-            //requestedRaw = WebUtility.HtmlDecode(requestedRaw);
+            requestedRaw = WebUtility.HtmlDecode(requestedRaw);
             return requestedRaw;
         }
 
@@ -147,18 +147,12 @@ namespace SeriesPlayer
 
         public static WebBrowser CreatePopuplessBrowser()
         {
-            WebBrowser wb = new WebBrowser();
+            WebBrowser wb = new Utility.ExtendedBrowser.PopuplessBrowser();
             wb.ScriptErrorsSuppressed = true;
-            wb.NewWindow += Wb_NewWindow;
             wb.WebBrowserShortcutsEnabled = false;
             wb.IsWebBrowserContextMenuEnabled = false;
             wb.AllowWebBrowserDrop = false;
             return wb;
-        }
-
-        private static void Wb_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
         }
 
         public static string GetCurrentVersion()

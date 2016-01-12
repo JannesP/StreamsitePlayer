@@ -16,8 +16,9 @@ namespace SeriesPlayer.Streamsites.Providers
         public const string NAME = "bs.to";
         private const string URL_PRE = "http://bs.to/serie/";
         private const string STREAMCLOUD_SEARCH = "<a class=\"icon Streamcloud\" title=\"Streamcloud\"   href=\"";
+        private const string VIVO_SEARCH = "<a class=\"icon Vivo\" title=\"Vivo\"   href=\"";
 
-        private readonly string[] VALID_SITES = { BsToStreamingSite.NAME, StreamcloudStreamingSite.NAME };
+        private readonly string[] VALID_SITES = { BsToStreamcloudStreamingSite.NAME, BsToVivoStreamingSite.NAME, StreamcloudStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
@@ -104,16 +105,27 @@ namespace SeriesPlayer.Streamsites.Providers
                 name += " (" + html.GetSubstringBetween(index, "\">", "</span>") + ")";
                 e = new Episode(seasonNumber, i + 1, name);
 
+                index = html.IndexOf(VIVO_SEARCH, index);
+                if (index != -1)    //check if a vivo link is found
+                {
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
+                    {
+                        string vivoSite = "http://bs.to/" + html.GetSubstringBetween(index, VIVO_SEARCH, "\"");
+                        e.AddLink(BsToVivoStreamingSite.NAME, vivoSite);
+                    }
+                }
+
                 index = html.IndexOf(STREAMCLOUD_SEARCH, index);
                 if (index != -1)    //check if a streamcloud link is found
                 {
                     if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
                         string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(index, STREAMCLOUD_SEARCH, "\"");
-                        e.AddLink(BsToStreamingSite.NAME, streamcloudSite);
-                        threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
+                        e.AddLink(BsToStreamcloudStreamingSite.NAME, streamcloudSite);
                     }
                 }
+                
+                threadAnchor.Invoke((MethodInvoker)(() => FormMain.SeriesOpenCallback(e)));
                 episodes.Add(e);
             }
             return episodes;

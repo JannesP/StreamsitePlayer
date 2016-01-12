@@ -21,8 +21,12 @@ namespace SeriesPlayer.Streamsites
                     return new StreamcloudStreamingSite(targetBrowser, link);
                 case DubbedanimehdTvStreamingSite.NAME:
                     return new DubbedanimehdTvStreamingSite(targetBrowser, link);
-                case BsToStreamingSite.NAME:
-                    return new BsToStreamingSite(targetBrowser, link);
+                case "bsto_site":   //backward compatibility
+                case BsToStreamcloudStreamingSite.NAME:
+                    return new BsToStreamcloudStreamingSite(targetBrowser, link);
+                
+                case BsToVivoStreamingSite.NAME:
+                    return new BsToVivoStreamingSite(targetBrowser, link);
                 case ToonMeStreamingSite.NAME:
                     return new ToonMeStreamingSite(targetBrowser, link);
                 default:

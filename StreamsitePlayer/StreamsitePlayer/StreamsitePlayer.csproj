@@ -135,11 +135,18 @@
     <Compile Include="Streamsites\Providers\DubbedanimehdTvProvider.cs" />
     <Compile Include="Streamsites\Providers\ToonMeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
-    <Compile Include="Streamsites\Sites\BsToStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\BsToVivoStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\BsToStreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdTvStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\IFileCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\ToonMeStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\VivoStreamingSite.cs" />
     <Compile Include="Utility\AutoClosingMessageBox.cs" />
+    <Compile Include="Utility\ExtendedBrowser\ActiveXWrapper\DWebBrowserEvents2.cs" />
+    <Compile Include="Utility\ExtendedBrowser\ActiveXWrapper\IWebBrowser2.cs" />
+    <Compile Include="Utility\ExtendedBrowser\PopuplessBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utility\MyExtensions.cs" />
     <Compile Include="Utility\NativeMethods.cs" />
     <Compile Include="Utility\Seriescache.cs" />
@@ -221,6 +228,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(TargetDir)jwplayer"

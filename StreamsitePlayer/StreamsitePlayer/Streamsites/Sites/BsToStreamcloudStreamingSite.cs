@@ -9,12 +9,12 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
-    class BsToStreamingSite : StreamingSite
+    class BsToStreamcloudStreamingSite : StreamingSite
     {
-        public const string NAME = "bsto_site";
+        public const string NAME = "bsto_streamcloud_site";
         private StreamcloudStreamingSite streamcloudStreamingSite;
 
-        public BsToStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public BsToStreamcloudStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             
         }
