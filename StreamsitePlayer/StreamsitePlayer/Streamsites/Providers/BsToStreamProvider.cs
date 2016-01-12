@@ -105,22 +105,22 @@ namespace SeriesPlayer.Streamsites.Providers
                 name += " (" + html.GetSubstringBetween(index, "\">", "</span>") + ")";
                 e = new Episode(seasonNumber, i + 1, name);
 
-                index = html.IndexOf(VIVO_SEARCH, index);
-                if (index != -1)    //check if a vivo link is found
+                int indexVivo = html.IndexOf(VIVO_SEARCH, index);
+                if (indexVivo != -1)    //check if a vivo link is found
                 {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexVivo < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
-                        string vivoSite = "http://bs.to/" + html.GetSubstringBetween(index, VIVO_SEARCH, "\"");
+                        string vivoSite = "http://bs.to/" + html.GetSubstringBetween(indexVivo, VIVO_SEARCH, "\"");
                         e.AddLink(BsToVivoStreamingSite.NAME, vivoSite);
                     }
                 }
 
-                index = html.IndexOf(STREAMCLOUD_SEARCH, index);
-                if (index != -1)    //check if a streamcloud link is found
+                int indexStreamcloud = html.IndexOf(STREAMCLOUD_SEARCH, index);
+                if (indexStreamcloud != -1)    //check if a streamcloud link is found
                 {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (index < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexStreamcloud < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
-                        string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(index, STREAMCLOUD_SEARCH, "\"");
+                        string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(indexStreamcloud, STREAMCLOUD_SEARCH, "\"");
                         e.AddLink(BsToStreamcloudStreamingSite.NAME, streamcloudSite);
                     }
                 }
