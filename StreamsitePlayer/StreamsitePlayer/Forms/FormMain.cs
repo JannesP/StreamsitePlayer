@@ -51,10 +51,7 @@ namespace SeriesPlayer
             LoadCachedSeries();
             if (Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED))
             {
-                tcpServer = new TcpServer(Settings.GetNumber(Settings.REMOTE_CONTROL_PORT));
-                tcpServer.NetworkControl += TcpServer_NetworkControl;
-                tcpServer.NetworkRequest += TcpServer_NetworkRequest;
-                tcpServer.Start();
+                CreateTcp();
             }
 
             //Add event listeners after the loaded settings got set to avoid saving of the same settings
@@ -63,6 +60,14 @@ namespace SeriesPlayer
             numericUpDownSkipStart.ValueChanged += numericUpDownSkipStart_ValueChanged;
             
             comboBoxChangeSeries.MouseWheel += ComboBoxChangeSeries_MouseWheel;
+        }
+
+        private void CreateTcp()
+        {
+            tcpServer = new TcpServer(Settings.GetNumber(Settings.REMOTE_CONTROL_PORT));
+            tcpServer.NetworkControl += TcpServer_NetworkControl;
+            tcpServer.NetworkRequest += TcpServer_NetworkRequest;
+            tcpServer.Start();
         }
 
         private void TcpServer_NetworkRequest(TcpServer source, NetworkRequestEventArgs e)
@@ -228,7 +233,37 @@ namespace SeriesPlayer
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form formSettings = new FormSettings(this);
+            formSettings.FormClosed += FormSettings_FormClosed;
             formSettings.Show();
+        }
+
+        private void FormSettings_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            bool shouldTcpRun = Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED);
+            int port = Settings.GetNumber(Settings.REMOTE_CONTROL_PORT);
+            if (tcpServer != null)
+            {
+                if (shouldTcpRun)
+                {
+                    if (!tcpServer.IsRunning || tcpServer.Port != port)
+                    {
+                        tcpServer.Stop();
+                        CreateTcp();
+                    }
+                }
+                else
+                {
+                    tcpServer.Stop();
+                    tcpServer = null;
+                }
+            }
+            else
+            {
+                if (shouldTcpRun)
+                {
+                    CreateTcp();
+                }
+            }
         }
 
         public void OpenSeries(Series series)

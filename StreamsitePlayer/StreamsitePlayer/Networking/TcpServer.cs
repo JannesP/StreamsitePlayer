@@ -42,8 +42,17 @@ namespace SeriesPlayer.Networking
 
         // Thread signal. 
         public static ManualResetEvent tcpClientConnected = new ManualResetEvent(false);
-
         public const int MSG_MAX_LENGTH = 512;
+
+        public int Port { get; private set; }
+        public bool IsRunning
+        {
+            get
+            {
+                return listen;
+            }
+        }
+
         private static Encoding CHAR_ENCODING = Encoding.UTF8;
 
         private List<BufferedSocket> clients = new List<BufferedSocket>();
@@ -52,9 +61,9 @@ namespace SeriesPlayer.Networking
         private Thread listenThread;
         private bool listen = false;
 
-
         public TcpServer(int port)
         {
+            Port = port;
             tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
