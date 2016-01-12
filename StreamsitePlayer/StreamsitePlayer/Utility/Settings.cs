@@ -34,7 +34,7 @@ namespace SeriesPlayer
 
             static Defaults()
             {
-                defaults.Add(AUTOPLAY, "true");
+                defaults.Add(AUTOPLAY, "True");
                 defaults.Add(SKIP_END, "0");
                 defaults.Add(SKIP_BEGINNING, "0");
                 defaults.Add(LAST_SERIES, "");
@@ -45,11 +45,11 @@ namespace SeriesPlayer
                 defaults.Add(LAST_PLAYED_SERIES, "");
                 defaults.Add(LAST_PLAYED_PROVIDER, "0");
                 defaults.Add(VOLUME, "100");
-                defaults.Add(MUTED, "false");
-                defaults.Add(AUTOCHECK_FOR_UPDATES, "true");
+                defaults.Add(MUTED, "False");
+                defaults.Add(AUTOCHECK_FOR_UPDATES, "True");
                 defaults.Add(REMOTE_CONTROL_PORT, "8003");
-                defaults.Add(REMOTE_CONTROL_ACTIVATED, "true");
-                defaults.Add(REMEMBER_PLAY_LOCATION, "true");
+                defaults.Add(REMOTE_CONTROL_ACTIVATED, "False");
+                defaults.Add(REMEMBER_PLAY_LOCATION, "True");
             }
 
             public static string GetValue(string key)

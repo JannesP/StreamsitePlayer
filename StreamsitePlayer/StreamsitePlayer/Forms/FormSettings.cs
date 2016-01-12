@@ -13,6 +13,16 @@ namespace SeriesPlayer.Forms
 {
     public partial class FormSettings : Form
     {
+        private static string JW_LINK
+        {
+            get;
+        } = "http://www.jwplayer.com/pricing/";
+
+        private static string APK_LINK
+        {
+            get;
+        } = "http://62.75.142.161/streamplayer/SeriesPlayerRemote.apk";
+
         private Form parent;
 
         public FormSettings(Form parent)
@@ -40,7 +50,7 @@ namespace SeriesPlayer.Forms
 
         private void linkLabelJwKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Util.OpenLinkInDefaultBrowser("http://www.jwplayer.com/pricing/");
+            Util.OpenLinkInDefaultBrowser(JW_LINK);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -67,6 +77,11 @@ namespace SeriesPlayer.Forms
         {
             Settings.RestoreDefault(Settings.JW_KEY);
             textBoxJwKey.Text = Settings.GetString(Settings.JW_KEY);
+        }
+
+        private void linkLabelAndroidApk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Util.OpenLinkInDefaultBrowser(APK_LINK);
         }
     }
 }
