@@ -332,6 +332,7 @@
             this.MainMenuStrip = this.menuStripFormMain;
             this.MinimumSize = new System.Drawing.Size(652, 404);
             this.Name = "FormMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SeriesPlayer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.FormMain_Shown);

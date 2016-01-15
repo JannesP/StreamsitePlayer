@@ -173,7 +173,15 @@ namespace SeriesPlayer.Streamsites
 
         public void LoadSeries(Series series)
         {
-            this.series = series;
+            if (series != null)
+            {
+                this.series = series;
+            }
+            else
+            {
+                throw new ArgumentNullException("series");
+            }
+            
         }
     }
 }

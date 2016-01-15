@@ -33,7 +33,7 @@ namespace SeriesPlayer.Streamsites.Providers
             seasons[1].Add(new Episode(2, 4, "346346Hello World!513451"));
             seasons[1].Add(new Episode(2, 5, "643634Hello World616163!"));
             seasons[1].Add(new Episode(2, 6, "43634Hello World665487465!"));
-            base.series = new Series(seasons, "TestName", NAME, "test-series");
+            base.series = new Series(seasons, "TestName", NAME, "test-series", "http://www.google.de/");
         }
 
         public override string GetLinkInstructions()

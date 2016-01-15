@@ -8,117 +8,80 @@ namespace SeriesPlayer.Streamsites
 {
     public class Series : IEquatable<Series>
     {
-        private List<List<Episode>> seasons;
-        private string name, provider, linkExtension;
-        private int lastPlayedEpisode = 1, lastPlayedSeason = 1;
-
-        public Series(List<List<Episode>> seasons, string name, string provider, string linkExtension)
+        public Series(List<List<Episode>> seasons, string name, string provider, string linkExtension, string episodeOverviewLink)
         {
-            this.seasons = seasons;
+            this.Seasons = seasons;
             this.Name = name;
             this.Provider = provider;
             this.LinkExtension = linkExtension;
+            this.EpisodeOverviewLink = episodeOverviewLink;
         }
 
         public int Count
         {
             get
             {
-                return seasons.Count;
+                return Seasons.Count;
             }
+        }
+
+        public string EpisodeOverviewLink
+        {
+            get;
+            set;
         }
 
         public string Provider
         {
-            get
-            {
-                return provider;
-            }
-            set
-            {
-                provider = value;
-            }
+            get;
+            set;
         }
 
         public List<List<Episode>> Seasons
         {
-            get
-            {
-                return seasons;
-            }
-            set
-            {
-                seasons = value;
-            }
+            get;
+            set;
         }
 
         public List<Episode> this[int season]
         {
             get
             {
-                return seasons[season];
+                return Seasons[season];
             }
             set
             {
-                seasons[season] = value;
+                Seasons[season] = value;
             }
         }
 
         public string Name
         {
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                name = value;
-            }
+            get;
+            set;
         }
 
         public string LinkExtension
         {
-            get
-            {
-                return linkExtension;
-            }
-
-            set
-            {
-                linkExtension = value;
-            }
+            get;
+            set;
         }
 
         public int LastPlayedSeason
         {
-            get
-            {
-                return lastPlayedSeason;
-            }
-
-            set
-            {
-                lastPlayedSeason = value;
-            }
+            get;
+            set;
         }
 
         public int LastPlayedEpisode
         {
-            get
-            {
-                return lastPlayedEpisode;
-            }
-
-            set
-            {
-                lastPlayedEpisode = value;
-            }
+            get;
+            set;
         }
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
 
         public bool Equals(Series other)

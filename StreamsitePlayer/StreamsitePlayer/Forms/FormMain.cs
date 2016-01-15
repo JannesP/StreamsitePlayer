@@ -182,7 +182,7 @@ namespace SeriesPlayer
             {
                 if (seriesSelector.SelectedIndex == seriesSelector.Items.Count - 1) //add new selected
                 {
-                    new FormAddNewSeries(this).Show();
+                    new FormAddNewSeries(this).ShowParentCentered(this);
                 }
                 else
                 {
@@ -234,7 +234,7 @@ namespace SeriesPlayer
         {
             Form formSettings = new FormSettings(this);
             formSettings.FormClosed += FormSettings_FormClosed;
-            formSettings.Show();
+            formSettings.ShowParentCentered(this);
         }
 
         private void FormSettings_FormClosed(object sender, FormClosedEventArgs e)
@@ -666,7 +666,7 @@ namespace SeriesPlayer
         private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form f = new FormDownload(currentProvider);
-            f.Show();
+            f.ShowParentCentered(this);
         }
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
@@ -747,8 +747,17 @@ namespace SeriesPlayer
         {
             if (currentProvider != null)
             {
-                Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
-                Util.ShowUserInformation("Opened " + currentProvider.GetWebsiteLink() + " in your default browser.");
+                string link = currentProvider.GetSeries().EpisodeOverviewLink;
+                if (link != "")
+                {
+                    Util.OpenLinkInDefaultBrowser(currentProvider.GetSeries().EpisodeOverviewLink);
+                    Util.ShowUserInformation("Opened " + currentProvider.GetSeries().EpisodeOverviewLink + " in your default browser.");
+                }
+                else
+                {
+                    Util.ShowUserInformation("The link for this series is missing. Please recache to solve the problem.");
+                }
+                
             }
         }
     }

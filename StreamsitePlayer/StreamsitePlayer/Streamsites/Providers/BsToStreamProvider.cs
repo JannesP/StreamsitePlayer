@@ -51,7 +51,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "<h2>", "<");
-            series = new Series(seasons, seriesName, NAME, siteLinkExtension);
+            series = new Series(seasons, seriesName, NAME, siteLinkExtension, URL_PRE + siteLinkExtension);
             Seriescache.CacheSeries(series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;

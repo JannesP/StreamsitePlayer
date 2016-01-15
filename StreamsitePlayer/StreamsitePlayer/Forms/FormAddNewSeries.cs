@@ -16,7 +16,6 @@ namespace SeriesPlayer.Forms
     public partial class FormAddNewSeries : Form
     {
         private FormMain parent;
-        private bool addBySearch = false;
         private Dictionary<string, string> searchDictionary;
 
         public FormAddNewSeries(FormMain parent)
@@ -56,14 +55,7 @@ namespace SeriesPlayer.Forms
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             string seriesExtension = "";
-            if (addBySearch)
-            {
-                seriesExtension = searchDictionary[textBoxAddBySearch.Text];
-            }
-            else
-            {
-                seriesExtension = textBoxAddByExtension.Text;
-            }
+            seriesExtension = searchDictionary[textBoxAddBySearch.Text];
             OpenSeries(seriesExtension);
         }
 
@@ -73,27 +65,14 @@ namespace SeriesPlayer.Forms
             parent.Focus();
         }
 
-        private void buttonOpenProviderSite_Click(object sender, EventArgs e)
-        {
-            Util.OpenLinkInDefaultBrowser(StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem).GetWebsiteLink());
-        }
-
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
             var currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
             if (currentProvider.IsSearchSupported())
             {
-                addBySearch = true;
                 backgroundWorkerLoadAutoComplete.RunWorkerAsync(currentProvider);
                 FormLoadingIndicator.ShowDialog(this, "Loading autocomplete list, please be patient ...");
             }
-            else
-            {
-                addBySearch = false;
-            }
-            buttonAdd.Enabled = !addBySearch;
-            panelAddByExtension.Visible = !addBySearch;
-            panelAddBySearch.Visible = addBySearch;
         }
 
         private void textBoxAddBySearch_TextChanged(object sender, EventArgs e)
@@ -114,7 +93,15 @@ namespace SeriesPlayer.Forms
             textBoxAddBySearch.AutoCompleteMode = AutoCompleteMode.Suggest;
             textBoxAddBySearch.AutoCompleteSource = AutoCompleteSource.CustomSource;
             textBoxAddBySearch.AutoCompleteCustomSource = searchDictionary.Keys.ToAutoCompleteStringCollection();
+            buttonOpenOverview.Enabled = true;
+            textBoxAddBySearch.Enabled = true;
+            textBoxAddBySearch.Select();
             FormLoadingIndicator.CloseDialog();
+        }
+
+        private void buttonOpenOverview_Click(object sender, EventArgs e)
+        {
+            Util.OpenLinkInDefaultBrowser(StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem).GetWebsiteLink());
         }
     }
 }

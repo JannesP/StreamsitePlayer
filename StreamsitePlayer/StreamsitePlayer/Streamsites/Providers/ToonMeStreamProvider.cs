@@ -71,7 +71,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://www.toonme.net/";
+            return "http://www.toonme.tv/";
         }
 
         public override bool IsSearchSupported()
@@ -87,15 +87,16 @@ namespace SeriesPlayer.Streamsites.Providers
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
 
             int result = StreamProvider.RESULT_OK;
-            string page = Util.RequestSimplifiedHtmlSite(GetWebsiteLink().Remove(GetWebsiteLink().Length - 1) + siteLinkExtension);
+            string seriesUrl = GetWebsiteLink().Remove(GetWebsiteLink().Length - 1) + siteLinkExtension;
+            string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
-            string seriesName = page.GetSubstringBetween(0, "<h1 itemprop=\"name\"><img src=\"http://www.toonme.net/img/star-icon.png\">Watch ", "</h1>")
-                .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Online", "");
+            string seriesName = page.GetSubstringBetween(0, "<h1 itemprop=\"name\"><img src=\"http://www.toonme.tv/img/star-icon.png\">", "</h1>")
+                .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "").Replace(" English", "").Replace(" Dubbed", "");
 
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(page, seriesName));
-            base.series = new Series(seasons, seriesName, NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""));
+            base.series = new Series(seasons, seriesName, NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""), seriesUrl);
             Seriescache.CacheSeries(base.series);
             FormMain.SeriesOpenCallback(null);
 
@@ -131,7 +132,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = new Episode();
                 e.Season = 1;
                 e.Name = name;
-                e.AddLink(ToonMeStreamingSite.NAME, "http://www.toonme.net" + link);
+                e.AddLink(ToonMeStreamingSite.NAME, "http://www.toonme.tv" + link);
                 episodes.Add(e);
             }
 

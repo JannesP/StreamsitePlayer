@@ -64,6 +64,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormLoadingIndicator";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Loading ...";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormLoadingIndicator_FormClosing);
             this.Shown += new System.EventHandler(this.FormLoadingIndicator_Shown);

@@ -358,6 +358,7 @@
             this.Controls.Add(this.listBoxEpisodes);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormDownload";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "StreamDownload";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormDownload_FormClosing);
             this.Load += new System.EventHandler(this.FormDownload_Load);

@@ -35,6 +35,7 @@ namespace SeriesPlayer
         public FormJwPlayer()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
             this.KeyPreview = true;
             oldClientSize = this.ClientSize;
             

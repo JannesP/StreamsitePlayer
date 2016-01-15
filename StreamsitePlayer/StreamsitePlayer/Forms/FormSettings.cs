@@ -29,7 +29,7 @@ namespace SeriesPlayer.Forms
         {
             this.parent = parent;
             InitializeComponent();
-            
+            StartPosition = FormStartPosition.CenterParent;
         }
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)

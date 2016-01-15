@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeriesPlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,9 +20,12 @@ namespace SeriesPlayer.Forms
 
         public static void ShowDialog(Form parent, string message)
         {
-            FormLoadingIndicator form = new FormLoadingIndicator(parent, message);
-            FormLoadingIndicator.currentForm = form;
-            form.Show();
+            if (currentForm == null)
+            {
+                FormLoadingIndicator form = new FormLoadingIndicator(parent, message);
+                FormLoadingIndicator.currentForm = form;
+                form.ShowParentCentered(parent);
+            }
         }
 
         public static void CloseDialog()

@@ -32,6 +32,7 @@ namespace SeriesPlayer
                 sw.WriteLine("linkExtension." + series.LinkExtension);
                 sw.WriteLine("lastPlayedSeason." + series.LastPlayedSeason);
                 sw.WriteLine("lastPlayedEpisode." + series.LastPlayedEpisode);
+                sw.WriteLine("seriesLink." + series.EpisodeOverviewLink);
 
                 for (int s = 0; s < series.Count; s++)
                 {
@@ -63,6 +64,7 @@ namespace SeriesPlayer
             string seriesName = fileName;
             string seriesProvider = providerName;
             string linkExtension = fileName;
+            string seriesLink = "";
             int lastPlayedEpisode = 1, lastPlayedSeason = 1; 
             using (StreamReader sr = new StreamReader(File.OpenRead(filepath)))
             {
@@ -99,6 +101,9 @@ namespace SeriesPlayer
                             string[] hostAndLink = parts[1].Split(new char[] { ' ' }, 2);
                             currEpisode.AddLink(hostAndLink[0], hostAndLink[1]);
                             break;
+                        case "seriesLink":
+                            seriesLink = parts[1];
+                            break;
                         case "seriesname":
                             seriesName = parts[1];
                             break;
@@ -121,7 +126,7 @@ namespace SeriesPlayer
                     }
                 }
             }
-            Series series = new Series(seasons, seriesName, providerName, linkExtension);
+            Series series = new Series(seasons, seriesName, providerName, linkExtension, seriesLink);
             series.LastPlayedEpisode = lastPlayedEpisode;
             series.LastPlayedSeason = lastPlayedSeason;
             return series;

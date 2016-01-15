@@ -143,5 +143,13 @@ namespace SeriesPlayer.Utility.Extensions
                 catch { }
             }
         }
+
+        public static void ShowParentCentered(this Form newForm, Form owner)
+        {
+            int x = owner.Width / 2 - newForm.Width / 2 + owner.Location.X;
+            int y = owner.Height / 2 - newForm.Height / 2 + owner.Location.Y;
+            newForm.Location = new System.Drawing.Point(x, y);
+            newForm.Show(owner);
+        }
     }
 }
