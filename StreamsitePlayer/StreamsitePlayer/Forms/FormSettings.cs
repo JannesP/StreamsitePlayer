@@ -45,6 +45,7 @@ namespace SeriesPlayer.Forms
             checkBoxAutoUpdate.Checked = Settings.GetBool(Settings.AUTOCHECK_FOR_UPDATES);
             numericUpDownPort.Value = Settings.GetNumber(Settings.REMOTE_CONTROL_PORT);
             checkBoxRemoteControl.Checked = Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED);
+            checkBoxRememberLocation.Checked = Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION);
             this.Focus();
         }
 
@@ -64,6 +65,7 @@ namespace SeriesPlayer.Forms
             Settings.WriteValue(Settings.AUTOCHECK_FOR_UPDATES, checkBoxAutoUpdate.Checked);
             Settings.WriteValue(Settings.REMOTE_CONTROL_PORT, (int)numericUpDownPort.Value);
             Settings.WriteValue(Settings.REMOTE_CONTROL_ACTIVATED, checkBoxRemoteControl.Checked);
+            Settings.WriteValue(Settings.REMEMBER_PLAY_LOCATION, checkBoxRememberLocation.Checked);
             Settings.SaveFileSettings();
             base.Close();
         }
