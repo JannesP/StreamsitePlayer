@@ -23,8 +23,7 @@ namespace SeriesPlayer.Forms
 
         private State currentState = State.NORMAL;
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Bindable(true), DefaultValue(State.NORMAL), Category("Appearance"), Description("Defines the color of the progress bar.")]
         public State CurrentState
         {
             get
