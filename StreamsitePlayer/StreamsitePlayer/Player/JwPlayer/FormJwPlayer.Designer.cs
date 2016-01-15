@@ -33,7 +33,7 @@ namespace SeriesPlayer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormJwPlayer));
             this.labelRequestingStatus = new System.Windows.Forms.Label();
-            this.progressBarRequestingStatus = new System.Windows.Forms.ProgressBar();
+            this.progressBarRequestingStatus = new Forms.StateProgressBar();
             this.progressBarLoadingNext = new System.Windows.Forms.ProgressBar();
             this.labelUserInformer = new System.Windows.Forms.Label();
             this.buttonFullscreen = new System.Windows.Forms.Button();
@@ -123,7 +123,7 @@ namespace SeriesPlayer
         #endregion
 
         private System.Windows.Forms.Label labelRequestingStatus;
-        private System.Windows.Forms.ProgressBar progressBarRequestingStatus;
+        private Forms.StateProgressBar progressBarRequestingStatus;
         private System.Windows.Forms.ProgressBar progressBarLoadingNext;
         private System.Windows.Forms.Label labelUserInformer;
         private System.Windows.Forms.Button buttonFullscreen;

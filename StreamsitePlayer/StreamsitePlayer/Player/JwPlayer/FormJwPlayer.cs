@@ -250,61 +250,73 @@ namespace SeriesPlayer
 
         public void Next()
         {
-            nextRequested = true;
-            streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = 0L;
+            int newEpisode = currentEpisode;
+            int newSeason = currentSeason;
             if (currentEpisode != -1)
             {
-                if (currentEpisode + 1 > streamProvider.GetEpisodeCount(currentSeason))
+                if (newEpisode + 1 > streamProvider.GetEpisodeCount(newSeason))
                 {
-                    if (currentSeason + 1 > streamProvider.GetSeriesCount())
+                    if (newSeason + 1 > streamProvider.GetSeriesCount())
                     {
                         Util.ShowUserInformation("Already playing the last episode.");
+                        nextRequested = false;
                         return;
                     }
                     else
                     {
-                        currentEpisode = 1;
-                        currentSeason++;
+                        newEpisode = 1;
+                        newSeason++;
                     }
                 }
                 else
                 {
-                    currentEpisode++;
+                    newEpisode++;
                 }
             }
             else
             {
-                currentEpisode = 1;
-                currentSeason = 1;
+                newEpisode = 1;
+                newSeason = 1;
             }
-            Play(currentSeason, currentEpisode);
+
+            if (newEpisode != currentEpisode || newSeason != currentSeason)
+            {
+                nextRequested = true;
+                streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = 0L;
+                Play(newSeason, newEpisode);
+            }
         }
 
         public void Previous()
         {
-            if (currentEpisode != -1)
+            int newEpisode = currentEpisode;
+            int newSeason = currentSeason;
+            if (newEpisode != -1)
             {
-                if (currentEpisode == 1)
+                if (newEpisode == 1)
                 {
-                    if (currentSeason == 1)
+                    if (newSeason == 1)
                     {
                         Util.ShowUserInformation("Already playing the first episode.");
-                        return;
                     }
-                    currentEpisode = streamProvider.GetEpisodeCount(--currentSeason);
+                    newEpisode = streamProvider.GetEpisodeCount(--newSeason);
                 }
                 else
                 {
-                    currentEpisode--;
+                    newEpisode--;
                 }
-                
             }
             else
             {
-                currentEpisode = 1;
-                currentSeason = 1;
+                newEpisode = 1;
+                newSeason = 1;
             }
-            Play(currentSeason, currentEpisode);
+            if (newEpisode != currentEpisode || newSeason != currentSeason)
+            {
+                nextRequested = true;
+                streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation = 0L;
+                Play(newSeason, newEpisode);
+            }
         }
 
         public void Open(StreamProvider streamProvider)
@@ -329,6 +341,7 @@ namespace SeriesPlayer
         private WebBrowser requestBrowser;
         public void Play(int season, int episode)
         {
+            nextRequested = true;
             currentSeason = season;
             currentEpisode = episode;
             string episodeLink = "";
@@ -393,6 +406,7 @@ namespace SeriesPlayer
                     isPlaying = IsPlaying;
                 }
                 catch { isPlaying = false; }
+                progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;
                 if (!isPlaying)
                 {
                     jwPlayer.Visible = false;
@@ -442,8 +456,9 @@ namespace SeriesPlayer
                 if (file == "")
                 {
                     Logger.Log("JwLink", "Got no file link");
-                    Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond.");
+                    Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond properly.");
                     progressBarRequestingStatus.Value = 0;
+                    progressBarRequestingStatus.CurrentState = StateProgressBar.State.ERROR;
                 }
                 else
                 {
@@ -466,8 +481,8 @@ namespace SeriesPlayer
                     labelRequestingStatus.Visible = false;
                     progressBarLoadingNext.Visible = false;
                     this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
-                    nextRequested = false;
                 }
+                nextRequested = false;
             }
         }
 
@@ -534,9 +549,10 @@ namespace SeriesPlayer
 
         private void CheckForLateStart()
         {
-            int skipSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING);
+            int skipMilliSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING) * 1000;
             long episodeLocation = streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation;
-            if (!nextRequested && Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION) && episodeLocation > skipSeconds)
+            bool playSinceLast = Settings.GetBool(Settings.REMEMBER_PLAY_LOCATION);
+            if (!nextRequested && playSinceLast && episodeLocation > skipMilliSeconds)
             {
                 episodeLocation = episodeLocation > 5000L ? episodeLocation - 5000L : 0L;   //start playback 5 seconds before
                 if (jwPlayer.Duration > episodeLocation)
@@ -547,11 +563,11 @@ namespace SeriesPlayer
             }
             else
             {
-            if (skipSeconds != 0)
+            if (skipMilliSeconds != 0)
             {
-                if (jwPlayer.Duration > (skipSeconds * 1000))
+                if (jwPlayer.Duration > skipMilliSeconds)
                 {
-                    jwPlayer.Position = skipSeconds * 1000;
+                    jwPlayer.Position = skipMilliSeconds;
                 }
             }
         }
