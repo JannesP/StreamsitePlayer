@@ -2,7 +2,9 @@
 using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,7 +14,7 @@ namespace SeriesPlayer.Streamsites.Providers
     class ToonMeStreamProvider : StreamProvider
     {
         public const string NAME = "toonme";
-        private string[] VALID_SITES = new string[] { ToonMeStreamingSite.NAME }; 
+        private string[] VALID_SITES = new string[] { ToonMeStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
@@ -30,8 +32,24 @@ namespace SeriesPlayer.Streamsites.Providers
 
             string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink() + "cartoon-list/");
             index.AddAll(ParseSeriesOverview(site));
+            int nextIndex = site.IndexOf("next page-numbers");
+            while (nextIndex != -1)
+            {
+                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
+                site = Util.RequestSimplifiedHtmlSite(nextPage);
+                index.AddAll(ParseSeriesOverview(site));
+                nextIndex = site.IndexOf("next page-numbers");
+            }
             site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink() + "anime-dubbed/");
             index.AddAll(ParseSeriesOverview(site));
+            nextIndex = site.IndexOf("next page-numbers");
+            while (nextIndex != -1)
+            {
+                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
+                site = Util.RequestSimplifiedHtmlSite(nextPage);
+                index.AddAll(ParseSeriesOverview(site));
+                nextIndex = site.IndexOf("next page-numbers");
+            }
 
             return index;
         }
