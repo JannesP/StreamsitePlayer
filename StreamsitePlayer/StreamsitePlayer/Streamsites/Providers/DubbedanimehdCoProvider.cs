@@ -9,21 +9,21 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Providers
 {
-    class DubbedanimehdTvProvider : StreamProvider
+    class DubbedanimehdCoProvider : StreamProvider
     {
         public const string NAME = "dubbedanimehd";
-        private const string URL_PRE = "http://www.dubbedanimehd.tv/watch/";
+        private const string URL_PRE = "http://www.dubbedanimehd.co/watch/";
 
         private string[] VALID_SITES = { DubbedanimehdTvStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
-            return "http://www.dubbedanimehd.tv/watch/???/";
+            return "http://www.dubbedanimehd.co/watch/???/";
         }
 
         public override string GetReadableSiteName()
         {
-            return "dubbedanimehd.tv";
+            return "dubbedanimehd.co";
         }
 
         public override string[] GetValidStreamingSites()
@@ -76,7 +76,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://www.dubbedanimehd.tv/dubbed-anime";
+            return "http://www.dubbedanimehd.co/dubbed-anime";
         }
 
         public override bool IsSearchSupported()
@@ -89,7 +89,7 @@ namespace SeriesPlayer.Streamsites.Providers
             var index = new Dictionary<string, string>();
             string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
 
-            const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.tv/watch/";
+            const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.co/watch/";
             const string END_LINK = "' title='";
             const string BEGINNING_NAME = "'>";
             const string END_NAME = "</a></li>";

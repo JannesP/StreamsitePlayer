@@ -132,7 +132,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SharedAssemblyInfo.cs" />
-    <Compile Include="Streamsites\Providers\DubbedanimehdTvProvider.cs" />
+    <Compile Include="Streamsites\Providers\DubbedanimehdCoProvider.cs" />
     <Compile Include="Streamsites\Providers\ToonMeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\BsToVivoStreamingSite.cs" />

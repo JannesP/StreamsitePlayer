@@ -91,7 +91,7 @@ namespace SeriesPlayer.Streamsites.Providers
             string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
-            string seriesName = page.GetSubstringBetween(0, "<h1 itemprop=\"name\"><img src=\"http://www.toonme.tv/img/star-icon.png\">", "</h1>")
+            string seriesName = page.GetSubstringBetween(0, "<h1 itemprop=\"name\"><img src=\"http://www.toonme.us/img/star-icon.png\">", "</h1>")
                 .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "").Replace(" English", "").Replace(" Dubbed", "");
 
             List<List<Episode>> seasons = new List<List<Episode>>();
