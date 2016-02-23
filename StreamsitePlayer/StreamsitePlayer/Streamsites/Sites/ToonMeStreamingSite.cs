@@ -76,6 +76,16 @@ namespace SeriesPlayer.Streamsites.Sites
                     iFrame = iFrame.GetSubstringBetween(0, "<iframe src=\"", "\" ");
                     iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
                     link = iFrame.GetSubstringBetween(0, "file: '", "',");
+                    if (link == "")
+                    {
+                        iFrame = iFrame.GetSubstringBetween(0, "<iframe src=\"", "\" ");
+                        iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
+                        link = iFrame.GetSubstringBetween(0, "file: '", "',");
+                        if (link == "")
+                        {
+                            link = iFrame.GetSubstringBetween(0, "file: \"", "\",");
+                        }
+                    }
                 }
             }
 
