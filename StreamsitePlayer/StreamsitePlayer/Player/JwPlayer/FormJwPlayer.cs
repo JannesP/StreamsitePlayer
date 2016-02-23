@@ -454,6 +454,11 @@ namespace SeriesPlayer
         {
             if (requestId == playNextId)
             {
+                if (jwPlayer.InvokeRequired)
+                {
+                    jwPlayer.Invoke((MethodInvoker)(() => ReceiveJwLinks(file, requestId)));
+                    return;
+                }
                 if (file == "")
                 {
                     Logger.Log("JwLink", "Got no file link");

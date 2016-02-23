@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SeriesPlayer.Streamsites.Sites
@@ -49,10 +50,22 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
         {
-            receiver.ReceiveFileLink(GetFileLink(), requestId);
+            Thread thread = new Thread(() => ReturnFileLink(receiver, requestId));
+            thread.Start();
         }
 
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
+        {
+            Thread thread = new Thread(() => ReturnJwLink(receiver, requestId));
+            thread.Start();
+        }
+
+        private void ReturnFileLink(IFileCallbackReceiver receiver, int requestId)
+        {
+            receiver.ReceiveFileLink(GetFileLink(), requestId);
+        }
+
+        private void ReturnJwLink(IJwCallbackReceiver receiver, int requestId)
         {
             string jwString = GetFileLink();
             jwString += "\",\ntype: \"mp4";
