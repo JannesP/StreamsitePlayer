@@ -93,16 +93,22 @@ namespace SeriesPlayer.Streamsites.Providers
                 episodeIndex = episodeIndices[i];
                 Episode e = null;
                 int index = episodeIndex;
-                string name = html.GetSubstringBetween(index, "<strong>", "</strong>");
-                if (name != "")
+                string name = html.GetSubstringBetween(index, "<strong>", "</strong>", out index);
+                if (name == "" || i == episodeIndices.Count - 1 || index > episodeIndices[i + 1])
                 {
-                    index = html.IndexOf("<strong>", index);
+                    index = episodeIndex;
+                    name = "";
+                }
+                string nameExt = html.GetSubstringBetween(index, "<span lang=en\">", "</span>", out index);
+                if (nameExt == "" || i == episodeIndices.Count - 1 || index > episodeIndices[i + 1])
+                {
+                    index = episodeIndex;
+                    nameExt = "";
                 }
                 else
                 {
-                    index = html.IndexOf("<span lang=", index);
+                    name += " (" + nameExt + ")";
                 }
-                name += " (" + html.GetSubstringBetween(index, "\">", "</span>") + ")";
                 e = new Episode(seasonNumber, i + 1, name);
 
                 int indexVivo = html.IndexOf(VIVO_SEARCH, index);
