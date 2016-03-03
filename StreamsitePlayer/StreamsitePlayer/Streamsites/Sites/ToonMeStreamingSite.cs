@@ -79,30 +79,31 @@ namespace SeriesPlayer.Streamsites.Sites
 
             string page = Util.RequestSimplifiedHtmlSite(base.link);
             string iFrame = page.GetSubstringBetween(0, "<iframe src=\"", "\" ");
-            iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
-            link = iFrame.GetSubstringBetween(0, "},{file: \"", "\",");
-            if (link == "")
-            {
-                link = iFrame.GetSubstringBetween(0, "file: \"", "\",");
-                if (link == "")
-                {
-                    iFrame = iFrame.GetSubstringBetween(0, "<iframe src=\"", "\" ");
-                    iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
-                    link = iFrame.GetSubstringBetween(0, "file: '", "',");
-                    if (link == "")
-                    {
-                        iFrame = iFrame.GetSubstringBetween(0, "<iframe src=\"", "\" ");
-                        iFrame = Util.RequestSimplifiedHtmlSite(iFrame);
-                        link = iFrame.GetSubstringBetween(0, "file: '", "',");
-                        if (link == "")
-                        {
-                            link = iFrame.GetSubstringBetween(0, "file: \"", "\",");
-                        }
-                    }
-                }
-            }
+            link = CheckNextIframeForLink(iFrame);
 
             return link;
+        }
+
+        private string CheckNextIframeForLink(string iFrameLink)
+        {
+            if (iFrameLink == "")
+            {
+                return "";
+            }
+            string page = Util.RequestSimplifiedHtmlSite(iFrameLink);
+            string link = page.GetSubstringBetween(0, "file: \"", "\"");
+            if (link == "")
+            {
+                link = page.GetSubstringBetween(0, "file: '", "'");
+            }
+            if (link == "")
+            {
+                return CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframe src=\"", "\" "));
+            }
+            else
+            {
+                return link;
+            }
         }
     }
 }
