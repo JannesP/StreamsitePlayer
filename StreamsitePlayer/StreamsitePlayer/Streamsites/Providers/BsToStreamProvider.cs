@@ -99,7 +99,7 @@ namespace SeriesPlayer.Streamsites.Providers
                     index = episodeIndex;
                     name = "";
                 }
-                string nameExt = html.GetSubstringBetween(index, "<span lang=en\">", "</span>", out index);
+                string nameExt = html.GetSubstringBetween(index, "<span lang=\"en\">", "</span>", out index);
                 if (nameExt == "" || i == episodeIndices.Count - 1 || index > episodeIndices[i + 1])
                 {
                     index = episodeIndex;
