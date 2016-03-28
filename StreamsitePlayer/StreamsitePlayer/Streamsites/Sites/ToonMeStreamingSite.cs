@@ -91,14 +91,23 @@ namespace SeriesPlayer.Streamsites.Sites
                 return "";
             }
             string page = Util.RequestSimplifiedHtmlSite(iFrameLink);
-            string link = page.GetSubstringBetween(0, "file: \"", "\"");
-            if (link == "")
+            page = page.Replace(" ", "");
+            int index = 0;
+            string link = page.GetSubstringBetween(0, "tracks:[{file:\"", "\"", out index);
+            if (link != "")
             {
-                link = page.GetSubstringBetween(0, "file: '", "'");
+                link = page.GetSubstringBetween(index, "file:\"", "\"");
+            } else
+            {
+                link = page.GetSubstringBetween(0, "file:\"", "\"");
             }
             if (link == "")
             {
-                return CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframe src=\"", "\" "));
+                link = page.GetSubstringBetween(0, "file:'", "'");
+            }
+            if (link == "")
+            {
+                return CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframesrc=\"", "\""));
             }
             else
             {
