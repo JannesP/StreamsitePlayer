@@ -27,8 +27,8 @@ namespace SeriesPlayer.Streamsites
                 
                 case BsToVivoStreamingSite.NAME:
                     return new BsToVivoStreamingSite(targetBrowser, link);
-                case ToonMeStreamingSite.NAME:
-                    return new ToonMeStreamingSite(targetBrowser, link);
+                case CartooncrazyStreamingSite.NAME:
+                    return new CartooncrazyStreamingSite(targetBrowser, link);
                 default:
                     Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
                     return null;
