@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
-    class ToonMeStreamingSite : StreamingSite
+    class CartooncrazyStreamingSite : StreamingSite
     {
         public const string NAME = "toonme";
 
-        public ToonMeStreamingSite(System.Windows.Forms.WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public CartooncrazyStreamingSite(System.Windows.Forms.WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
 
         }

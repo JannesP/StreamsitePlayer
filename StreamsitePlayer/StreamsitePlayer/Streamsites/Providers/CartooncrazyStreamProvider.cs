@@ -11,10 +11,10 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.Streamsites.Providers
 {
-    class ToonMeStreamProvider : StreamProvider
+    class CartooncrazyStreamProvider : StreamProvider
     {
-        public const string NAME = "toonme";
-        private string[] VALID_SITES = new string[] { ToonMeStreamingSite.NAME };
+        public const string NAME = "toonme"; //got renamed to cartooncrazy
+        private string[] VALID_SITES = new string[] { CartooncrazyStreamingSite.NAME };
 
         public override string GetLinkInstructions()
         {
@@ -23,7 +23,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetReadableSiteName()
         {
-            return "Toonme (Watchcartoon)";
+            return "cartooncrazy.net";
         }
 
         public override Dictionary<string, string> GetSearchIndex()
@@ -89,7 +89,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://www.toonme.tv/";
+            return "http://www.cartooncrazy.net/";
         }
 
         public override bool IsSearchSupported()
@@ -109,10 +109,12 @@ namespace SeriesPlayer.Streamsites.Providers
             string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
-            string seriesName = page.GetSubstringBetween(0, "<h1 itemprop=\"name\"><img src=\"http://www.toonme.us/img/star-icon.png\">", "</h1>")
-                .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "").Replace(" English", "").Replace(" Dubbed", "");
+            string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.net/img/star-icon.png\"></noscript>", "</h1>")
+                .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "")
+                .Replace(" English", "").Replace(" Dubbed", "").Replace(" at cartooncrazy.net", "")
+                .Replace(" Episodes", "");
 
-            List<List<Episode>> seasons = new List<List<Episode>>();
+            List <List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(page, seriesName));
             base.series = new Series(seasons, seriesName, NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""), seriesUrl);
             Seriescache.CacheSeries(base.series);
@@ -150,7 +152,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = new Episode();
                 e.Season = 1;
                 e.Name = name;
-                e.AddLink(ToonMeStreamingSite.NAME, "http://www.toonme.tv" + link);
+                e.AddLink(CartooncrazyStreamingSite.NAME, "http://www.cartooncrazy.net" + link);
                 episodes.Add(e);
             }
 

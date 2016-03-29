@@ -28,8 +28,8 @@ namespace SeriesPlayer.Streamsites
             Logger.Log("START", "Added " + BsToStreamProvider.NAME);
             VALID_PROVIDERS.Add(DubbedanimehdCoProvider.NAME);
             Logger.Log("START", "Added " + DubbedanimehdCoProvider.NAME);
-            VALID_PROVIDERS.Add(ToonMeStreamProvider.NAME);
-            Logger.Log("START", "Added " + ToonMeStreamProvider.NAME);
+            VALID_PROVIDERS.Add(CartooncrazyStreamProvider.NAME);
+            Logger.Log("START", "Added " + CartooncrazyStreamProvider.NAME);
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
             Logger.Log("START", "Added " + TestProvider.NAME);
@@ -51,8 +51,8 @@ namespace SeriesPlayer.Streamsites
                     return new TestProvider();
                 case DubbedanimehdCoProvider.NAME:
                     return new DubbedanimehdCoProvider();
-                case ToonMeStreamProvider.NAME:
-                    return new ToonMeStreamProvider();
+                case CartooncrazyStreamProvider.NAME:
+                    return new CartooncrazyStreamProvider();
                 default:
                     return null;
             }
