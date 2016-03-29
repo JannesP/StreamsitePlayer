@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,7 +14,9 @@ namespace SeriesPlayer.Streamsites.Sites
         public DubbedanimehdTvStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
         {
             targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
-            this.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.tv").Replace("dubbedanimehd.net", "dubbedanimehd.tv");
+            this.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.co")
+                .Replace("dubbedanimehd.net", "dubbedanimehd.co")
+                .Replace("dubbedanimehd.tv", "dubbedanimehd.co");
         }
 
         public const string NAME = "dubbedanimehd";
@@ -57,18 +60,20 @@ namespace SeriesPlayer.Streamsites.Sites
                 Logger.Log("SITE_REQUEST_DAHD", "Loaded Source. Searching for IFrame.");
                 string htmlText = GetTargetBrowser().DocumentText;
 
-                string iFrameSearch = "<iframe id='video' src='";
+                string iFrameSearch = "id='video' src='";
                 string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
                 Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
                 GetTargetBrowser().Navigate(iframeUrl);
                 iFrameNavigated = true;
                 iFrameUrl = iframeUrl;
             }
-            else if (iFrameNavigated && browser.Url.AbsolutePath.Equals(new Uri(iFrameUrl).AbsolutePath))
+            else if (iFrameNavigated && GetTargetBrowser().Url.AbsolutePath.Contains("embed"))
             {
+                Logger.Log("NAV", GetTargetBrowser().Url.AbsolutePath);
                 Logger.Log("SITE_REQUEST_DAHD", "Loaded IFrame. Searching for file.");
                 string html = GetTargetBrowser().DocumentText;
-                string file = html.GetSubstringBetween(0, "file: '", "'");
+                string file = html.GetSubstringBetween(0, "var x04c = unescape('", "');");
+                file = WebUtility.UrlDecode(file);
                 if (fileReceiver != null)
                 {
                     Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");
