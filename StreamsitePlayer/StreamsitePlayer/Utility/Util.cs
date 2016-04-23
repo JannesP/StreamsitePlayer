@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,6 +18,7 @@ namespace SeriesPlayer
     {
         private static List<IUserInformer> userInformers = new List<IUserInformer>();
         private static Queue<string> remainingMessages = new Queue<string>();
+        private static WebBrowser requestBrowser = null;
         private static System.Threading.Timer userMessageHideTimer;
 
         public static void AddUserInformer(IUserInformer uinf)
@@ -86,14 +88,12 @@ namespace SeriesPlayer
             string responseFromServer = "";
             long start = DateTime.Now.Ticks;
             // Create a request for the URL. 
-            try {
+            try
+            {
                 WebRequest request = WebRequest.Create(url);
-            
                 Logger.Log("UA", ((HttpWebRequest)request).UserAgent);
                 // Get the response.
                 WebResponse response = request.GetResponse();
-                // Display the status.
-                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
                 // Get the stream containing content returned by the server.
                 Stream dataStream = response.GetResponseStream();
                 // Open the stream using a StreamReader for easy access.
@@ -105,8 +105,51 @@ namespace SeriesPlayer
                 response.Close();
                 Console.WriteLine("HttpRequest of " + url + " took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
             }
-            catch { }
+            catch (WebException ex) when ((ex.Response as HttpWebResponse)?.StatusCode == HttpStatusCode.ServiceUnavailable) 
+            {
+                if (((HttpWebResponse)ex.Response).Server.Contains("cloudflare"))
+                {
+                    responseFromServer = GetBrowserResponse(url);
+                }
+            }
+            catch (WebException)
+            {
+                responseFromServer = "";
+            }
             return responseFromServer;
+        }
+
+        private static string GetBrowserResponse(string url)
+        {
+            if (requestBrowser == null) requestBrowser = CreatePopuplessBrowser();
+            requestBrowser.Navigate(url);
+            string result = WaitForLoadingBrowser(requestBrowser);
+            requestBrowser.Navigate("about:blank");
+            return result;
+        }
+
+        private static string WaitForLoadingBrowser(WebBrowser browser)
+        {
+            if (browser.InvokeRequired)
+            {
+                return (string)browser.Invoke(new Func<string>(() => WaitForLoadingBrowser(browser)));
+            }
+            long timeout = 10 * TimeSpan.TicksPerSecond;
+            long startTime = DateTime.Now.Ticks;
+            while (true)
+            {
+                Application.DoEvents();
+                Thread.Sleep(100);
+                WebBrowserReadyState wrs = browser.ReadyState;
+                if ((DateTime.Now.Ticks - startTime) > timeout)
+                {
+                    return "";
+                } else if (wrs == WebBrowserReadyState.Complete && !browser.DocumentText.Contains("Checking your browser before accessing"))
+                {
+                    break;
+                }
+            }
+            return browser.DocumentText;
         }
 
         public static string RequestSimplifiedHtmlSite(string url)
@@ -147,11 +190,19 @@ namespace SeriesPlayer
 
         public static WebBrowser CreatePopuplessBrowser()
         {
-            WebBrowser wb = new Utility.ExtendedBrowser.PopuplessBrowser();
-            wb.ScriptErrorsSuppressed = true;
-            wb.WebBrowserShortcutsEnabled = false;
-            wb.IsWebBrowserContextMenuEnabled = false;
-            wb.AllowWebBrowserDrop = false;
+            WebBrowser wb = null;
+            if (FormMain.threadTrick.InvokeRequired)
+            {
+                wb = (WebBrowser)FormMain.threadTrick.Invoke(new Func<WebBrowser>(() => CreatePopuplessBrowser()));
+            }
+            else
+            {
+                wb = new Utility.ExtendedBrowser.PopuplessBrowser();
+                wb.ScriptErrorsSuppressed = true;
+                wb.WebBrowserShortcutsEnabled = false;
+                wb.IsWebBrowserContextMenuEnabled = false;
+                wb.AllowWebBrowserDrop = false;
+            }
             return wb;
         }
 
