@@ -35,6 +35,7 @@ namespace SeriesPlayer.Streamsites.Providers
             int nextIndex = site.IndexOf("next page-numbers");
             while (nextIndex != -1)
             {
+                Application.DoEvents();
                 string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
                 site = Util.RequestSimplifiedHtmlSite(nextPage);
                 index.AddAll(ParseSeriesOverview(site));
@@ -45,6 +46,7 @@ namespace SeriesPlayer.Streamsites.Providers
             nextIndex = site.IndexOf("next page-numbers");
             while (nextIndex != -1)
             {
+                Application.DoEvents();
                 string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
                 site = Util.RequestSimplifiedHtmlSite(nextPage);
                 index.AddAll(ParseSeriesOverview(site));
@@ -109,7 +111,7 @@ namespace SeriesPlayer.Streamsites.Providers
             string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
-            string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.net/img/star-icon.png\"></noscript>", "</h1>")
+            string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.net/img/star-icon.png\">", "</h1>")
                 .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "")
                 .Replace(" English", "").Replace(" Dubbed", "").Replace(" at cartooncrazy.net", "")
                 .Replace(" Episodes", "");
@@ -147,6 +149,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 string name = list.GetSubstringBetween(currentIndex, nameStart, nameEnd, out currentIndex)
                     .Replace(seriesName + " ", "")
                     .Replace(" English Dubbed", "");
+                name = name.Trim();
                 if (currentIndex == -1) continue;
 
                 Episode e = new Episode();

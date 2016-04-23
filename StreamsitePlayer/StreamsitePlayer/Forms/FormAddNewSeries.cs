@@ -61,8 +61,10 @@ namespace SeriesPlayer.Forms
 
         private void FormAddNewSeries_FormClosed(object sender, FormClosedEventArgs e)
         {
+            searchDictionary = null;
             parent.Enabled = true;
             parent.Focus();
+            parent = null;
         }
 
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
