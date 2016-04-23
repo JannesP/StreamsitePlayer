@@ -63,11 +63,13 @@ namespace SeriesPlayer.Utility.ExtendedBrowser
         public void NewWindow2([In, MarshalAs(UnmanagedType.IDispatch), Out] ref object ppDisp, [In, Out] ref bool Cancel)
         {
             Cancel = true;
+            ppDisp = null;
         }
 
         public void NewWindow3([In, MarshalAs(UnmanagedType.IDispatch), Out] ref object ppDisp, [In, Out] ref bool Cancel, [In] uint dwFlags, [In, MarshalAs(UnmanagedType.BStr)] string bstrUrlContext, [In, MarshalAs(UnmanagedType.BStr)] string bstrUrl)
         {
             Cancel = true;
+            ppDisp = null;
         }
 
         public void NewProcess([In] long CauseFlag, [In] object pWB2, [In, Out] bool Cancel)
