@@ -22,9 +22,8 @@ namespace SeriesPlayer
         private const int IE9 = 0x2328;
         private const int IE10 = 0x2710;
         private const int IE11 = 0x2AF8;
-        private const int IEEDGE = 0x2AF9;
+        private const int IE_EDGE = 0x2AF9;
 
-        private const int TARGET_IE_VERSION = IE11;
         private const string IE_VERSION_REG_PATH = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 
 
@@ -81,6 +80,7 @@ namespace SeriesPlayer
 
         private static void SetWebBrowserVersion()
         {
+            int targetIEVersion = (Environment.OSVersion.Version.Major >= 10) ? IE_EDGE : IE11;
             RegistryKey Regkey = null;
             try
             {
@@ -96,10 +96,10 @@ namespace SeriesPlayer
                 }
 
                 int currentValue = (int)Regkey.GetValue(Process.GetCurrentProcess().ProcessName + ".exe", 0);
-                if (currentValue != TARGET_IE_VERSION)
+                if (currentValue != targetIEVersion)
                 {
-                    Logger.Log("PREINIT", "Changing IE version to " + TARGET_IE_VERSION);
-                    Regkey.SetValue(Process.GetCurrentProcess().ProcessName + ".exe", unchecked(TARGET_IE_VERSION), RegistryValueKind.DWord); //0x2AF9 = edge : 0x2AF8 = IE11 see https://msdn.microsoft.com/en-us/library/ee330730.aspx#browser_emulation
+                    Logger.Log("PREINIT", "Changing IE version to " + targetIEVersion);
+                    Regkey.SetValue(Process.GetCurrentProcess().ProcessName + ".exe", unchecked(targetIEVersion), RegistryValueKind.DWord); //0x2AF9 = edge : 0x2AF8 = IE11 see https://msdn.microsoft.com/en-us/library/ee330730.aspx#browser_emulation
                     Logger.Log("PREINIT", "Successfully set the IE version.");
                     Logger.Log("PREINIT", "Restarting program to apply changes ...");
                     Process.Start(Environment.GetCommandLineArgs()[0]);
