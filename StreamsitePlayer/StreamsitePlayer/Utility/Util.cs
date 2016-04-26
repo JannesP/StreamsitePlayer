@@ -134,7 +134,8 @@ namespace SeriesPlayer
             {
                 return (string)browser.Invoke(new Func<string>(() => WaitForLoadingBrowser(browser)));
             }
-            long timeout = 10 * TimeSpan.TicksPerSecond;
+            ShowUserInformation("Waiting for Cloudflare protection ...");
+            long timeout = 20 * TimeSpan.TicksPerSecond;
             long startTime = DateTime.Now.Ticks;
             while (true)
             {
