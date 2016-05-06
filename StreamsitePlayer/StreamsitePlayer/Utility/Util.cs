@@ -186,7 +186,7 @@ namespace SeriesPlayer
 
         public static string GetRalativePath(string path)
         {
-            return Path.Combine(Environment.CurrentDirectory, path);
+            return Path.Combine(GetAppFolder(), path);
         }
 
         public static WebBrowser CreatePopuplessBrowser()
