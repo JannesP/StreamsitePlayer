@@ -627,6 +627,7 @@ namespace SeriesPlayer
                 VersionChecker.CheckForUpdateAsync();
             }
 #endif
+            CefSharp.Cef.Initialize();
             seriesAnchorX = comboBoxChangeSeries;
             seriesAnchorY = numericUpDownSkipEnd;
             flowPanelEpisodeButtons.Focus();

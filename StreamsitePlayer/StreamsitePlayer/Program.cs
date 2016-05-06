@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,7 +27,10 @@ namespace SeriesPlayer
 
         private const string IE_VERSION_REG_PATH = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 
-
+        static Program()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+        }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -36,7 +40,7 @@ namespace SeriesPlayer
             Environment.CurrentDirectory = Util.GetAppFolder();
 
             Logger.Log("PREINIT", "Started version " + Util.GetCurrentVersion());
-
+            
             SetWebBrowserVersion();
             DisableWebbrowserClick();
 
@@ -123,6 +127,36 @@ namespace SeriesPlayer
                 if (Regkey != null)
                     Regkey.Close();
             }
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            //This handler is called only when the common language runtime tries to bind to the assembly and fails.
+
+            //Retrieve the list of referenced assemblies in an array of AssemblyName.
+            Assembly MyAssembly, objExecutingAssemblies;
+            string strTempAssmbPath = "";
+
+            objExecutingAssemblies = Assembly.GetExecutingAssembly();
+            AssemblyName[] arrReferencedAssmbNames = objExecutingAssemblies.GetReferencedAssemblies();
+
+            //Loop through the array of referenced assembly names.
+            foreach (AssemblyName strAssmbName in arrReferencedAssmbNames)
+            {
+                //Check for the assembly names that have raised the "AssemblyResolve" event.
+                if (strAssmbName.FullName.Substring(0, strAssmbName.FullName.IndexOf(",")) == args.Name.Substring(0, args.Name.IndexOf(",")))
+                {
+                    //Build the path of the assembly from where it has to be loaded.				
+                    strTempAssmbPath = Util.GetRalativePath(@"CefBinaries\" + args.Name.Substring(0, args.Name.IndexOf(",")) + ".dll");
+                    break;
+                }
+
+            }
+            //Load the assembly from the specified path. 					
+            MyAssembly = Assembly.LoadFrom(strTempAssmbPath);
+
+            //Return the loaded assembly.
+            return MyAssembly;
         }
     }
 }

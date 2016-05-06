@@ -27,6 +27,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,7 +59,31 @@
   <PropertyGroup>
     <ApplicationIcon>Icon-Player.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CefSharp">
+      <HintPath>CefBinaries\CefSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.Core">
+      <HintPath>CefBinaries\CefSharp.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.OffScreen">
+      <HintPath>CefBinaries\CefSharp.OffScreen.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.WinForms">
+      <HintPath>CefBinaries\CefSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -196,6 +222,67 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
+    <None Include="CefBinaries\cef.pak" />
+    <None Include="CefBinaries\cef_100_percent.pak" />
+    <None Include="CefBinaries\cef_200_percent.pak" />
+    <None Include="CefBinaries\cef_extensions.pak" />
+    <None Include="CefBinaries\devtools_resources.pak" />
+    <None Include="CefBinaries\icudtl.dat" />
+    <None Include="CefBinaries\locales\am.pak" />
+    <None Include="CefBinaries\locales\ar.pak" />
+    <None Include="CefBinaries\locales\bg.pak" />
+    <None Include="CefBinaries\locales\bn.pak" />
+    <None Include="CefBinaries\locales\ca.pak" />
+    <None Include="CefBinaries\locales\cs.pak" />
+    <None Include="CefBinaries\locales\da.pak" />
+    <None Include="CefBinaries\locales\de.pak" />
+    <None Include="CefBinaries\locales\el.pak" />
+    <None Include="CefBinaries\locales\en-GB.pak" />
+    <None Include="CefBinaries\locales\en-US.pak" />
+    <None Include="CefBinaries\locales\es-419.pak" />
+    <None Include="CefBinaries\locales\es.pak" />
+    <None Include="CefBinaries\locales\et.pak" />
+    <None Include="CefBinaries\locales\fa.pak" />
+    <None Include="CefBinaries\locales\fi.pak" />
+    <None Include="CefBinaries\locales\fil.pak" />
+    <None Include="CefBinaries\locales\fr.pak" />
+    <None Include="CefBinaries\locales\gu.pak" />
+    <None Include="CefBinaries\locales\he.pak" />
+    <None Include="CefBinaries\locales\hi.pak" />
+    <None Include="CefBinaries\locales\hr.pak" />
+    <None Include="CefBinaries\locales\hu.pak" />
+    <None Include="CefBinaries\locales\id.pak" />
+    <None Include="CefBinaries\locales\it.pak" />
+    <None Include="CefBinaries\locales\ja.pak" />
+    <None Include="CefBinaries\locales\kn.pak" />
+    <None Include="CefBinaries\locales\ko.pak" />
+    <None Include="CefBinaries\locales\lt.pak" />
+    <None Include="CefBinaries\locales\lv.pak" />
+    <None Include="CefBinaries\locales\ml.pak" />
+    <None Include="CefBinaries\locales\mr.pak" />
+    <None Include="CefBinaries\locales\ms.pak" />
+    <None Include="CefBinaries\locales\nb.pak" />
+    <None Include="CefBinaries\locales\nl.pak" />
+    <None Include="CefBinaries\locales\pl.pak" />
+    <None Include="CefBinaries\locales\pt-BR.pak" />
+    <None Include="CefBinaries\locales\pt-PT.pak" />
+    <None Include="CefBinaries\locales\ro.pak" />
+    <None Include="CefBinaries\locales\ru.pak" />
+    <None Include="CefBinaries\locales\sk.pak" />
+    <None Include="CefBinaries\locales\sl.pak" />
+    <None Include="CefBinaries\locales\sr.pak" />
+    <None Include="CefBinaries\locales\sv.pak" />
+    <None Include="CefBinaries\locales\sw.pak" />
+    <None Include="CefBinaries\locales\ta.pak" />
+    <None Include="CefBinaries\locales\te.pak" />
+    <None Include="CefBinaries\locales\th.pak" />
+    <None Include="CefBinaries\locales\tr.pak" />
+    <None Include="CefBinaries\locales\uk.pak" />
+    <None Include="CefBinaries\locales\vi.pak" />
+    <None Include="CefBinaries\locales\zh-CN.pak" />
+    <None Include="CefBinaries\locales\zh-TW.pak" />
+    <None Include="CefBinaries\natives_blob.bin" />
+    <None Include="CefBinaries\snapshot_blob.bin" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -211,6 +298,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CefBinaries\CefSharp.BrowserSubprocess.Core.dll" />
+    <Content Include="CefBinaries\CefSharp.BrowserSubprocess.exe" />
+    <Content Include="CefBinaries\CefSharp.Core.dll" />
+    <Content Include="CefBinaries\CefSharp.dll" />
+    <Content Include="CefBinaries\CefSharp.OffScreen.dll" />
+    <Content Include="CefBinaries\CefSharp.WinForms.dll" />
+    <Content Include="CefBinaries\d3dcompiler_43.dll" />
+    <Content Include="CefBinaries\d3dcompiler_47.dll" />
+    <Content Include="CefBinaries\libcef.dll" />
+    <Content Include="CefBinaries\libEGL.dll" />
+    <Content Include="CefBinaries\libGLESv2.dll" />
+    <Content Include="CefBinaries\widevinecdmadapter.dll" />
     <Content Include="Icon-Player.ico" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
@@ -237,7 +336,12 @@ if $(ConfigurationName) == Release (
    xcopy "$(SolutionDir)Uninstaller\bin\$(ConfigurationName)\uninst.exe" "$(TargetDir)" /Y
    xcopy "$(SolutionDir)Updater\bin\$(ConfigurationName)\updater.exe" "$(TargetDir)" /Y
    xcopy "$(SolutionDir)Installer\bin\$(ConfigurationName)\SeriesPlayerInstaller.exe" "$(TargetDir)" /Y
-)</PostBuildEvent>
+)
+mkdir "$(TargetDir)CefBinaries"
+robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)CefBinaries" /E
+set/A errlev="%25ERRORLEVEL%25 &amp; 24"
+exit/B %25errlev%25
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y</PreBuildEvent>
