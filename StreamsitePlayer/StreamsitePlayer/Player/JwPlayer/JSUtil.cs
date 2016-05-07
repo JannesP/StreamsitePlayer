@@ -13,7 +13,7 @@ namespace SeriesPlayer.JwPlayer
         private static bool isInitialized = false;
         private static WebBrowser browser = null;
 
-        public static void Init(ref JwPlayerControl browser)
+        public static void Init(ref WebBrowser browser)
         {
             if (browser == null) throw new ArgumentNullException("ref browser", "Browser reference shouldn't be null!");
             JSUtil.browser = browser;

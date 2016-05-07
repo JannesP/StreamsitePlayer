@@ -38,13 +38,11 @@ namespace SeriesPlayer
             StartPosition = FormStartPosition.CenterScreen;
             this.KeyPreview = true;
             oldClientSize = this.ClientSize;
-            
-            jwPlayer = new JwPlayerControl();
+
             ScriptingInterface si = new ScriptingInterface();
             si.SetIJwEventReceiver(this);
-            jwPlayer.ObjectForScripting = si;
-
-            JSUtil.Init(ref jwPlayer);
+            jwPlayer = new JwPlayerControl(si);
+            
             base.Controls.Add(jwPlayer);
             base.Controls.SetChildIndex(jwPlayer, 10);
             base.Controls.SetChildIndex(buttonFullscreen, 11);
@@ -217,7 +215,7 @@ namespace SeriesPlayer
         {
             get
             {
-                return jwPlayer != null && !jwPlayer.IsDisposed && jwPlayer.ReadyState == WebBrowserReadyState.Complete;
+                return jwPlayer != null && !jwPlayer.IsDisposed && jwPlayer.IsLoaded;
             }
         }
 
@@ -723,6 +721,11 @@ namespace SeriesPlayer
         private void FormJwPlayer_Move(object sender, EventArgs e)
         {
             wasMoved = true;
+        }
+
+        void ScriptingInterface.IJwEventListener.Invoke(Delegate method)
+        {
+            Invoke(method);
         }
     }
 }

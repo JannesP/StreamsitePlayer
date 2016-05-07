@@ -1,4 +1,4 @@
-﻿using SeriesPlayer.Utility.ExtendedBrowser;
+﻿using SeriesPlayer.Utility.ChromiumBrowsers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,21 +9,16 @@ using System.Windows.Forms;
 
 namespace SeriesPlayer.JwPlayer
 {
-    class JwPlayerControl : PopuplessBrowser
+    class JwPlayerControl : OnscreenChromiumBrowser
     {
         private const string JW_SITE_PATH = @"jwplayer\player.html";
         private const string JW_TEMP_SITE_PATH = @"jwplayer\tempPlayer.html";
 
-        public JwPlayerControl()
+        public JwPlayerControl(object jsExposedObject) : base(jsExposedObject, "comInterface")
         {
             base.Dock = DockStyle.Fill;
             base.Location = new System.Drawing.Point(0, 0);
             base.Name = "jwPlayer";
-            base.AllowWebBrowserDrop = false;
-            base.IsWebBrowserContextMenuEnabled = false;
-            base.ScriptErrorsSuppressed = true;
-            base.ScrollBarsEnabled = false;
-            base.WebBrowserShortcutsEnabled = false;
             base.GotFocus += JwPlayerControl_GotFocus;
         }
 
@@ -40,7 +35,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    return JSUtil.ExecuteFunctionForBool("IsPlaying");
+                    return EvaluateJavaScriptForBool("IsPlaying");
                 }
                 catch
                 {
@@ -55,7 +50,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    return JSUtil.ExecuteFunctionForBool("Maximized");
+                    return EvaluateJavaScriptForBool("Maximized");
                 }
                 catch
                 {
@@ -71,17 +66,17 @@ namespace SeriesPlayer.JwPlayer
 
         public void Pause()
         {
-            JSUtil.ExecuteFunction("Pause");
+            ExecuteJavaScriptAsync("Pause");
         }
 
         public void Play()
         {
-            JSUtil.ExecuteFunction("Play");
+            ExecuteJavaScriptAsync("Play");
         }
 
         public void ClickOnFullscreen()
         {
-            JSUtil.ExecuteFunction("ClickOnFullscreen");
+            ExecuteJavaScriptAsync("ClickOnFullscreen");
         }
 
         public long Position
@@ -90,7 +85,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    return (long)(JSUtil.ExecuteFunctionForDouble("GetPosition") * 1000d);
+                    return (long)(EvaluateJavaScriptForDouble("GetPosition") * 1000d);
                 }
                 catch
                 {
@@ -101,7 +96,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    JSUtil.ExecuteFunction("SetPosition", (double)value / 1000d);
+                    ExecuteJavaScriptAsync("SetPosition", Convert.ToString((double)value / 1000d));
                 }
                 catch { };
             }
@@ -111,10 +106,9 @@ namespace SeriesPlayer.JwPlayer
         {
             get
             {
-                
                 try
                 {
-                    return (long)(JSUtil.ExecuteFunctionForDouble("GetDuration") * 1000d);
+                    return (long)(EvaluateJavaScriptForDouble("GetDuration") * 1000d);
                 }
                 catch
                 {
@@ -129,7 +123,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    return (byte)(JSUtil.ExecuteFunctionForInt("GetBuffer"));
+                    return (byte)(EvaluateJavaScriptForInt("GetBuffer"));
                 }
                 catch
                 {
@@ -144,7 +138,7 @@ namespace SeriesPlayer.JwPlayer
             {
                 try
                 {
-                    return JSUtil.ExecuteFunctionForInt("GetVolume");
+                    return EvaluateJavaScriptForInt("GetVolume");
                 }
                 catch
                 {
@@ -153,7 +147,7 @@ namespace SeriesPlayer.JwPlayer
             }
             set
             {
-                JSUtil.ExecuteFunction("SetVolume", value);
+                ExecuteJavaScriptAsync("SetVolume", Convert.ToString(value));
             }
         }
 
@@ -161,48 +155,69 @@ namespace SeriesPlayer.JwPlayer
         {
             get
             {
-                return JSUtil.ExecuteFunctionForBool("GetMuted");
+                return EvaluateJavaScriptForBool("GetMuted");
             }
             set
             {
-                JSUtil.ExecuteFunction("SetMute", value);
+                ExecuteJavaScriptAsync("SetMute", Convert.ToString(value));
             }
         }
 
         public new void Focus()
         {
+            if (base.InvokeRequired)
+            {
+                base.Invoke((MethodInvoker)(() => Focus()));
+                return;
+            }
             Logger.Log("JwPlayer", "Got focus.");
+            
             base.Focus();
             try
             {
-                JSUtil.ExecuteFunction("Focus");
+                ExecuteJavaScriptAsync("Focus");
             }
             catch { }
         }
 
         public void Play(string file, string title)
         {
-            string curDir = Directory.GetCurrentDirectory();
-            string html = File.ReadAllText(JW_SITE_PATH);
-            html = html.Replace("--file--", file);
-            html = html.Replace("--title--", title);
-            html = html.Replace("--key--", Settings.GetString(Settings.JW_KEY));
-            DisplayHtml(html); //blocks until the site is laoded!
+            string html = File.ReadAllText(Util.GetRalativePath(JW_SITE_PATH));
+            html = html.Replace("--file--", file)
+                .Replace("--title--", title)
+                .Replace("--key--", Settings.GetString(Settings.JW_KEY));
+            DisplayHtml(html);
             Play();
+        }
+
+        public bool IsLoaded
+        {
+            get
+            {
+                return GetBrowser().HasDocument && !GetBrowser().IsLoading;
+            }
         }
 
         private void DisplayHtml(string html)
         {
-            if (File.Exists(JW_TEMP_SITE_PATH))
+            string tempFile = Util.GetRalativePath(JW_TEMP_SITE_PATH);
+
+            if (File.Exists(tempFile))
             {
-                FileInfo fi1 = new FileInfo(JW_TEMP_SITE_PATH);
+                FileInfo fi1 = new FileInfo(tempFile);
                 fi1.Attributes &= ~FileAttributes.Hidden;
             }
-            File.WriteAllText(JW_TEMP_SITE_PATH, html);
-            FileInfo fi = new FileInfo(JW_TEMP_SITE_PATH);
+            File.WriteAllText(tempFile, html);
+            FileInfo fi = new FileInfo(tempFile);
             fi.Attributes |= FileAttributes.Hidden;
-            string path = Path.Combine("file:///" + Util.GetAppFolder(), JW_TEMP_SITE_PATH);
-            base.Navigate(new Uri(path));
+            string addr = "";
+            string[] urlParts = tempFile.Split('\\');
+            addr += urlParts[0];
+            for (int i = 1; i < urlParts.Length; i++)
+            {
+                addr += "/" + System.Net.WebUtility.UrlEncode(urlParts[i]);
+            }
+            base.GetBrowser().MainFrame.LoadUrl(addr);
         }
 
     }

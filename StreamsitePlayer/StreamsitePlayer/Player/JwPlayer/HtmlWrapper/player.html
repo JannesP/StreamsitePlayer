@@ -6,7 +6,7 @@
 
         <script type="text/javascript">
             window.onerror = function(msg, file, line){
-                window.external.Log("error: " + msg + "\n" + "file: " + file + "\n" + "line: " + line);
+                comInterface.log("error: " + msg + "\n" + "file: " + file + "\n" + "line: " + line);
             }
         </script>
 
@@ -35,13 +35,13 @@
 		<script type="text/javascript">
 			var isOnReadyFired = false;
 			playerInstance = jwplayer("myvideo");
-			playerInstance.on('time', OnPlaylocationChanged);
-			playerInstance.on('complete', OnComplete);
-			playerInstance.on('fullscreen', OnFullscreenChanged);
-			playerInstance.on('mute', OnMuteChange);
-			playerInstance.on('volume', OnVolumeChange);
-			playerInstance.on('error', OnError);
-			playerInstance.on('setupError', OnSetupError);
+			playerInstance.on('time', onPlaylocationChanged);
+			playerInstance.on('complete', onComplete);
+			playerInstance.on('fullscreen', onFullscreenChanged);
+			playerInstance.on('mute', onMuteChange);
+			playerInstance.on('volume', onVolumeChange);
+			playerInstance.on('error', onError);
+			playerInstance.on('setupError', onSetupError);
 
 
 			function setupNextPrev() {
@@ -55,22 +55,22 @@
 
 			function prevClick(e) {
 			    if (e.which == 1) {
-			        OnPrevious();
+			        onPrevious();
 			    }
 			}
 
 			function nextClick(e) {
 			    if (e.which == 1) {
-			        OnNext();
+			        onNext();
 			    }
 			}
 
-			function OnPrevious() {
-			    window.external.OnPrevious();
+			function onPrevious() {
+			    comInterface.onPrevious();
 			}
 
-			function OnNext() {
-			    window.external.OnNext();
+			function onNext() {
+			    comInterface.onNext();
 			}
 
 			function copyReplaceElement(element) {
@@ -82,7 +82,7 @@
 
 			function registerWheelListeners() {
 			    var elements = document.getElementsByClassName("jw-slider-time");
-			    window.external.Log("jw-slider-time elements: " + elements.length);
+			    comInterface.log("jw-slider-time elements: " + elements.length);
 			    if (elements.length == 1) {
 			        for (var i = 0; i < elements.length; i++) {
 			            elements[i].addEventListener("mousewheel", seekbar_scroll);
@@ -90,7 +90,7 @@
 			    }
 
 			    elements = document.getElementsByClassName("jw-video");
-			    window.external.Log("jw-video elements: " + elements.length);
+			    comInterface.log("jw-video elements: " + elements.length);
 			    if (elements.length == 1) {
 			        for (var i = 0; i < elements.length; i++) {
 			            elements[i].addEventListener("mousewheel", volume_scroll);
@@ -98,7 +98,7 @@
 			    }
 
 			    elements = document.getElementsByClassName("jw-icon-volume");
-			    window.external.Log("jw-icon-volume elements: " + elements.length);
+			    comInterface.log("jw-icon-volume elements: " + elements.length);
 			    if (elements.length == 2) {
 			        for (var i = 0; i < elements.length; i++) {
 			            elements[i].addEventListener("mousewheel", volume_scroll);
@@ -129,27 +129,27 @@
 			    currPos += up ? SCROLL_STEP : -SCROLL_STEP;
 			    SetPosition(currPos);
 
-			    window.external.Log("got seekbar wheel event. Scrolled " + (up ? "up" : "down"));
+			    comInterface.log("got seekbar wheel event. Scrolled " + (up ? "up" : "down"));
 			}
 
-			function OnVolumeChange(event) {
-			    window.external.OnVolumeChange(event.volume);
+			function onVolumeChange(event) {
+			    comInterface.onVolumeChange(event.volume);
 			}
 
-			function OnMuteChange(event) {
-			    window.external.OnMuteChange(event.mute);
+			function onMuteChange(event) {
+			    comInterface.onMuteChange(event.mute);
 			}
 
-			function OnReady() {
+			function onReady() {
 			    setupNextPrev();
 			    registerWheelListeners();
-			    window.external.OnReady();
+			    comInterface.onReady();
 			}
 
 			function IsPlaying() {
 				return (playerInstance.getState() == "playing");
 			}
-			
+
 			function GetPosition() {
 			    return playerInstance.getPosition();
 			}
@@ -161,11 +161,11 @@
 			function Maximized() {
 				return playerInstance.getFullscreen();
 			}
-			
+
 			function Play() {
 				playerInstance.play(true);
 			}
-			
+
 			function Pause() {
 				playerInstance.pause(true);
 			}
@@ -185,7 +185,7 @@
 			function GetVolume() {
 			    return playerInstance.getVolume();
 			}
-			
+
 			function PlayPause() {
 				playerInstance.play();
 			}
@@ -197,31 +197,31 @@
 			function GetDuration() {
 			    return playerInstance.getDuration();
 			}
-			
-			function OnPlaylocationChanged(event) {
+
+			function onPlaylocationChanged(event) {
 				if (!isOnReadyFired && playerInstance.getDuration() != 0) {
 					isOnReadyFired = true;
-					OnReady();
+					onReady();
 				}
-				window.external.OnPlaylocationChanged(event.position * 1000, (event.duration - event.position) * 1000, event.duration * 1000);
-			}
-			
-			function OnComplete(event) {
-				window.external.OnPlaybackComplete();
-			}
-			
-			function OnFullscreenChanged(event) {
-				window.external.OnFullscreenChanged(event.fullscreen);
+				comInterface.onPlaylocationChanged(event.position * 1000, (event.duration - event.position) * 1000, event.duration * 1000);
 			}
 
-			function OnError(event) {
-			    window.external.OnError(event.message);
+			function onComplete(event) {
+				comInterface.onPlaybackComplete();
 			}
 
-			function OnSetupError(event) {
-			    window.external.OnSetupError(event.message);
+			function onFullscreenChanged(event) {
+				comInterface.onFullscreenChanged(event.fullscreen);
 			}
-			
+
+			function onError(event) {
+			    comInterface.onError(event.message);
+			}
+
+			function onSetupError(event) {
+			    comInterface.onSetupError(event.message);
+			}
+
 			function ClickOnFullscreen() {
 				elements = document.getElementsByClassName("jw-icon-fullscreen");
 				for (i = 0; i < elements.length; i++) {
@@ -229,20 +229,20 @@
 					mousedown.initMouseEvent('mousedown', true, false, window, {}, 0, 0, 0, 0, false, false, false, false, 0, elements[i]);
 					var mouseup = document.createEvent("MouseEvent");
 					mouseup.initMouseEvent('mouseup', true, false, window, {}, 0, 0, 0, 0, false, false, false, false, 0, elements[i]);
-				    window.external.Log("Fireing mousedown event on: " + elements[i].outerHTML);
+				    comInterface.log("Fireing mousedown event on: " + elements[i].outerHTML);
 					elements[i].dispatchEvent(mousedown);
-					window.external.Log("Fireing mouseup event on: " + elements[i].outerHTML);
+					comInterface.log("Fireing mouseup event on: " + elements[i].outerHTML);
 					elements[i].dispatchEvent(mouseup);
 				}
 			}
 
 			function Focus() {
-			    window.external.Log("Focusing player!");
+			    comInterface.log("Focusing player!");
 			    var element = document.getElementById('myvideo');
 			    if (element != null) {
 			        element.focus();
 			    } else {
-			        window.external.Log("Couldn't focus the div 'myvideo'!");
+			        comInterface.log("Couldn't focus the div 'myvideo'!");
 			    }
 			}
 		</script>

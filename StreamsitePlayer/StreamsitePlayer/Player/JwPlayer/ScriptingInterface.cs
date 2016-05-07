@@ -21,6 +21,11 @@ namespace SeriesPlayer.JwPlayer
             void OnMuteChange(bool muted);
             void OnPrevious();
             void OnNext();
+            bool InvokeRequired
+            {
+                get;
+            }
+            void Invoke(Delegate method);
         }
         
         public IJwEventListener receiver = null;
@@ -38,6 +43,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPlaylocationChanged(timePlayed, timeLeft, timeTotal)));
+                }
                 receiver.OnPlaylocationChanged(timePlayed, timeLeft, timeTotal);
             }
         }
@@ -46,6 +55,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnFullscreenChanged(newState)));
+                }
                 receiver.OnFullscreenChanged(newState);
             }
         }
@@ -54,6 +67,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnReady()));
+                }
                 receiver.OnReady();
             }
         }
@@ -62,6 +79,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPlaybackComplete()));
+                }
                 receiver.OnPlaybackComplete();
             }
         }
@@ -70,6 +91,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnError(errorMessage)));
+                }
                 receiver.OnError(errorMessage);
             }
         }
@@ -78,6 +103,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnSetupError(errorMessage)));
+                }
                 receiver.OnStartupError(errorMessage);
             }
         }
@@ -86,6 +115,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnVolumeChange(newVolume)));
+                }
                 receiver.OnVolumeChange(newVolume);
             }
         }
@@ -94,6 +127,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnMuteChange(muted)));
+                }
                 receiver.OnMuteChange(muted);
             }
         }
@@ -102,6 +139,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPrevious()));
+                }
                 receiver.OnPrevious();
             }
         }
@@ -110,6 +151,10 @@ namespace SeriesPlayer.JwPlayer
         {
             if (receiver != null)
             {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnNext()));
+                }
                 receiver.OnNext();
             }
         }
