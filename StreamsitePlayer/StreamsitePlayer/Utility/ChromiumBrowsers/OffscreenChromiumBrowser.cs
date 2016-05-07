@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SeriesPlayer.Utility.ChromiumBrowsers
 {
-    class OffscreenChromiumBrowser : ChromiumWebBrowser, IJsDialogHandler
+    class OffscreenChromiumBrowser : ChromiumWebBrowser, IJsDialogHandler, ILifeSpanHandler
     {
         private static BrowserSettings settings = new BrowserSettings()
         {
@@ -24,9 +24,32 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
         public OffscreenChromiumBrowser(string address) : this(address, settings)
         {
             base.JsDialogHandler = this;
+            base.LifeSpanHandler = this;
+        }
+
+        public string HtmlSource
+        {
+            get
+            {
+                Task<string> sourceTask = GetBrowser().MainFrame.GetSourceAsync();
+                sourceTask.Wait();
+                return sourceTask.Result;
+            }
         }
 
         private OffscreenChromiumBrowser(string address, BrowserSettings settings) : base(address, settings) { }
+
+        public bool DoClose(IWebBrowser browserControl, IBrowser browser)
+        { return true; }
+
+        public void OnAfterCreated(IWebBrowser browserControl, IBrowser browser)
+        { }
+
+        public void OnBeforeClose(IWebBrowser browserControl, IBrowser browser)
+        { }
+
+        public bool OnBeforePopup(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, string targetFrameName, WindowOpenDisposition targetDisposition, bool userGesture, IPopupFeatures popupFeatures, IWindowInfo windowInfo, IBrowserSettings browserSettings, ref bool noJavascriptAccess, out IWebBrowser newBrowser)
+        { newBrowser = null; return true; }
 
         public void OnDialogClosed(IWebBrowser browserControl, IBrowser browser)
         { }

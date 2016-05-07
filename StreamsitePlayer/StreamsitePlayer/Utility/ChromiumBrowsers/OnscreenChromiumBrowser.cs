@@ -8,7 +8,7 @@ using CefSharp;
 
 namespace SeriesPlayer.Utility.ChromiumBrowsers
 {
-    class OnscreenChromiumBrowser : ChromiumWebBrowser, IJsDialogHandler
+    class OnscreenChromiumBrowser : ChromiumWebBrowser, IJsDialogHandler, ILifeSpanHandler
     {
         private const string TAG = "ONSCREEN_BROWSER";
         public OnscreenChromiumBrowser() : this("about:blank", null, "") { }
@@ -105,6 +105,18 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             double result = Convert.ToDouble(jsResult);
             return result;
         }
+
+        public bool DoClose(IWebBrowser browserControl, IBrowser browser)
+        { return true; }
+
+        public void OnAfterCreated(IWebBrowser browserControl, IBrowser browser)
+        { }
+
+        public void OnBeforeClose(IWebBrowser browserControl, IBrowser browser)
+        { }
+
+        public bool OnBeforePopup(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, string targetFrameName, WindowOpenDisposition targetDisposition, bool userGesture, IPopupFeatures popupFeatures, IWindowInfo windowInfo, IBrowserSettings browserSettings, ref bool noJavascriptAccess, out IWebBrowser newBrowser)
+        { newBrowser = null; return true; }
 
         public void OnDialogClosed(IWebBrowser browserControl, IBrowser browser)
         { }
