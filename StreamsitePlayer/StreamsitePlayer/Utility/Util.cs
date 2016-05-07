@@ -1,4 +1,5 @@
 ﻿using SeriesPlayer.Forms;
+using SeriesPlayer.Utility.ChromiumBrowsers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +19,7 @@ namespace SeriesPlayer
     {
         private static List<IUserInformer> userInformers = new List<IUserInformer>();
         private static Queue<string> remainingMessages = new Queue<string>();
-        private static WebBrowser requestBrowser = null;
+        private static OffscreenChromiumBrowser requestBrowser = null;
         private static System.Threading.Timer userMessageHideTimer;
 
         public static void AddUserInformer(IUserInformer uinf)
@@ -121,19 +122,16 @@ namespace SeriesPlayer
 
         private static string GetBrowserResponse(string url)
         {
-            if (requestBrowser == null) requestBrowser = CreatePopuplessBrowser();
-            requestBrowser.Navigate(url);
+            if (requestBrowser == null) requestBrowser = new OffscreenChromiumBrowser();
+            while (!requestBrowser.IsBrowserInitialized) { Application.DoEvents(); }
+            requestBrowser.Load(url);
             string result = WaitForLoadingBrowser(requestBrowser);
-            requestBrowser.Navigate("about:blank");
+            requestBrowser.Load("about:blank");
             return result;
         }
 
-        private static string WaitForLoadingBrowser(WebBrowser browser)
+        private static string WaitForLoadingBrowser(OffscreenChromiumBrowser browser)
         {
-            if (browser.InvokeRequired)
-            {
-                return (string)browser.Invoke(new Func<string>(() => WaitForLoadingBrowser(browser)));
-            }
             ShowUserInformation("Waiting for Cloudflare protection ...");
             long timeout = 20 * TimeSpan.TicksPerSecond;
             long startTime = DateTime.Now.Ticks;
@@ -141,16 +139,17 @@ namespace SeriesPlayer
             {
                 Application.DoEvents();
                 Thread.Sleep(100);
-                WebBrowserReadyState wrs = browser.ReadyState;
+                
                 if ((DateTime.Now.Ticks - startTime) > timeout)
                 {
                     return "";
-                } else if (wrs == WebBrowserReadyState.Complete && !browser.DocumentText.Contains("Checking your browser before accessing"))
+                }
+                else if (!browser.IsLoading && browser.GetBrowser().HasDocument && !browser.HtmlSource.Contains("Checking your browser before accessing"))
                 {
                     break;
                 }
             }
-            return browser.DocumentText;
+            return browser.HtmlSource;
         }
 
         public static string RequestSimplifiedHtmlSite(string url)
