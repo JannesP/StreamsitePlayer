@@ -37,6 +37,7 @@ namespace SeriesPlayer
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Logger.Log("PROGRAM", "Experienced fatal crash!");
             Logger.Log((Exception)e.ExceptionObject);
             MessageBox.Show("Ran into unexpected exception. Please report this!", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Application.Exit();
@@ -44,6 +45,7 @@ namespace SeriesPlayer
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
+            Logger.Log("PROGRAM", "Experienced fatal crash!");
             Logger.Log(e.Exception);
             MessageBox.Show("Ran into unexpected exception. Please report this!", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Application.Exit();
