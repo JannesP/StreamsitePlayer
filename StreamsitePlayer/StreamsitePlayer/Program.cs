@@ -38,15 +38,15 @@ namespace SeriesPlayer
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.Log((Exception)e.ExceptionObject);
-            DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (dr == DialogResult.Yes) Application.Exit();
+            MessageBox.Show("Ran into unexpected exception. Please report this!", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Application.Exit();
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             Logger.Log(e.Exception);
-            DialogResult dr = MessageBox.Show("Ran into unexpected exception. Please report this!\nDo you want to close the program?\nNote: I can't guarentee, that everything works as expected after this.", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (dr == DialogResult.Yes) Application.Exit();
+            MessageBox.Show("Ran into unexpected exception. Please report this!", "Unexpected exception in StreamsitePlayer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Application.Exit();
         }
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
