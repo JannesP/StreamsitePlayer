@@ -68,6 +68,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <Optimize>true</Optimize>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp">
@@ -296,9 +297,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="packaging_tools\7za.exe" />
     <Content Include="CefBinaries\CefSharp.BrowserSubprocess.Core.dll" />
     <Content Include="CefBinaries\CefSharp.BrowserSubprocess.exe" />
     <Content Include="CefBinaries\CefSharp.Core.dll" />
@@ -316,6 +315,7 @@
     <Content Include="CefBinaries\libGLESv2.dll" />
     <Content Include="CefBinaries\widevinecdmadapter.dll" />
     <Content Include="Icon-Player.ico" />
+    <Content Include="packaging_tools\filever.exe" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
@@ -335,18 +335,26 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(TargetDir)jwplayer"
-xcopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E /Y
-if $(ConfigurationName) == Release (
-   xcopy "$(SolutionDir)Uninstaller\bin\$(ConfigurationName)\uninst.exe" "$(TargetDir)" /Y
-   xcopy "$(SolutionDir)Updater\bin\$(ConfigurationName)\updater.exe" "$(TargetDir)" /Y
-   xcopy "$(SolutionDir)Installer\bin\$(ConfigurationName)\SeriesPlayerInstaller.exe" "$(TargetDir)" /Y
-)
-mkdir $(TargetDir)cef
-robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)cef" /E
+    <PostBuildEvent>robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)cef" /E
+robocopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E
+if $(ConfigurationName) == Release goto release
+goto end
+:release
+robocopy "$(SolutionDir)Uninstaller\$(OutDir)\" "$(TargetDir)\" uninst.exe
+robocopy "$(SolutionDir)Updater\$(OutDir)\" "$(TargetDir)\" updater.exe
+cd /D $(ProjectDir)packaging_tools
+for /F "tokens=4" %25%25F in ('filever.exe /B /A /D $(TargetPath)') do (set VERSION=%25%25F)
+set PACKAGES_PATH=$(TargetDir)..\$(ConfigurationName)Packages\
+mkdir %25PACKAGES_PATH%25
+set Z_PATH=%25PACKAGES_PATH%25%25VERSION%25.zip
+if exist "%25Z_PATH%25" del "%25Z_PATH%25"
+echo 7za.exe a "%25Z_PATH%25" "$(TargetDir)*"
+7za.exe a "%25Z_PATH%25" "$(TargetDir)*"
+robocopy "$(SolutionDir)Installer\$(OutDir)\" "%25PACKAGES_PATH%25\" SeriesPlayerInstaller.exe
+goto end
+:end
 set/A errlev="%25ERRORLEVEL%25 &amp; 24"
-exit/B %25errlev%25
-</PostBuildEvent>
+exit/B %25errlev%25</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(SolutionDir)SharedAssemblyInfo.cs" "$(ProjectDir)Properties\" /Y</PreBuildEvent>
