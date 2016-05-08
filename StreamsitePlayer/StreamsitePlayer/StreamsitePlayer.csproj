@@ -12,6 +12,9 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,11 +27,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,10 +62,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp">
@@ -172,11 +174,6 @@
     <Compile Include="Utility\ChromiumBrowsers\OnscreenChromiumBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Utility\ExtendedBrowser\ActiveXWrapper\DWebBrowserEvents2.cs" />
-    <Compile Include="Utility\ExtendedBrowser\ActiveXWrapper\IWebBrowser2.cs" />
-    <Compile Include="Utility\ExtendedBrowser\PopuplessBrowser.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Utility\MyExtensions.cs" />
     <Compile Include="Utility\NativeMethods.cs" />
     <Compile Include="Utility\Seriescache.cs" />
@@ -230,7 +227,61 @@
     <None Include="CefBinaries\cef_100_percent.pak" />
     <None Include="CefBinaries\cef_200_percent.pak" />
     <None Include="CefBinaries\cef_extensions.pak" />
+    <None Include="CefBinaries\devtools_resources.pak" />
     <None Include="CefBinaries\icudtl.dat" />
+    <None Include="CefBinaries\locales\am.pak" />
+    <None Include="CefBinaries\locales\ar.pak" />
+    <None Include="CefBinaries\locales\bg.pak" />
+    <None Include="CefBinaries\locales\bn.pak" />
+    <None Include="CefBinaries\locales\ca.pak" />
+    <None Include="CefBinaries\locales\cs.pak" />
+    <None Include="CefBinaries\locales\da.pak" />
+    <None Include="CefBinaries\locales\de.pak" />
+    <None Include="CefBinaries\locales\el.pak" />
+    <None Include="CefBinaries\locales\en-GB.pak" />
+    <None Include="CefBinaries\locales\en-US.pak" />
+    <None Include="CefBinaries\locales\es-419.pak" />
+    <None Include="CefBinaries\locales\es.pak" />
+    <None Include="CefBinaries\locales\et.pak" />
+    <None Include="CefBinaries\locales\fa.pak" />
+    <None Include="CefBinaries\locales\fi.pak" />
+    <None Include="CefBinaries\locales\fil.pak" />
+    <None Include="CefBinaries\locales\fr.pak" />
+    <None Include="CefBinaries\locales\gu.pak" />
+    <None Include="CefBinaries\locales\he.pak" />
+    <None Include="CefBinaries\locales\hi.pak" />
+    <None Include="CefBinaries\locales\hr.pak" />
+    <None Include="CefBinaries\locales\hu.pak" />
+    <None Include="CefBinaries\locales\id.pak" />
+    <None Include="CefBinaries\locales\it.pak" />
+    <None Include="CefBinaries\locales\ja.pak" />
+    <None Include="CefBinaries\locales\kn.pak" />
+    <None Include="CefBinaries\locales\ko.pak" />
+    <None Include="CefBinaries\locales\lt.pak" />
+    <None Include="CefBinaries\locales\lv.pak" />
+    <None Include="CefBinaries\locales\ml.pak" />
+    <None Include="CefBinaries\locales\mr.pak" />
+    <None Include="CefBinaries\locales\ms.pak" />
+    <None Include="CefBinaries\locales\nb.pak" />
+    <None Include="CefBinaries\locales\nl.pak" />
+    <None Include="CefBinaries\locales\pl.pak" />
+    <None Include="CefBinaries\locales\pt-BR.pak" />
+    <None Include="CefBinaries\locales\pt-PT.pak" />
+    <None Include="CefBinaries\locales\ro.pak" />
+    <None Include="CefBinaries\locales\ru.pak" />
+    <None Include="CefBinaries\locales\sk.pak" />
+    <None Include="CefBinaries\locales\sl.pak" />
+    <None Include="CefBinaries\locales\sr.pak" />
+    <None Include="CefBinaries\locales\sv.pak" />
+    <None Include="CefBinaries\locales\sw.pak" />
+    <None Include="CefBinaries\locales\ta.pak" />
+    <None Include="CefBinaries\locales\te.pak" />
+    <None Include="CefBinaries\locales\th.pak" />
+    <None Include="CefBinaries\locales\tr.pak" />
+    <None Include="CefBinaries\locales\uk.pak" />
+    <None Include="CefBinaries\locales\vi.pak" />
+    <None Include="CefBinaries\locales\zh-CN.pak" />
+    <None Include="CefBinaries\locales\zh-TW.pak" />
     <None Include="CefBinaries\natives_blob.bin" />
     <None Include="CefBinaries\snapshot_blob.bin" />
     <None Include="packages.config" />
@@ -251,9 +302,13 @@
     <Content Include="CefBinaries\CefSharp.BrowserSubprocess.Core.dll" />
     <Content Include="CefBinaries\CefSharp.BrowserSubprocess.exe" />
     <Content Include="CefBinaries\CefSharp.Core.dll" />
+    <Content Include="CefBinaries\CefSharp.Core.xml" />
     <Content Include="CefBinaries\CefSharp.dll" />
     <Content Include="CefBinaries\CefSharp.OffScreen.dll" />
+    <Content Include="CefBinaries\CefSharp.OffScreen.xml" />
     <Content Include="CefBinaries\CefSharp.WinForms.dll" />
+    <Content Include="CefBinaries\CefSharp.WinForms.xml" />
+    <Content Include="CefBinaries\CefSharp.xml" />
     <Content Include="CefBinaries\d3dcompiler_43.dll" />
     <Content Include="CefBinaries\d3dcompiler_47.dll" />
     <Content Include="CefBinaries\libcef.dll" />
@@ -287,7 +342,8 @@ if $(ConfigurationName) == Release (
    xcopy "$(SolutionDir)Updater\bin\$(ConfigurationName)\updater.exe" "$(TargetDir)" /Y
    xcopy "$(SolutionDir)Installer\bin\$(ConfigurationName)\SeriesPlayerInstaller.exe" "$(TargetDir)" /Y
 )
-robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)\" /E
+mkdir $(TargetDir)cef
+robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)cef" /E
 set/A errlev="%25ERRORLEVEL%25 &amp; 24"
 exit/B %25errlev%25
 </PostBuildEvent>

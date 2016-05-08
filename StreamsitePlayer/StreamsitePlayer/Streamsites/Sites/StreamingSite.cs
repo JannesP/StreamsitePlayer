@@ -10,25 +10,23 @@ namespace SeriesPlayer.Streamsites
 {
     abstract class StreamingSite
     {
-        protected WebBrowser targetBrowser;
         protected string link;
 
-        public static StreamingSite CreateStreamingSite(string name, WebBrowser targetBrowser, string link)
+        public static StreamingSite CreateStreamingSite(string name, string link)
         {
             switch (name)
             {
                 case StreamcloudStreamingSite.NAME:
-                    return new StreamcloudStreamingSite(targetBrowser, link);
+                    return new StreamcloudStreamingSite(link);
                 case DubbedanimehdTvStreamingSite.NAME:
-                    return new DubbedanimehdTvStreamingSite(targetBrowser, link);
+                    return new DubbedanimehdTvStreamingSite(link);
                 case "bsto_site":   //backward compatibility
                 case BsToStreamcloudStreamingSite.NAME:
-                    return new BsToStreamcloudStreamingSite(targetBrowser, link);
-                
+                    return new BsToStreamcloudStreamingSite(link);
                 case BsToVivoStreamingSite.NAME:
-                    return new BsToVivoStreamingSite(targetBrowser, link);
+                    return new BsToVivoStreamingSite(link);
                 case CartooncrazyStreamingSite.NAME:
-                    return new CartooncrazyStreamingSite(targetBrowser, link);
+                    return new CartooncrazyStreamingSite(link);
                 default:
                     Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
                     return null;
@@ -41,34 +39,15 @@ namespace SeriesPlayer.Streamsites
         /// </summary>
         /// <param name="targetBrowser">the WebBrowser to play in</param>
         /// <param name="link">the complete link to the video including the site url</param>
-        public StreamingSite(WebBrowser targetBrowser, string link)
+        public StreamingSite(string link)
         {
-            this.targetBrowser = targetBrowser;
-            this.targetBrowser.NewWindow += TargetBrowser_NewWindow;
             this.link = link;
         }
-
-        private void TargetBrowser_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-        }
-
-        public WebBrowser GetTargetBrowser()
-        {
-            return targetBrowser;
-        }
-
-        
         /// <summary>
         /// Returns the readable name for the streaming site. eg Steamcloud
         /// </summary>
         /// <returns>readable name for the streaming site</returns>
         public abstract string GetSiteName();
-        /// <summary>
-        /// Returns the file name of the played video.
-        /// </summary>
-        /// <returns>current file name</returns>
-        public abstract string GetFileName();
         /// <summary>
         /// Checks for remaining wait time.
         /// Note: Do NOT use this to check if the video is playable. Use <see cref="IsReadyToPlay"/>

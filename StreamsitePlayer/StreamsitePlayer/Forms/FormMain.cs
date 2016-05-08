@@ -554,6 +554,7 @@ namespace SeriesPlayer
             {
                 tcpServer.Stop();
             }
+            CefSharp.Cef.Shutdown();
             Settings.SaveFileSettings();
         }
 
@@ -627,7 +628,15 @@ namespace SeriesPlayer
                 VersionChecker.CheckForUpdateAsync();
             }
 #endif
-            CefSharp.Cef.Initialize();
+            CefSharp.Cef.Initialize(new CefSharp.CefSettings()
+            {
+                BrowserSubprocessPath = Util.GetRalativePath(@"cef\CefSharp.BrowserSubprocess.exe"),
+                CachePath = Util.GetRalativePath(@"cef\cache"),
+                ResourcesDirPath = Util.GetRalativePath(@"cef"),
+                UserDataPath = Util.GetRalativePath(@"cef\user_data"),
+                LocalesDirPath = Util.GetRalativePath(@"cef\locales"),
+                LogFile = Util.GetRalativePath(@"cef\debug.log")
+            }, true, true);
             seriesAnchorX = comboBoxChangeSeries;
             seriesAnchorY = numericUpDownSkipEnd;
             flowPanelEpisodeButtons.Focus();

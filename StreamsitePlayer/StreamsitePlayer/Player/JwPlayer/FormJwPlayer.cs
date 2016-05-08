@@ -337,7 +337,6 @@ namespace SeriesPlayer
         private int playNextId = 0;
         private int validRequestId = int.MinValue;
         private long nextPlayTime = 0;
-        private WebBrowser requestBrowser;
         public void Play(int season, int episode)
         {
             nextRequested = true;
@@ -357,21 +356,7 @@ namespace SeriesPlayer
 
             if (episodeLink != "")
             {
-                if (requestBrowser != null)
-                {
-                    base.Controls.Remove(requestBrowser);
-                    requestBrowser.Dispose();
-                    requestBrowser = null;
-                }
-                requestBrowser = Util.CreatePopuplessBrowser();
-#if DEBUG
-                requestBrowser.Visible = true;
-                requestBrowser.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
-                requestBrowser.Size = base.ClientSize;
-                requestBrowser.Location = new Point(0, 0);
-                base.Controls.Add(requestBrowser);
-#endif
-                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], requestBrowser, episodeLink);
+                StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], episodeLink);
                 siteWaitTime = site.GetEstimateWaitTime();
                 playNextId = ++validRequestId;
                 site.RequestJwData(this, validRequestId);
@@ -467,10 +452,6 @@ namespace SeriesPlayer
                 else
                 {
                     Logger.Log("JwLink", "Received link for playNextId " + playNextId + " with the file " + file);
-#if DEBUG
-                    base.Controls.Remove(requestBrowser);
-#endif
-                    if (!requestBrowser.IsDisposed) requestBrowser.Dispose();
                     nextFullscreen = jwPlayer.Maximized;
                     Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
                     string displayTitle = (newEpisode.Season == 0 ? "" : "Season " + newEpisode.Season + " ");

@@ -33,10 +33,33 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             }
         }
 
+        public void WaitForInit()
+        {
+            long startTime = DateTime.Now.Ticks;
+            while (!IsBrowserInitialized) { System.Windows.Forms.Application.DoEvents(); }
+            Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
+        }
+
         public void ExecuteJavaScriptAsync(string function, params string[] args)
         {
             string script = BuildJsFunctionCall(function, args);
             base.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
+        }
+
+        public object EvaluateJavaScriptRaw(string script)
+        {
+            object result = null;
+            Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
+            JavascriptResponse response = task.Result;
+            if (response.Success)
+            {
+                result = response.Result;
+            }
+            else
+            {
+                Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+            }
+            return result;
         }
 
         public object EvaluateJavaScript(string function, params string[] args)

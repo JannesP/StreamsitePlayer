@@ -12,20 +12,12 @@ namespace SeriesPlayer.Streamsites.Sites
     {
         public const string NAME = "toonme";
 
-        public CartooncrazyStreamingSite(System.Windows.Forms.WebBrowser targetBrowser, string link) : base(targetBrowser, link)
-        {
-
-        }
-
+        public CartooncrazyStreamingSite(string link) : base(link)
+        { }
 
         public override int GetEstimateWaitTime()
         {
             return 500;
-        }
-
-        public override string GetFileName()
-        {
-            throw new NotImplementedException();
         }
 
         public override int GetRemainingWaitTime()

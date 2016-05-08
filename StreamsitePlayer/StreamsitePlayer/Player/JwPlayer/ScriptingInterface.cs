@@ -47,7 +47,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPlaylocationChanged(timePlayed, timeLeft, timeTotal)));
                 }
-                receiver.OnPlaylocationChanged(timePlayed, timeLeft, timeTotal);
+                else
+                {
+                    receiver.OnPlaylocationChanged(timePlayed, timeLeft, timeTotal);
+                }
             }
         }
 
@@ -59,7 +62,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnFullscreenChanged(newState)));
                 }
-                receiver.OnFullscreenChanged(newState);
+                else
+                {
+                    receiver.OnFullscreenChanged(newState);
+                }
             }
         }
 
@@ -71,7 +77,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnReady()));
                 }
-                receiver.OnReady();
+                else
+                {
+                    receiver.OnReady();
+                }
             }
         }
 
@@ -83,7 +92,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPlaybackComplete()));
                 }
-                receiver.OnPlaybackComplete();
+                else
+                {
+                    receiver.OnPlaybackComplete();
+                }
             }
         }
 
@@ -95,7 +107,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnError(errorMessage)));
                 }
-                receiver.OnError(errorMessage);
+                else
+                {
+                    receiver.OnError(errorMessage);
+                }
             }
         }
 
@@ -107,7 +122,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnSetupError(errorMessage)));
                 }
-                receiver.OnStartupError(errorMessage);
+                else
+                {
+                    receiver.OnStartupError(errorMessage);
+                }
             }
         }
 
@@ -119,7 +137,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnVolumeChange(newVolume)));
                 }
-                receiver.OnVolumeChange(newVolume);
+                else
+                {
+                    receiver.OnVolumeChange(newVolume);
+                }
             }
         }
 
@@ -131,7 +152,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnMuteChange(muted)));
                 }
-                receiver.OnMuteChange(muted);
+                else
+                {
+                    receiver.OnMuteChange(muted);
+                }
             }
         }
 
@@ -143,7 +167,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPrevious()));
                 }
-                receiver.OnPrevious();
+                else
+                {
+                    receiver.OnPrevious();
+                }
             }
         }
 
@@ -155,7 +182,10 @@ namespace SeriesPlayer.JwPlayer
                 {
                     receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnNext()));
                 }
-                receiver.OnNext();
+                else
+                {
+                    receiver.OnNext();
+                }
             }
         }
 

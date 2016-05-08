@@ -14,41 +14,39 @@ namespace SeriesPlayer.Streamsites.Sites
         public const string NAME = "bsto_vivo_site";
         private VivoStreamingSite vivoStreamingSite;
 
-        public BsToVivoStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
-        {
-            
-        }
+        public BsToVivoStreamingSite(string link) : base(link)
+        { }
 
-        private void RequestStreamcloudJw(Control anchor, string url, IJwCallbackReceiver receiver, int requestId)
+        private void RequestVivoJw(string url, IJwCallbackReceiver receiver, int requestId)
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
             string vivoLink = "http://vivo.sx/" + res.GetSubstringBetween(0, "<a href=\"http://vivo.sx/", "\"");
-            if (anchor != null && !anchor.IsDisposed)
+            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
             {
-                anchor.Invoke((MethodInvoker)(() => StartVivoJwRequest(vivoLink, receiver, requestId)));
+                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartVivoJwRequest(vivoLink, receiver, requestId)));
             }
         }
 
-        private void RequestStreamcloudFile(Control anchor, string url, IFileCallbackReceiver receiver, int requestId)
+        private void RequestVivoFile(string url, IFileCallbackReceiver receiver, int requestId)
         {
             string res = Util.RequestSimplifiedHtmlSite(url);
             string vivoLink = "http://vivo.sx/" + res.GetSubstringBetween(0, "<a href=\"http://vivo.sx/", "\"");
-            if (anchor != null && !anchor.IsDisposed)
+            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
             {
-                anchor.Invoke((MethodInvoker)(() => StartVivoFileRequest(vivoLink, receiver, requestId)));
+                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartVivoFileRequest(vivoLink, receiver, requestId)));
             }
         }
 
         private void StartVivoJwRequest(string streamcloudlink, IJwCallbackReceiver receiver, int requestId)
         {
 
-            vivoStreamingSite = new VivoStreamingSite(targetBrowser, streamcloudlink);
+            vivoStreamingSite = new VivoStreamingSite(streamcloudlink);
             vivoStreamingSite.RequestJwData(receiver, requestId);
         }
 
         private void StartVivoFileRequest(string streamcloudlink, IFileCallbackReceiver receiver, int requestId)
         {
-            vivoStreamingSite = new VivoStreamingSite(targetBrowser, streamcloudlink);
+            vivoStreamingSite = new VivoStreamingSite(streamcloudlink);
             vivoStreamingSite.RequestFile(receiver, requestId);
         }
 
@@ -56,12 +54,7 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             return 12000;
         }
-
-        public override string GetFileName()
-        {
-            return vivoStreamingSite.GetFileName();
-        }
-
+        
         public override int GetRemainingWaitTime()
         {
             if (vivoStreamingSite != null)
@@ -88,13 +81,13 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
         {
-            Thread t = new Thread(() => RequestStreamcloudFile(targetBrowser, link, receiver, requestId));
+            Thread t = new Thread(() => RequestVivoFile(link, receiver, requestId));
             t.Start();
         }
 
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
-            Thread t = new Thread(() => RequestStreamcloudJw(targetBrowser, link, receiver, requestId));
+            Thread t = new Thread(() => RequestVivoJw(link, receiver, requestId));
             t.Start();
         }
     }

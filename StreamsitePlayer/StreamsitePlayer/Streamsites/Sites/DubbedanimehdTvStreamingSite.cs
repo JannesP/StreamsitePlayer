@@ -1,4 +1,5 @@
-﻿using SeriesPlayer.Utility.Extensions;
+﻿using SeriesPlayer.Utility.ChromiumBrowsers;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,10 @@ namespace SeriesPlayer.Streamsites.Sites
 {
     class DubbedanimehdTvStreamingSite : StreamingSite
     {
-        public DubbedanimehdTvStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        private OffscreenChromiumBrowser requestBrowser;
+        public DubbedanimehdTvStreamingSite(string link) : base(link)
         {
-            targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
-            this.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.co")
+            base.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.co")
                 .Replace("dubbedanimehd.net", "dubbedanimehd.co")
                 .Replace("dubbedanimehd.tv", "dubbedanimehd.co");
         }
@@ -24,11 +25,6 @@ namespace SeriesPlayer.Streamsites.Sites
         public override int GetEstimateWaitTime()
         {
             return 1;
-        }
-
-        public override string GetFileName()
-        {
-            throw new NotImplementedException();
         }
 
         public override int GetRemainingWaitTime()
@@ -51,7 +47,7 @@ namespace SeriesPlayer.Streamsites.Sites
         IJwCallbackReceiver jwReceiver;
         IFileCallbackReceiver fileReceiver;
         int requestId;
-        private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        /*private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             WebBrowser browser = (WebBrowser)sender;
 
@@ -89,14 +85,35 @@ namespace SeriesPlayer.Streamsites.Sites
                 GetTargetBrowser().Dispose();
             }
 
+        }*/
+
+        private void HandleRequest()
+        {
+            string htmlText = Util.RequestSimplifiedHtmlSite(base.link);
+            string iFrameSearch = "id='video' src='";
+            string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
+            Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
+
+            htmlText = Util.RequestSimplifiedHtmlSite(iframeUrl);
+            string file = htmlText.GetSubstringBetween(0, "var x04c = unescape('", "');");
+            file = WebUtility.UrlDecode(file);
+            Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
+            if (fileReceiver != null)
+            {
+                Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");
+                fileReceiver.ReceiveFileLink(file, requestId);
+            }
+            if (jwReceiver != null)
+            {
+                jwReceiver.ReceiveJwLinks(file, requestId);
+            }
         }
 
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
             this.jwReceiver = receiver;
             this.requestId = requestId;
-            Logger.Log("SITE_REQUEST_DAHD", "Navigating borwser to: " + this.link);
-            GetTargetBrowser().Navigate(this.link);
+            HandleRequest();
         }
 
         public override bool IsFileDownloadSupported()
@@ -108,8 +125,7 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             this.fileReceiver = receiver;
             this.requestId = requestId;
-            Logger.Log("SITE_REQUEST_DAHD", "Navigating borwser to: " + this.link);
-            GetTargetBrowser().Navigate(this.link);
+            HandleRequest();
         }
     }
 }

@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CefSharp.OffScreen</name>
+    </assembly>
+    <members>
+        <member name="T:CefSharp.OffScreen.ChromiumWebBrowser">
+            <summary>
+            An offscreen instance of Chromium that you can use to take
+            snapshots or evaluate JavaScript.
+            </summary>
+        </member>
+        <member name="P:CefSharp.OffScreen.ChromiumWebBrowser.Bitmap">
+            <summary>
+            Contains the last rendering from Chromium. Direct access
+            to the underlying Bitmap - there is no locking when trying
+            to access directly, use <see cref="F:CefSharp.OffScreen.ChromiumWebBrowser.BitmapLock"/> where appropriate.
+            A new bitmap is only created when it's size changes, otherwise
+            the back buffer for the bitmap is constantly updated.
+            Read the <see cref="M:CefSharp.OffScreen.ChromiumWebBrowser.InvokeRenderAsync(CefSharp.Internals.BitmapInfo)"/> doco for more info.
+            </summary>
+        </member>
+        <member name="F:CefSharp.OffScreen.ChromiumWebBrowser.BitmapLock">
+            <summary>
+            Need a lock because the caller may be asking for the bitmap
+            while Chromium async rendering has returned on another thread.
+            </summary>
+        </member>
+        <member name="F:CefSharp.OffScreen.ChromiumWebBrowser.size">
+            <summary>
+            Size of the Chromium viewport.
+            This must be set to something other than 0x0 otherwise Chromium will not render,
+            and the ScreenshotAsync task will deadlock.
+            </summary>
+        </member>
+        <member name="F:CefSharp.OffScreen.ChromiumWebBrowser.browserCreated">
+            <summary>
+            Flag to guard the creation of the underlying offscreen browser - only one instance can be created
+            </summary>
+        </member>
+        <member name="E:CefSharp.OffScreen.ChromiumWebBrowser.NewScreenshot">
+            <summary>
+            Fired by a separate thread when Chrome has re-rendered.
+            This means that a Bitmap will be returned by ScreenshotOrNull().
+            </summary>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.#ctor(System.String,CefSharp.BrowserSettings,CefSharp.RequestContext,System.Boolean)">
+            <summary>
+            Create a new OffScreen Chromium Browser
+            </summary>
+            <param name="address">Initial address (url) to load</param>
+            <param name="browserSettings">The browser settings to use. If null, the default settings are used.</param>
+            <param name="requestcontext">See <see cref="P:CefSharp.OffScreen.ChromiumWebBrowser.RequestContext"/> for more details. Defaults to null</param>
+            <param name="automaticallyCreateBrowser">automatically create the underlying Browser</param>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.CreateBrowser(System.IntPtr)">
+            <summary>
+            Create the underlying browser. The instance address, browser settings and request context will be used.
+            </summary>
+            <param name="windowHandle">Window handle if any, IntPtr.Zero is the default</param>
+        </member>
+        <member name="P:CefSharp.OffScreen.ChromiumWebBrowser.Size">
+            <summary>
+            Get/set the size of the Chromium viewport, in pixels.
+            
+            This also changes the size of the next screenshot.
+            </summary>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.ScreenshotOrNull">
+             <summary>
+             Immediately returns a copy of the last rendering from Chrome,
+             or null if no rendering has occurred yet.
+             
+             Chrome also renders the page loading, so if you want to see a complete rendering,
+             only start this task once your page is loaded (which you can detect via FrameLoadEnd
+             or your own heuristics based on evaluating JavaScript).
+            
+             It is your responsibility to dispose the returned Bitmap.
+             
+             The bitmap size is determined by the Size property set earlier.
+             </summary>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.ScreenshotAsync(System.Boolean)">
+            <summary>
+            Starts a task that waits for the next rendering from Chrome.
+            
+            Chrome also renders the page loading, so if you want to see a complete rendering,
+            only start this task once your page is loaded (which you can detect via FrameLoadEnd
+            or your own heuristics based on evaluating JavaScript).
+            
+            It is your responsibility to dispose the returned Bitmap.
+            
+            The bitmap size is determined by the Size property set earlier.
+            </summary>
+            <param name="ignoreExistingScreenshot">Ignore existing bitmap (if any) and return the next avaliable bitmap</param>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.CefSharp#IWebBrowser#Focus">
+            <summary>
+            Has Focus - Always False
+            </summary>
+            <returns>returns false</returns>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#InvokeRenderAsync(CefSharp.Internals.BitmapInfo)">
+            <summary>
+            Invoked from CefRenderHandler.OnPaint
+            A new <see cref="P:CefSharp.OffScreen.ChromiumWebBrowser.Bitmap"/> is only created when <see cref="P:CefSharp.Internals.BitmapInfo.CreateNewBitmap"/>
+            is true, otherwise the new buffer is simply copied into the backBuffer of the existing
+            <see cref="P:CefSharp.OffScreen.ChromiumWebBrowser.Bitmap"/> for efficency. Locking provided by OnPaint as this method is called
+            in it's lock scope.
+            </summary>
+            <param name="bitmapInfo">information about the bitmap to be rendered</param>
+        </member>
+        <member name="M:CefSharp.OffScreen.ChromiumWebBrowser.InvokeRenderAsync(CefSharp.Internals.BitmapInfo)">
+            <summary>
+            Invoked from CefRenderHandler.OnPaint
+            A new <see cref="P:CefSharp.OffScreen.ChromiumWebBrowser.Bitmap"/> is only created when <see cref="P:CefSharp.Internals.BitmapInfo.CreateNewBitmap"/>
+            is true, otherwise the new buffer is simply copied into the backBuffer of the existing
+            <see cref="P:CefSharp.OffScreen.ChromiumWebBrowser.Bitmap"/> for efficency. Locking provided by OnPaint as this method is called
+            in it's lock scope.
+            </summary>
+            <param name="bitmapInfo">information about the bitmap to be rendered</param>
+        </member>
+    </members>
+</doc>

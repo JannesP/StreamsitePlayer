@@ -1,9 +1,11 @@
-﻿using System;
+﻿using SeriesPlayer.Utility.ChromiumBrowsers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
@@ -16,41 +18,48 @@ namespace SeriesPlayer.Streamsites.Sites
         private IJwCallbackReceiver jwReceiver = null;
         private int fileRequestId = int.MaxValue;
         private int jwRequestId = int.MaxValue;
+        private OffscreenChromiumBrowser requestBrowser;
 
-        public VivoStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public VivoStreamingSite(string link) : base(link)
         {
-            targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
+            requestBrowser = new OffscreenChromiumBrowser();
+            requestBrowser.WaitForInit();
+            requestBrowser.LoadingStateChanged += RequestBrowser_LoadingStateChanged;
         }
 
-        private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        ~VivoStreamingSite()
         {
-            if (this.targetBrowser.Document != null)
+            requestBrowser.Dispose();
+            requestBrowser = null;
+            fileReceiver = null;
+            jwReceiver = null;
+        }
+
+        private void RequestBrowser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+        {
+            if (!e.IsLoading)
             {
                 if (!continued)
                 {
-                    HtmlElement continueButton = base.targetBrowser.Document.GetElementById("access");
-                    if (continueButton != null)
+                    if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') == null;")))
                     {
-                        continueButton.SetAttribute("disabled", "");
-                        continueButton.InvokeMember("click");
+                        requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
+                        requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
                         continued = true;
                     }
                 }
                 else
                 {
-                    HtmlElementCollection divs = this.targetBrowser.Document.GetElementsByTagName("div");
-                    string fileUrl = "";
-                    foreach (HtmlElement element in divs)
-                    {
-                        if (element.GetAttribute("classname").ToString() == "stream-content")
-                        {
-                            targetBrowser.DocumentCompleted -= TargetBrowser_DocumentCompleted;
-                            targetBrowser.Stop();
-                            fileUrl = element.GetAttribute("data-url");
-                            break;
-                        }
-                    }
-                    if (fileUrl == null) fileUrl = "";
+                    string fileUrl = Convert.ToString(requestBrowser.EvaluateJavaScriptRaw(
+                        @"(function() {
+                            var elements = document.getElementsByClassName('stream-content');
+                            if (elements.length > 0) {
+                                return elements[0].getAttribute('data-url');
+                            } else {
+                                return "";
+                            }
+                        })();"
+                    ));
                     if (fileUrl != "")
                     {
                         if (fileReceiver != null)
@@ -73,11 +82,6 @@ namespace SeriesPlayer.Streamsites.Sites
         public override int GetEstimateWaitTime()
         {
             return 1500;
-        }
-
-        public override string GetFileName()
-        {
-            throw new NotImplementedException();
         }
 
         public override int GetRemainingWaitTime()
@@ -104,14 +108,14 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             this.fileRequestId = requestId;
             fileReceiver = receiver;
-            targetBrowser.Navigate(base.link);
+            requestBrowser.Load(base.link);
         }
 
         public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
         {
             this.jwRequestId = requestId;
             jwReceiver = receiver;
-            targetBrowser.Navigate(base.link);
+            requestBrowser.Load(base.link);
         }
     }
 }

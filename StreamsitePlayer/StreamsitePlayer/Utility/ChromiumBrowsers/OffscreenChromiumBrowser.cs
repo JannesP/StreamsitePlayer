@@ -10,6 +10,7 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
 {
     class OffscreenChromiumBrowser : ChromiumWebBrowser, IJsDialogHandler, ILifeSpanHandler
     {
+        private const string TAG = "OFFSCREEN_CEF";
         private static BrowserSettings settings = new BrowserSettings()
         {
             DefaultEncoding = "utf-8",
@@ -35,6 +36,37 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
                 sourceTask.Wait();
                 return sourceTask.Result;
             }
+        }
+
+        public bool IsPageLoaded
+        {
+            get
+            {
+                return (!IsLoading && GetBrowser().HasDocument);
+            }
+        }
+
+        public void WaitForInit()
+        {
+            long startTime = DateTime.Now.Ticks;
+            while (!IsBrowserInitialized) { System.Windows.Forms.Application.DoEvents(); }
+            Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
+        }
+
+        public object EvaluateJavaScriptRaw(string script)
+        {
+            object result = null;
+            Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
+            JavascriptResponse response = task.Result;
+            if (response.Success)
+            {
+                result = response.Result;
+            }
+            else
+            {
+                Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+            }
+            return result;
         }
 
         private OffscreenChromiumBrowser(string address, BrowserSettings settings) : base(address, settings) { }

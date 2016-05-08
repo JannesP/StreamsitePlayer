@@ -1,4 +1,5 @@
-﻿using SeriesPlayer.Utility.Extensions;
+﻿using SeriesPlayer.Utility.ChromiumBrowsers;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,42 +13,37 @@ namespace SeriesPlayer.Streamsites.Sites
     {
         public const string NAME = "Streamcloud";
         public const int WAIT_TIME_UNKNOWN = 123456;
-        public Uri trueLink;
+        public string trueLink;
+        private OffscreenChromiumBrowser requestBrowser;
 
         private bool finalSiteLoaded;
 
-        public StreamcloudStreamingSite(WebBrowser targetBrowser, string link) : base(targetBrowser, link)
+        public StreamcloudStreamingSite(string link) : base(link)
         {
-            targetBrowser.DocumentCompleted += TargetBrowser_DocumentCompleted;
-            trueLink = new Uri(link);
-            targetBrowser.Navigate(trueLink);
+            requestBrowser = new OffscreenChromiumBrowser();
+            requestBrowser.WaitForInit();
+            requestBrowser.LoadingStateChanged += RequestBrowser_LoadingStateChanged;
+            trueLink = link;
+            requestBrowser.Load(link);
         }
 
-        private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void RequestBrowser_LoadingStateChanged(object sender, CefSharp.LoadingStateChangedEventArgs e)
         {
-            Logger.Log("STREAMCLOUD_NAVIGATION", e.Url.ToString());
-            if (e.Url == trueLink && continued)
+            if (!e.IsLoading)
             {
-                finalSiteLoaded = true;
-                Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
-            }
-        }
-
-        public override string GetFileName()
-        {
-            if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
-            {
-                return "";
-            }
-            HtmlElementCollection elements = GetTargetBrowser().Document.GetElementsByTagName("h1");
-            foreach (HtmlElement element in elements)
-            {
-                if (element.InnerHtml.Contains("Watch video: "))
+                Logger.Log("STREAMCLOUD_NAVIGATION", e.Browser.MainFrame.Url);
+                if (e.Browser.MainFrame.Url == trueLink && continued)
                 {
-                    return element.InnerHtml.Replace("Watch video: ", "");
+                    finalSiteLoaded = true;
+                    Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
                 }
             }
-            return "ERROR: TITLE NOT FOUND!";
+        }
+
+        ~StreamcloudStreamingSite()
+        {
+            requestBrowser.Dispose();
+            requestBrowser = null;
         }
 
         private int GetSecondsFromString(string s)
@@ -62,18 +58,18 @@ namespace SeriesPlayer.Streamsites.Sites
         private long startedWaiting = 0; 
         public override int GetRemainingWaitTime()
         {
-            if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
+            if (!requestBrowser.IsPageLoaded)
             {
                 return GetEstimateWaitTime();
-            } else
+            }
+            else
             {
                 if (startedWaiting == 0)
                 {
                     startedWaiting = DateTime.Now.Ticks;
                 }
             }
-            HtmlElement countdown = GetTargetBrowser().Document.GetElementById("countdown");
-            if (countdown == null)
+            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('countdown') == null;")))
             {
                 startedWaiting = 0;
                 return 0;
@@ -91,15 +87,15 @@ namespace SeriesPlayer.Streamsites.Sites
 
         private bool ContinueWhenReady()
         {
-            if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete) return false;
-            //Logger.Log("SITE_REQUEST_STREAMCLOUD", "WebBrowser is ready.");
-            HtmlElement watchButton = GetTargetBrowser().Document.GetElementById("btn_download");
-            if (watchButton == null) return false;
-            //Logger.Log("SITE_REQUEST_STREAMCLOUD", "watchButton != null -> " + watchButton.OuterHtml);
-            if (watchButton.OuterHtml.Contains(" blue"))
+            if (!requestBrowser.IsPageLoaded) return false;
+            //check if button exists
+            bool btn_downloadExists = Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download') != null;"));
+            if (!btn_downloadExists) return false;
+            //check if button is 'blue' (active)
+            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download').classList.contains('blue');")))
             {
                 Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
-                watchButton.InvokeMember("click");
+                requestBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('btn_download').click();");
                 return true;
             }
             else
@@ -132,16 +128,16 @@ namespace SeriesPlayer.Streamsites.Sites
             }
             else
             {
-                if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete || !finalSiteLoaded)
+                if (!requestBrowser.IsPageLoaded || !finalSiteLoaded)
                 {
                     Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
-                    receiver.JwLinkStatusUpdate(0, 10000, requestId);
+                    receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
 
                     RequestJwDataLoop(receiver, requestId);
                 }
                 else
                 {
-                    string htmlText = GetTargetBrowser().DocumentText;
+                    string htmlText = requestBrowser.HtmlSource;
                     if (htmlText == "")
                     {
                         Logger.Log("SITE_REQUEST_STREAMCLOUD", "htmlText == \"\", failed to get file.");
@@ -157,9 +153,6 @@ namespace SeriesPlayer.Streamsites.Sites
                         receiver.ReceiveJwLinks("", requestId);
                         return;
                     }
-                    string insertion = "file:\"" + file + "\",";   //file:"http://.../",
-                    insertion += "\nimage:\"" + image + "\"";   //image:"http://.../"
-                    targetBrowser.DocumentCompleted -= TargetBrowser_DocumentCompleted;
                     receiver.ReceiveJwLinks(file, requestId);
                 }
             }
@@ -171,15 +164,14 @@ namespace SeriesPlayer.Streamsites.Sites
             {
                 if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
 
-                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
+                if (receiver is Control && ((Control)receiver).InvokeRequired)
                 {
-                    try
-                    {
-                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
+                    ((Control)receiver).Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
                 }
-                    catch (Exception) { }
+                else
+                {
+                    RequestJwData(receiver, requestId);
                 }
-
             }, null, 500, -1);
         }
 
@@ -194,13 +186,13 @@ namespace SeriesPlayer.Streamsites.Sites
             {
                 if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
 
-                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed && GetTargetBrowser().IsHandleCreated)
+                if (receiver is Control && ((Control)receiver).InvokeRequired)
                 {
-                    try
-                    {
-                    GetTargetBrowser().Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
+                    ((Control)receiver).Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
                 }
-                    catch (Exception) { }
+                else
+                {
+                    RequestFile(receiver, requestId);
                 }
 
             }, null, 500, -1);
@@ -213,27 +205,23 @@ namespace SeriesPlayer.Streamsites.Sites
                 continued = ContinueWhenReady();
                 receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                 Console.WriteLine("Continued: " + continued);
-                if (GetTargetBrowser() != null && !GetTargetBrowser().IsDisposed)
-                {
-                    RequestFileLoop(receiver, requestId);
-                }
+                RequestFileLoop(receiver, requestId);
             }
             else
             {
-                if (GetTargetBrowser().ReadyState != WebBrowserReadyState.Complete)
+                if (!requestBrowser.IsPageLoaded || !finalSiteLoaded)
                 {
-                    receiver.FileRequestStatusUpdate(0, 10000, requestId);
+                    receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
                     RequestFileLoop(receiver, requestId);
                 }
                 else
                 {
-                    string htmlText = GetTargetBrowser().DocumentText;
+                    string htmlText = requestBrowser.HtmlSource;
                     string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
                     if (file == "")
                     {
                         Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
                     }
-                    targetBrowser.DocumentCompleted -= TargetBrowser_DocumentCompleted;
                     receiver.ReceiveFileLink(file, requestId);
                 }
             }

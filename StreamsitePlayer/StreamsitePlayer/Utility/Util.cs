@@ -123,7 +123,7 @@ namespace SeriesPlayer
         private static string GetBrowserResponse(string url)
         {
             if (requestBrowser == null) requestBrowser = new OffscreenChromiumBrowser();
-            while (!requestBrowser.IsBrowserInitialized) { Application.DoEvents(); }
+            requestBrowser.WaitForInit();
             requestBrowser.Load(url);
             string result = WaitForLoadingBrowser(requestBrowser);
             requestBrowser.Load("about:blank");
@@ -186,24 +186,6 @@ namespace SeriesPlayer
         public static string GetRalativePath(string path)
         {
             return Path.Combine(GetAppFolder(), path);
-        }
-
-        public static WebBrowser CreatePopuplessBrowser()
-        {
-            WebBrowser wb = null;
-            if (FormMain.threadTrick.InvokeRequired)
-            {
-                wb = (WebBrowser)FormMain.threadTrick.Invoke(new Func<WebBrowser>(() => CreatePopuplessBrowser()));
-            }
-            else
-            {
-                wb = new Utility.ExtendedBrowser.PopuplessBrowser();
-                wb.ScriptErrorsSuppressed = true;
-                wb.WebBrowserShortcutsEnabled = false;
-                wb.IsWebBrowserContextMenuEnabled = false;
-                wb.AllowWebBrowserDrop = false;
-            }
-            return wb;
         }
 
         public static string GetCurrentVersion()

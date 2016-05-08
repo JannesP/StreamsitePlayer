@@ -344,13 +344,7 @@ namespace SeriesPlayer.Forms
                     if (links.Keys.Count != 0)
                     {
                         string siteName = links.Keys.ToArray()[0];
-                        WebBrowser wb = Util.CreatePopuplessBrowser();
-                        wb.Visible = false;
-                        wb.Anchor = AnchorStyles.None;
-                        wb.Location = new Point(-1, -1);
-                        wb.Size = new Size(1, 1);
-                        this.Controls.Add(wb);
-                        site = StreamingSite.CreateStreamingSite(siteName, wb, requestedEpisodes[0].GetLink(siteName));
+                        site = StreamingSite.CreateStreamingSite(siteName, requestedEpisodes[0].GetLink(siteName));
                     
                         requested.Add(requestId, requestedEpisodes[0]);
                         requestedEpisodes.RemoveAt(0);

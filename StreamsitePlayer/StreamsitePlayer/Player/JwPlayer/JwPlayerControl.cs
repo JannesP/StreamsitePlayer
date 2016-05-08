@@ -19,12 +19,7 @@ namespace SeriesPlayer.JwPlayer
             base.Dock = DockStyle.Fill;
             base.Location = new System.Drawing.Point(0, 0);
             base.Name = "jwPlayer";
-            base.GotFocus += JwPlayerControl_GotFocus;
-        }
-
-        private void JwPlayerControl_GotFocus(object sender, EventArgs e)
-        {
-            Focus();
+            base.IsBrowserInitializedChanged += JwPlayerControl_IsBrowserInitializedChanged;
         }
 
         public readonly float AspectRatio = 16F / 9F;
@@ -159,7 +154,7 @@ namespace SeriesPlayer.JwPlayer
             }
             set
             {
-                ExecuteJavaScriptAsync("SetMute", Convert.ToString(value));
+                ExecuteJavaScriptAsync("SetMute", Convert.ToString(value).ToLower());
             }
         }
 
@@ -180,14 +175,37 @@ namespace SeriesPlayer.JwPlayer
             catch { }
         }
 
+        string fileToPlay = null, titleToPlay = null;
         public void Play(string file, string title)
         {
+            if (!base.IsBrowserInitialized)
+            {
+                fileToPlay = file;
+                titleToPlay = title;
+                return;
+            }
             string html = File.ReadAllText(Util.GetRalativePath(JW_SITE_PATH));
             html = html.Replace("--file--", file)
                 .Replace("--title--", title)
                 .Replace("--key--", Settings.GetString(Settings.JW_KEY));
             DisplayHtml(html);
             Play();
+        }
+
+        private void JwPlayerControl_IsBrowserInitializedChanged(object sender, CefSharp.IsBrowserInitializedChangedEventArgs e)
+        {
+            if (e.IsBrowserInitialized)
+            {
+                if (fileToPlay != null && titleToPlay != null)
+                {
+                    //TODO Find better solution to wait for the about:blank page to 'load' since it prevents my Load in DisplayHtml.
+                    Task.Delay(500).ContinueWith(t =>
+                    {
+                        Play(fileToPlay, titleToPlay);
+                        titleToPlay = fileToPlay = null;
+                    });
+                }
+            }
         }
 
         public bool IsLoaded
@@ -212,12 +230,12 @@ namespace SeriesPlayer.JwPlayer
             fi.Attributes |= FileAttributes.Hidden;
             string addr = "";
             string[] urlParts = tempFile.Split('\\');
-            addr += urlParts[0];
+            addr += "file:///" + urlParts[0];
             for (int i = 1; i < urlParts.Length; i++)
             {
                 addr += "/" + System.Net.WebUtility.UrlEncode(urlParts[i]);
             }
-            base.GetBrowser().MainFrame.LoadUrl(addr);
+            base.Load(addr);
         }
 
     }
