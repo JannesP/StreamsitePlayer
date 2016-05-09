@@ -56,15 +56,22 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
         public object EvaluateJavaScriptRaw(string script)
         {
             object result = null;
-            Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
-            JavascriptResponse response = task.Result;
-            if (response.Success)
+            if (IsPageLoaded)
             {
-                result = response.Result;
+                Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
+                JavascriptResponse response = task.Result;
+                if (response.Success)
+                {
+                    result = response.Result;
+                }
+                else
+                {
+                    Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+                }
             }
             else
             {
-                Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+                Logger.Log(TAG, "Got js call while page not loaded! " + this.GetBrowser().MainFrame.Url);
             }
             return result;
         }
