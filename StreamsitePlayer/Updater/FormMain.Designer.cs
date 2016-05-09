@@ -40,18 +40,20 @@
             // 
             this.progressBarDownload.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarDownload.Location = new System.Drawing.Point(12, 28);
+            this.progressBarDownload.Location = new System.Drawing.Point(18, 43);
+            this.progressBarDownload.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.progressBarDownload.Name = "progressBarDownload";
-            this.progressBarDownload.Size = new System.Drawing.Size(486, 23);
+            this.progressBarDownload.Size = new System.Drawing.Size(729, 35);
             this.progressBarDownload.TabIndex = 0;
             // 
             // labelDownloaded
             // 
             this.labelDownloaded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDownloaded.AutoSize = true;
-            this.labelDownloaded.Location = new System.Drawing.Point(423, 54);
+            this.labelDownloaded.Location = new System.Drawing.Point(634, 83);
+            this.labelDownloaded.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDownloaded.Name = "labelDownloaded";
-            this.labelDownloaded.Size = new System.Drawing.Size(77, 13);
+            this.labelDownloaded.Size = new System.Drawing.Size(110, 20);
             this.labelDownloaded.TabIndex = 1;
             this.labelDownloaded.Text = "0000/0000 KB";
             this.labelDownloaded.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -59,27 +61,30 @@
             // labelSpeed
             // 
             this.labelSpeed.AutoSize = true;
-            this.labelSpeed.Location = new System.Drawing.Point(12, 54);
+            this.labelSpeed.Location = new System.Drawing.Point(18, 83);
+            this.labelSpeed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelSpeed.Name = "labelSpeed";
-            this.labelSpeed.Size = new System.Drawing.Size(58, 13);
+            this.labelSpeed.Size = new System.Drawing.Size(82, 20);
             this.labelSpeed.TabIndex = 2;
             this.labelSpeed.Text = "0000 KB/s";
             // 
             // labelStatus
             // 
             this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(12, 9);
+            this.labelStatus.Location = new System.Drawing.Point(18, 14);
+            this.labelStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(90, 13);
+            this.labelStatus.Size = new System.Drawing.Size(129, 20);
             this.labelStatus.TabIndex = 3;
             this.labelStatus.Text = "Downloading . . . ";
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(423, 72);
+            this.buttonCancel.Location = new System.Drawing.Point(634, 111);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(112, 35);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -87,18 +92,19 @@
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(510, 107);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(765, 165);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.labelSpeed);
             this.Controls.Add(this.labelDownloaded);
             this.Controls.Add(this.progressBarDownload);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(297, 145);
+            this.MinimumSize = new System.Drawing.Size(434, 193);
             this.Name = "FormMain";
             this.Text = "StreamsitePlayer Updater";
             this.Load += new System.EventHandler(this.FormMain_Load);

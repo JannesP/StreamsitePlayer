@@ -40,6 +40,7 @@ namespace SeriesPlayer
             threadTrick = comboBoxChangeSeries;
             VersionChecker.VersionChecked += VersionChecker_VersionChecked;
             Util.AddUserInformer(this);
+            InitCefSharp();
         }
 
         private void LoadSettingValues()
@@ -628,6 +629,25 @@ namespace SeriesPlayer
                 VersionChecker.CheckForUpdateAsync();
             }
 #endif
+            seriesAnchorX = comboBoxChangeSeries;
+            seriesAnchorY = numericUpDownSkipEnd;
+            flowPanelEpisodeButtons.Focus();
+            LoadSettingValues();
+        }
+
+        private static void InitCefSharp()
+        {
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                if (Environment.OSVersion.Version.Minor == 1) //Win 7
+                {
+                    CefSharp.Cef.EnableHighDPISupport();
+                }
+                else if (Environment.OSVersion.Version.Minor >= 2 || Environment.OSVersion.Version.Major >= 10) //Win 8/8.1/Win 10+
+                {
+                    //should be working through manifest
+                }
+            }
             CefSharp.Cef.Initialize(new CefSharp.CefSettings()
             {
                 BrowserSubprocessPath = Util.GetRalativePath(@"cef\CefSharp.BrowserSubprocess.exe"),
@@ -637,10 +657,8 @@ namespace SeriesPlayer
                 LocalesDirPath = Util.GetRalativePath(@"cef\locales"),
                 LogFile = Util.GetRalativePath(@"cef\debug.log")
             }, true, true);
-            seriesAnchorX = comboBoxChangeSeries;
-            seriesAnchorY = numericUpDownSkipEnd;
-            flowPanelEpisodeButtons.Focus();
-            LoadSettingValues();
+
+            
         }
 
         private void versionToolStripMenuItem_Click(object sender, EventArgs e)

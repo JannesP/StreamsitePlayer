@@ -37,30 +37,33 @@
             // 
             this.progressBarLoadingIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarLoadingIndicator.Location = new System.Drawing.Point(12, 12);
+            this.progressBarLoadingIndicator.Location = new System.Drawing.Point(18, 18);
+            this.progressBarLoadingIndicator.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.progressBarLoadingIndicator.Name = "progressBarLoadingIndicator";
-            this.progressBarLoadingIndicator.Size = new System.Drawing.Size(332, 23);
+            this.progressBarLoadingIndicator.Size = new System.Drawing.Size(498, 35);
             this.progressBarLoadingIndicator.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBarLoadingIndicator.TabIndex = 0;
             // 
             // labelMessage
             // 
             this.labelMessage.AutoSize = true;
-            this.labelMessage.Location = new System.Drawing.Point(12, 42);
+            this.labelMessage.Location = new System.Drawing.Point(18, 65);
+            this.labelMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(50, 13);
+            this.labelMessage.Size = new System.Drawing.Size(74, 20);
             this.labelMessage.TabIndex = 1;
             this.labelMessage.Text = "Message";
             // 
             // FormLoadingIndicator
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(356, 65);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(534, 100);
             this.Controls.Add(this.labelMessage);
             this.Controls.Add(this.progressBarLoadingIndicator);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormLoadingIndicator";

@@ -49,9 +49,10 @@
             // buttonNext
             // 
             this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonNext.Location = new System.Drawing.Point(354, 90);
+            this.buttonNext.Location = new System.Drawing.Point(531, 138);
+            this.buttonNext.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonNext.Name = "buttonNext";
-            this.buttonNext.Size = new System.Drawing.Size(75, 23);
+            this.buttonNext.Size = new System.Drawing.Size(112, 35);
             this.buttonNext.TabIndex = 1;
             this.buttonNext.Text = "Uninstall";
             this.buttonNext.UseVisualStyleBackColor = true;
@@ -60,9 +61,10 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(435, 90);
+            this.buttonCancel.Location = new System.Drawing.Point(652, 138);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(112, 35);
             this.buttonCancel.TabIndex = 0;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -71,9 +73,10 @@
             // checkBoxRemoveEpisodes
             // 
             this.checkBoxRemoveEpisodes.AutoSize = true;
-            this.checkBoxRemoveEpisodes.Location = new System.Drawing.Point(6, 55);
+            this.checkBoxRemoveEpisodes.Location = new System.Drawing.Point(9, 85);
+            this.checkBoxRemoveEpisodes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxRemoveEpisodes.Name = "checkBoxRemoveEpisodes";
-            this.checkBoxRemoveEpisodes.Size = new System.Drawing.Size(178, 17);
+            this.checkBoxRemoveEpisodes.Size = new System.Drawing.Size(261, 24);
             this.checkBoxRemoveEpisodes.TabIndex = 2;
             this.checkBoxRemoveEpisodes.Text = "Remove downloaded episodes?";
             this.checkBoxRemoveEpisodes.UseVisualStyleBackColor = true;
@@ -82,18 +85,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Location = new System.Drawing.Point(4, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(262, 13);
+            this.label1.Size = new System.Drawing.Size(390, 20);
             this.label1.TabIndex = 3;
             this.label1.Text = "You are about to remove the SeriesPlayer completely. ";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 36);
+            this.label2.Location = new System.Drawing.Point(9, 55);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(262, 13);
+            this.label2.Size = new System.Drawing.Size(387, 20);
             this.label2.TabIndex = 4;
             this.label2.Text = "Do you also want to remove all downloaded epsodes?";
             // 
@@ -104,9 +109,10 @@
             this.panelSettings.Controls.Add(this.label1);
             this.panelSettings.Controls.Add(this.label2);
             this.panelSettings.Controls.Add(this.checkBoxRemoveEpisodes);
-            this.panelSettings.Location = new System.Drawing.Point(12, 12);
+            this.panelSettings.Location = new System.Drawing.Point(18, 18);
+            this.panelSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelSettings.Name = "panelSettings";
-            this.panelSettings.Size = new System.Drawing.Size(498, 78);
+            this.panelSettings.Size = new System.Drawing.Size(747, 120);
             this.panelSettings.TabIndex = 5;
             // 
             // panelUninstalling
@@ -115,25 +121,28 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelUninstalling.Controls.Add(this.label3);
             this.panelUninstalling.Controls.Add(this.progressBarProgress);
-            this.panelUninstalling.Location = new System.Drawing.Point(12, 96);
+            this.panelUninstalling.Location = new System.Drawing.Point(18, 148);
+            this.panelUninstalling.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelUninstalling.Name = "panelUninstalling";
-            this.panelUninstalling.Size = new System.Drawing.Size(498, 78);
+            this.panelUninstalling.Size = new System.Drawing.Size(747, 120);
             this.panelUninstalling.TabIndex = 6;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 17);
+            this.label3.Location = new System.Drawing.Point(4, 26);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.Size = new System.Drawing.Size(96, 20);
             this.label3.TabIndex = 1;
             this.label3.Text = "Removing ...";
             // 
             // progressBarProgress
             // 
-            this.progressBarProgress.Location = new System.Drawing.Point(3, 33);
+            this.progressBarProgress.Location = new System.Drawing.Point(4, 51);
+            this.progressBarProgress.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.progressBarProgress.Name = "progressBarProgress";
-            this.progressBarProgress.Size = new System.Drawing.Size(492, 25);
+            this.progressBarProgress.Size = new System.Drawing.Size(738, 38);
             this.progressBarProgress.TabIndex = 0;
             // 
             // backgroundWorkerUninstall
@@ -149,25 +158,27 @@
             this.panelFinished.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelFinished.Controls.Add(this.label4);
-            this.panelFinished.Location = new System.Drawing.Point(12, 180);
+            this.panelFinished.Location = new System.Drawing.Point(18, 277);
+            this.panelFinished.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelFinished.Name = "panelFinished";
-            this.panelFinished.Size = new System.Drawing.Size(498, 78);
+            this.panelFinished.Size = new System.Drawing.Size(747, 120);
             this.panelFinished.TabIndex = 7;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 4);
+            this.label4.Location = new System.Drawing.Point(14, 6);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.Size = new System.Drawing.Size(135, 20);
             this.label4.TabIndex = 0;
             this.label4.Text = "Finished uninstall.";
             // 
             // FormUninstaller
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(522, 125);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(783, 192);
             this.ControlBox = false;
             this.Controls.Add(this.panelFinished);
             this.Controls.Add(this.panelUninstalling);
@@ -176,6 +187,7 @@
             this.Controls.Add(this.buttonCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormUninstaller";
