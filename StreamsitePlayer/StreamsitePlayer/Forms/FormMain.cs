@@ -637,18 +637,7 @@ namespace SeriesPlayer
 
         private static void InitCefSharp()
         {
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                if (Environment.OSVersion.Version.Minor == 1) //Win 7
-                {
-                    CefSharp.Cef.EnableHighDPISupport();
-                }
-                else if (Environment.OSVersion.Version.Minor >= 2 || Environment.OSVersion.Version.Major >= 10) //Win 8/8.1/Win 10+
-                {
-                    //should be working through manifest
-                }
-            }
-            CefSharp.Cef.Initialize(new CefSharp.CefSettings()
+            CefSharp.CefSettings cefSettings = new CefSharp.CefSettings()
             {
                 BrowserSubprocessPath = Util.GetRalativePath(@"cef\CefSharp.BrowserSubprocess.exe"),
                 CachePath = Util.GetRalativePath(@"cef\cache"),
@@ -656,8 +645,44 @@ namespace SeriesPlayer
                 UserDataPath = Util.GetRalativePath(@"cef\user_data"),
                 LocalesDirPath = Util.GetRalativePath(@"cef\locales"),
                 LogFile = Util.GetRalativePath(@"cef\debug.log")
-            }, true, true);
-
+            };
+            cefSettings.CefCommandLineArgs.Add("disable-extensions", "1");
+            cefSettings.CefCommandLineArgs.Add("disable-plugins-discovery", "1");
+            Version osVersion = Environment.OSVersion.Version;
+            if (osVersion.Major == 6)
+            {
+                switch (osVersion.Minor)
+                {
+                    case 0: //Vista
+                        if (Environment.Is64BitOperatingSystem)
+                        {
+                            Logger.Log("CefInit", "Running on Vista x64, turning off sandbox.");
+                            MessageBox.Show("You are running Windows Vista x64. The player will not run sandboxed.", "SeriesPlayer Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                            cefSettings.CefCommandLineArgs.Add("no-sandbox", "1");
+                        }
+                        break;
+                    case 1: //Win 7
+                        CefSharp.Cef.EnableHighDPISupport();
+                        break;
+                    case 2: //Win 8
+                    case 3: //Win 8.1
+                        //Should work fine
+                        break;
+                }
+            }
+            else if (osVersion.Major >= 10) //Win 10+
+            {
+                //Should work fine
+            }
+            else if (osVersion.Major <= 5) //Win XP and lower
+            {
+                MessageBox.Show("You are running Windows XP or lower which is not supported. Please consider upgrading your OS. This application supports Vista and higher.", "SeriesPlayer - Unsupported OS found!", MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Application.Exit();
+            }
+            if (!CefSharp.Cef.Initialize(cefSettings))
+            {
+                throw new Exception("Unable to Initialize Cef!");
+            }
             
         }
 
