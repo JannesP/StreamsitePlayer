@@ -23,7 +23,8 @@ namespace SeriesPlayer
         static void Main()
         {
             Environment.CurrentDirectory = Util.GetAppFolder();
-            Logger.Log("PREINIT", "Started version " + Util.GetCurrentVersion());
+            Logger.Log("PREINIT", "Started version " + Util.GetCurrentVersion() + " on " + Environment.OSVersion.VersionString);
+            Logger.Log("PREINIT", "OS Version: " + Environment.OSVersion.Version.ToString() + " " + (Environment.Is64BitOperatingSystem ? "x64" : "x86") + " as " + (Environment.Is64BitProcess ? "x64" : "x86") + " process.");
             Logger.Log("PREINIT", "Adding global exception handlers.");
             Application.ThreadException += Application_ThreadException; //catch all exceptions to log them all.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
