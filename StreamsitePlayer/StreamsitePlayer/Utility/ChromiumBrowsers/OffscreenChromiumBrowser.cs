@@ -58,15 +58,24 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             object result = null;
             if (IsPageLoaded)
             {
-                Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
-                JavascriptResponse response = task.Result;
-                if (response.Success)
+                try
                 {
-                    result = response.Result;
+                    Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
+                    task.Wait();
+                    JavascriptResponse response = task.Result;
+                    if (response.Success)
+                    {
+                        result = response.Result;
+                    }
+                    else
+                    {
+                        Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+                    }
                 }
-                else
+                catch (AggregateException ex)
                 {
-                    Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+                    Logger.Log(TAG, "Aggregate exception while evaluating JS: ");
+                    Logger.Log(ex);
                 }
             }
             else
