@@ -646,6 +646,7 @@ namespace SeriesPlayer
                 LocalesDirPath = Util.GetRalativePath(@"cef\locales"),
                 LogFile = Util.GetRalativePath(@"cef\debug.log")
             };
+            cefSettings.CefCommandLineArgs.Add("disable-gpu", "1");
             cefSettings.CefCommandLineArgs.Add("disable-extensions", "1");
             cefSettings.CefCommandLineArgs.Add("disable-plugins-discovery", "1");
             Version osVersion = Environment.OSVersion.Version;
