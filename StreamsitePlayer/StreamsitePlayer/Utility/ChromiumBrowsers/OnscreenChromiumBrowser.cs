@@ -22,7 +22,6 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
                 DefaultEncoding = "utf-8",
                 Javascript = CefState.Enabled,
                 JavascriptOpenWindows = CefState.Disabled,
-                LocalStorage = CefState.Disabled,
                 Plugins = CefState.Disabled,
                 UniversalAccessFromFileUrls = CefState.Enabled
             };
