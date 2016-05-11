@@ -319,6 +319,10 @@
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwplayer.js" />
     <Content Include="Player\JwPlayer\HtmlWrapper\jwplayer\jwskinchanges.css" />
     <Content Include="Player\JwPlayer\HtmlWrapper\player.html" />
+    <Content Include="VC2015Runtime\concrt140.dll" />
+    <Content Include="VC2015Runtime\msvcp140.dll" />
+    <Content Include="VC2015Runtime\vccorlib140.dll" />
+    <Content Include="VC2015Runtime\vcruntime140.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -336,6 +340,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>robocopy "$(ProjectDir)CefBinaries" "$(TargetDir)cef" /E
+robocopy "$(ProjectDir)VC2015Runtime" "$(TargetDir)cef" /E
 robocopy "$(ProjectDir)Player\JwPlayer\HtmlWrapper" "$(TargetDir)jwplayer" /E
 if $(ConfigurationName) == Release goto release
 goto end
