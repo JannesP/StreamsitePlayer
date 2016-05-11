@@ -308,7 +308,6 @@
     <Content Include="CefBinaries\CefSharp.WinForms.dll" />
     <Content Include="CefBinaries\CefSharp.WinForms.xml" />
     <Content Include="CefBinaries\CefSharp.xml" />
-    <Content Include="CefBinaries\d3dcompiler_43.dll" />
     <Content Include="CefBinaries\d3dcompiler_47.dll" />
     <Content Include="CefBinaries\libcef.dll" />
     <Content Include="CefBinaries\libEGL.dll" />
