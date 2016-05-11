@@ -10,8 +10,8 @@ namespace SeriesPlayer.Utility
 {
     static class VersionChecker
     {
-        public const string REMOTE_VERSION_PATH = "http://62.75.142.161/streamplayer/newest.ver";
-        public const string REMOTE_CHANGELOG_PATH = "http://62.75.142.161/streamplayer/newest.changelog";
+        public const string REMOTE_VERSION_PATH = "http://85.214.249.105/streamplayer/newest.ver";
+        public const string REMOTE_CHANGELOG_PATH = "http://85.214.249.105/streamplayer/newest.changelog";
 
         public delegate void OnVersionCheckedEventHandler(VersionCheckedEventArgs e);
         public static event OnVersionCheckedEventHandler VersionChecked;

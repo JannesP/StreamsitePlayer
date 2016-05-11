@@ -18,7 +18,7 @@ namespace Updater
 {
     public partial class FormMain : Form
     {
-        public static string REMOTE_FILE_PATH = "http://62.75.142.161/streamplayer/newest.zip"; //has to be changed
+        public static string REMOTE_FILE_PATH = "http://85.214.249.105/streamplayer/newest.zip"; //has to be changed
         public const string CACHE_DIR = "updatecache";
         public const string CACHE_FILE = CACHE_DIR + @"\cache.zip";
         public const string DECOMPRESS_DIR = CACHE_DIR + @"\decompressed";
