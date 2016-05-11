@@ -680,7 +680,7 @@ namespace SeriesPlayer
                 MessageBox.Show("You are running Windows XP or lower which is not supported. Please consider upgrading your OS. This application supports Vista and higher.", "SeriesPlayer - Unsupported OS found!", MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
                 Application.Exit();
             }
-            if (!CefSharp.Cef.Initialize(cefSettings))
+            if (!CefSharp.Cef.Initialize(cefSettings, true, false))
             {
                 throw new Exception("Unable to Initialize Cef!");
             }

@@ -40,12 +40,6 @@ namespace SeriesPlayer.Streamsites.Sites
             }
         }
 
-        ~StreamcloudStreamingSite()
-        {
-            requestBrowser.Dispose();
-            requestBrowser = null;
-        }
-
         private int GetSecondsFromString(string s)
         {
             int x = 0;

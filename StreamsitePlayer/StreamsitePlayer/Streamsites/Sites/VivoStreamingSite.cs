@@ -27,14 +27,6 @@ namespace SeriesPlayer.Streamsites.Sites
             requestBrowser.LoadingStateChanged += RequestBrowser_LoadingStateChanged;
         }
 
-        ~VivoStreamingSite()
-        {
-            requestBrowser.Dispose();
-            requestBrowser = null;
-            fileReceiver = null;
-            jwReceiver = null;
-        }
-
         private void RequestBrowser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
         {
             if (!e.IsLoading)
