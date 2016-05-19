@@ -24,6 +24,8 @@
 /*display next and prev buttons*/
 .jw-icon-next, .jw-icon-prev {
 	display: inline !important;
+    margin-left: .2em;
+    margin-right: .2em;
 }
 
 /*display play icon while paused*/
