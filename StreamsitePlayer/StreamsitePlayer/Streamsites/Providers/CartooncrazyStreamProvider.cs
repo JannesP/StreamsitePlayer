@@ -111,9 +111,14 @@ namespace SeriesPlayer.Streamsites.Providers
             string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
-            string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.net/img/star-icon.png\">", "</h1>")
+            string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.me/img/star-icon.png\"></noscript>", "</h1>");
+            if (seriesName == "")
+            {
+                seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.me/img/star-icon.png\">", "</h1>");
+            }
+            seriesName = seriesName
                 .Replace(" Anime", "").Replace(" Cartoons", "").Replace(" Info", "")
-                .Replace(" English", "").Replace(" Dubbed", "").Replace(" at cartooncrazy.net", "")
+                .Replace(" English", "").Replace(" Dubbed", "").Replace(" at cartooncrazy.me", "")
                 .Replace(" Episodes", "");
 
             List <List<Episode>> seasons = new List<List<Episode>>();
