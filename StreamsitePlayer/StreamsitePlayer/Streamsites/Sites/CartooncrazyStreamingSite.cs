@@ -85,7 +85,7 @@ namespace SeriesPlayer.Streamsites.Sites
             string page = Util.RequestSimplifiedHtmlSite(iFrameLink);
             page = page.Replace(" ", "");
             int index = 0;
-            string link = page.GetSubstringBetween(0, "tracks:[{file:\"", "\"", out index);
+            string link = page.GetSubstringBetween(0, ":[{file:\"", "\"", out index);
             if (link != "")
             {
                 link = page.GetSubstringBetween(index, "file:\"", "\"");
