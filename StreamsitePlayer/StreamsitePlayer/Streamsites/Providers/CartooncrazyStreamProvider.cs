@@ -136,9 +136,9 @@ namespace SeriesPlayer.Streamsites.Providers
 
             string list = Util.RequestSimplifiedHtmlSite(html.GetSubstringBetween(0, "$(\"#load\").load('", "')"));
 
-            int startIndex = list.IndexOf("<table id=\"episode-list-entry-tbl\"><tr>");
+            int startIndex = list.IndexOf("<table id=\"episode-list-entry-tbl\">");
             if (startIndex == -1) return episodes;
-            int endIndex = list.IndexOf("</tr></table>");
+            int endIndex = list.IndexOf("</table>");
             if (endIndex == -1) return episodes;
 
             string linkStart = "<a href=\"";
