@@ -87,7 +87,13 @@ namespace SeriesPlayer.Networking
                 {
                     isReadyToSend = false;
                     SendBuffer = buffer;
-                    Socket.BeginSend(SendBuffer, offset, size, flags, callback, this);
+                    try {
+                        Socket.BeginSend(SendBuffer, offset, size, flags, callback, this);
+                    }
+                    catch (SocketException ex)
+                    {
+                        Logger.Log("BufferedSocket", ex.Message);
+                    }
                 }
                 else
                 {
