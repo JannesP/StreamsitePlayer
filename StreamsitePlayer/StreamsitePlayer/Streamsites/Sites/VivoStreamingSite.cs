@@ -33,7 +33,7 @@ namespace SeriesPlayer.Streamsites.Sites
             {
                 if (!continued)
                 {
-                    if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') == null;")))
+                    if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') == null;").GetAwaiter().GetResult()))
                     {
                         requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
                         requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
@@ -51,7 +51,7 @@ namespace SeriesPlayer.Streamsites.Sites
                                 return "";
                             }
                         })();"
-                    ));
+                    ).GetAwaiter().GetResult());
                     if (fileUrl != "")
                     {
                         if (fileReceiver != null)

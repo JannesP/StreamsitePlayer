@@ -79,10 +79,6 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
                     Console.WriteLine(e.InnerException.Message);
                 }
             }
-            else
-            {
-                Logger.Log(TAG, "Got js call while page not loaded! " + this.GetBrowser().MainFrame.Url);
-            }
             return result;
         }
 

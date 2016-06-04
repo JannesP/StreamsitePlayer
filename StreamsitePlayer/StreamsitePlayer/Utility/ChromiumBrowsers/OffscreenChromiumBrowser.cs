@@ -52,34 +52,26 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
         }
 
-        public object EvaluateJavaScriptRaw(string script)
+        public async Task<object> EvaluateJavaScriptRaw(string script)
         {
             object result = null;
             if (IsPageLoaded)
             {
                 try
                 {
-                    Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
-                    task.Wait();
-                    JavascriptResponse response = task.Result;
-                    if (response.Success)
-                    {
-                        result = response.Result;
-                    }
-                    else
-                    {
-                        Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
-                    }
+                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 10));
+                    await task.ContinueWith(res => {
+                        if (!res.IsFaulted && !res.IsCanceled && res.IsCompleted)
+                        {
+                            var response = res.Result;
+                            result = response.Success ? (response.Result ?? null) : response.Result;
+                        }
+                    }).ConfigureAwait(false);
                 }
-                catch (AggregateException ex)
+                catch (Exception e)
                 {
-                    Logger.Log(TAG, "Aggregate exception while evaluating JS: ");
-                    Logger.Log(ex);
+                    Console.WriteLine(e.InnerException.Message);
                 }
-            }
-            else
-            {
-                Logger.Log(TAG, "Got js call while page not loaded! " + this.GetBrowser().MainFrame.Url);
             }
             return result;
         }

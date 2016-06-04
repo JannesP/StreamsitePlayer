@@ -63,7 +63,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     startedWaiting = DateTime.Now.Ticks;
                 }
             }
-            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('countdown') == null;")))
+            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('countdown') == null;").GetAwaiter().GetResult()))
             {
                 startedWaiting = 0;
                 return 0;
@@ -83,10 +83,10 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             if (!requestBrowser.IsPageLoaded) return false;
             //check if button exists
-            bool btn_downloadExists = Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download') != null;"));
+            bool btn_downloadExists = Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download') != null;").GetAwaiter().GetResult());
             if (!btn_downloadExists) return false;
             //check if button is 'blue' (active)
-            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download').classList.contains('blue');")))
+            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download').classList.contains('blue');").GetAwaiter().GetResult()))
             {
                 Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
                 requestBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('btn_download').click();");
