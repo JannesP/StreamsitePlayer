@@ -39,11 +39,11 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
         }
 
-        public bool IsPageLoaded
+        protected bool IsPageLoaded
         {
             get
             {
-                return (!IsLoading && GetBrowser().HasDocument);
+                return (IsBrowserInitialized && !IsDisposed && !IsLoading && GetBrowser().HasDocument);
             }
         }
 
@@ -56,45 +56,27 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             }
         }
 
-        public object EvaluateJavaScriptRaw(string script)
-        {
-            object result = null;
-            if (IsPageLoaded)
-            {
-                Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
-                JavascriptResponse response = task.Result;
-                if (response.Success)
-                {
-                    result = response.Result;
-                }
-                else
-                {
-                    Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
-                }
-            }
-            else
-            {
-                Logger.Log(TAG, "Got js call while page not loaded! " + this.GetBrowser().MainFrame.Url);
-            }
-            return result;
-        }
-
-        public object EvaluateJavaScript(string function, params string[] args)
+        public async Task<object> EvaluateJavaScript(string function, params string[] args)
         {
             object result = null;
             if (IsPageLoaded)
             {
                 string script = BuildJsFunctionCall(function, args);
 
-                Task<JavascriptResponse> task = base.GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 100));
-                JavascriptResponse response = task.Result;
-                if (response.Success)
+                try
                 {
-                    result = response.Result;
+                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 10));
+                    await task.ContinueWith(res => {
+                        if (!res.IsFaulted && !res.IsCanceled && res.IsCompleted)
+                        {
+                            var response = res.Result;
+                            result = response.Success ? (response.Result ?? null) : response.Result;
+                        }
+                    }).ConfigureAwait(false);
                 }
-                else
+                catch (Exception e)
                 {
-                    Logger.Log(TAG, "Got invalid or timed out JS evaluation call:\n" + response.Message);
+                    Console.WriteLine(e.InnerException.Message);
                 }
             }
             else
@@ -121,35 +103,35 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
 
         public bool EvaluateJavaScriptForBool(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args);
+            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
             bool result = Convert.ToBoolean(jsResult);
             return result;
         }
 
         public string EvaluateJavaScriptForString(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args);
+            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
             string result = Convert.ToString(jsResult);
             return result;
         }
 
         public long EvaluateJavaScriptForLong(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args);
+            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
             long result = Convert.ToInt64(jsResult);
             return result;
         }
 
         public int EvaluateJavaScriptForInt(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args);
+            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
             int result = Convert.ToInt32(jsResult);
             return result;
         }
 
         public double EvaluateJavaScriptForDouble(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args);
+            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
             double result = Convert.ToDouble(jsResult);
             return result;
         }

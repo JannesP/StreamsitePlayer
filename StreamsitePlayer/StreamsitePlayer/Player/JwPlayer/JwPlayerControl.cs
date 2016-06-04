@@ -212,7 +212,7 @@ namespace SeriesPlayer.JwPlayer
         {
             get
             {
-                return GetBrowser().HasDocument && !GetBrowser().IsLoading;
+                return IsPageLoaded;
             }
         }
 
