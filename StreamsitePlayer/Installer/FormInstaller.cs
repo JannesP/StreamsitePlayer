@@ -147,6 +147,7 @@ namespace Installer
                 psi.Arguments += " -nostart";
             }
             psi.WorkingDirectory = installDir.FullName;
+            psi.UseShellExecute = false;
             Process updater = Process.Start(psi);
             updater.WaitForExit();
             if (updater.ExitCode != 0)

@@ -15,8 +15,8 @@ namespace Installer
 {
     static class Util
     {
-        public const string REMOTE_VERSION_PATH = "http://62.75.142.161/streamplayer/newest.ver";
-        public const string REMOTE_UPDATER_PATH = "http://62.75.142.161/streamplayer/updater.exe";
+        public const string REMOTE_VERSION_PATH = "http://85.214.249.105/streamplayer/newest.ver";
+        public const string REMOTE_UPDATER_PATH = "http://85.214.249.105/streamplayer/updater.exe";
 
         public static bool DownloadUpdaterTo(string existingPath)
         {
