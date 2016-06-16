@@ -33,41 +33,65 @@ namespace SeriesPlayer.Streamsites.Sites
             {
                 if (!continued)
                 {
-                    if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') == null;").GetAwaiter().GetResult()))
-                    {
-                        requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
-                        requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
-                        continued = true;
-                    }
+                    Task.Delay(500).ContinueWith(t => ClickOnContinue());
                 }
                 else
                 {
-                    string fileUrl = Convert.ToString(requestBrowser.EvaluateJavaScriptRaw(
+                    Task.Delay(500).ContinueWith(t => FindAndProcessLink());
+                }
+            }
+        }
+
+        private void ClickOnContinue()
+        {
+            if (!continued)
+            {
+                var btnExists = requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') != null;").GetAwaiter().GetResult();
+                Logger.Log("VivoLoading", "btnExists: " + btnExists);
+                if (btnExists != null && Convert.ToBoolean(btnExists))
+                {
+                    requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
+                    requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
+                    continued = true;
+                }
+                else
+                {
+                    Task.Delay(100).ContinueWith(t => ClickOnContinue());
+                }
+            }
+        }
+
+        private void FindAndProcessLink()
+        {
+            string fileUrl = Convert.ToString(requestBrowser.EvaluateJavaScriptRaw(
                         @"(function() {
                             var elements = document.getElementsByClassName('stream-content');
                             if (elements.length > 0) {
                                 return elements[0].getAttribute('data-url');
                             } else {
-                                return "";
+                                return 'failed';
                             }
                         })();"
                     ).GetAwaiter().GetResult());
-                    if (fileUrl != "")
-                    {
-                        if (fileReceiver != null)
-                        {
-                            fileReceiver.ReceiveFileLink(fileUrl, fileRequestId);
-                            fileReceiver = null;
-                        }
-                        if (jwReceiver != null)
-                        {
-                            fileUrl += "\",\ntype: \"mp4\",\nprovider: \"http";
-                            jwReceiver.ReceiveJwLinks(fileUrl, jwRequestId);
-                            jwReceiver = null;
-                        }
-
-                    }
+            Logger.Log("VivoLoading", "fileUrl: " + fileUrl);
+            if (fileUrl != "")
+            {
+                if (fileReceiver != null)
+                {
+                    fileReceiver.ReceiveFileLink(fileUrl, fileRequestId);
+                    fileReceiver = null;
                 }
+                if (jwReceiver != null)
+                {
+                    fileUrl += "\",\ntype: \"mp4\",\nprovider: \"http";
+                    jwReceiver.ReceiveJwLinks(fileUrl, jwRequestId);
+                    jwReceiver = null;
+                }
+
+            }
+            else
+            {
+                Task.Delay(500).ContinueWith(t => FindAndProcessLink());
             }
         }
 
