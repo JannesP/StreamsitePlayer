@@ -94,13 +94,13 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = null;
                 int index = episodeIndex;
                 string name = html.GetSubstringBetween(index, "<strong>", "</strong>", out index);
-                if (name == "" || i == episodeIndices.Count - 1 || index > episodeIndices[i + 1])
+                if (name == "" || (i != episodeIndices.Count - 1 && index > episodeIndices[i + 1]))
                 {
                     index = episodeIndex;
                     name = "";
                 }
                 string nameExt = html.GetSubstringBetween(index, "<span lang=\"en\">", "</span>", out index);
-                if (nameExt == "" || i == episodeIndices.Count - 1 || index > episodeIndices[i + 1])
+                if (nameExt == "" || (i != episodeIndices.Count - 1 && index > episodeIndices[i + 1]))
                 {
                     index = episodeIndex;
                     nameExt = "";
