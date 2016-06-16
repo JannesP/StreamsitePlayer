@@ -355,6 +355,7 @@ if exist "%25Z_PATH%25" del "%25Z_PATH%25"
 echo 7za.exe a "%25Z_PATH%25" "$(TargetDir)*"
 7za.exe a "%25Z_PATH%25" "$(TargetDir)*"
 robocopy "$(SolutionDir)Installer\$(OutDir)\" "%25PACKAGES_PATH%25\" SeriesPlayerInstaller.exe
+%25SystemRoot%25\explorer.exe "%25PACKAGES_PATH%25"
 goto end
 :end
 set/A errlev="%25ERRORLEVEL%25 &amp; 24"
