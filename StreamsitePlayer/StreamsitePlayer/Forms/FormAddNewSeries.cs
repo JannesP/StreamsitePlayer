@@ -55,8 +55,17 @@ namespace SeriesPlayer.Forms
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             string seriesExtension = "";
-            seriesExtension = searchDictionary[textBoxAddBySearch.Text];
-            OpenSeries(seriesExtension);
+            string tbText = textBoxSeries.Text;
+            if (searchDictionary.ContainsKey(tbText))
+            {
+                seriesExtension = searchDictionary[tbText];
+                OpenSeries(seriesExtension);
+            }
+            else
+            {
+                MessageBox.Show("The entered name was not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            
         }
 
         private void FormAddNewSeries_FormClosed(object sender, FormClosedEventArgs e)
@@ -77,7 +86,7 @@ namespace SeriesPlayer.Forms
             }
         }
 
-        private void textBoxAddBySearch_TextChanged(object sender, EventArgs e)
+        private void textBoxSeries_TextChanged(object sender, EventArgs e)
         {
             bool foundSeriesWithName = searchDictionary.ContainsKey(((TextBox)sender).Text);
             buttonAdd.Enabled = foundSeriesWithName;
@@ -92,12 +101,11 @@ namespace SeriesPlayer.Forms
         private void backgroundWorkerLoadAutoComplete_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             searchDictionary = (Dictionary<string, string>)e.Result;
-            textBoxAddBySearch.AutoCompleteMode = AutoCompleteMode.Suggest;
-            textBoxAddBySearch.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            textBoxAddBySearch.AutoCompleteCustomSource = searchDictionary.Keys.ToAutoCompleteStringCollection();
+            textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Index;
+            textBoxSeries.FuzzyAutoCompleteSource = searchDictionary.Keys.ToList();
             buttonOpenOverview.Enabled = true;
-            textBoxAddBySearch.Enabled = true;
-            textBoxAddBySearch.Select();
+            textBoxSeries.Enabled = true;
+            textBoxSeries.Select();
             FormLoadingIndicator.CloseDialog();
         }
 

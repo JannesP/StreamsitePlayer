@@ -103,6 +103,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\CustomControls\CustomAutoCompleteTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\FormAddNewSeries.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,7 +131,7 @@
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\IUserInformer.cs" />
-    <Compile Include="Forms\StateProgressBar.cs">
+    <Compile Include="Forms\CustomControls\StateProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Networking\BufferedSocket.cs" />
