@@ -51,7 +51,7 @@ namespace SeriesPlayer.Forms
                     string link = keys[0];
                     string fileName = downloadList[keys[0]];
                     string dir = DOWNLOADS + currentProvider.GetSeriesName();
-                    ValidateDirectoryName(ref dir);
+                    dir = ValidateDirectoryName(ref dir);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
@@ -87,6 +87,11 @@ namespace SeriesPlayer.Forms
 
         private void ListBoxDownloadingRefresh()
         {
+            if (listBoxDownloadQueue.InvokeRequired)
+            {
+                listBoxDownloadQueue.Invoke((MethodInvoker)(() => { ListBoxDownloadingRefresh(); }));
+                return;
+            }
             listBoxDownloadQueue.Items.Clear();
 
             string[] entries = downloadList.Values.ToArray();
@@ -102,6 +107,11 @@ namespace SeriesPlayer.Forms
             foreach (char c in invalid)
             {
                 nameToCheck = nameToCheck.Replace(c.ToString(), "");
+            }
+            //TODO: Fix it to work correctly for complete paths with wrong ':'
+            if (!nameToCheck.Contains(":\\"))
+            {
+                nameToCheck = nameToCheck.Replace(":", "_");
             }
             return nameToCheck;
         }
@@ -344,6 +354,10 @@ namespace SeriesPlayer.Forms
                     if (links.Keys.Count != 0)
                     {
                         string siteName = links.Keys.ToArray()[0];
+                        if (siteName.Contains("vivo"))
+                        {
+                            siteName = links.Keys.ToArray()[1];
+                        }
                         site = StreamingSite.CreateStreamingSite(siteName, requestedEpisodes[0].GetLink(siteName));
                     
                         requested.Add(requestId, requestedEpisodes[0]);
@@ -360,7 +374,7 @@ namespace SeriesPlayer.Forms
         {
             if (webClient.IsBusy)
             {
-                DialogResult dr = MessageBox.Show("Closing the window will stop all running downloads, are you sure?", "Calcel?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult dr = MessageBox.Show("Closing the window will stop all running downloads, are you sure?", "Cancle?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dr == DialogResult.Yes)
                 {
                     CancelDownloads();
