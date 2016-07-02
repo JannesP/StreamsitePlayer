@@ -28,9 +28,8 @@ namespace CustomTextBoxTest
             listBoxAutoCompletionEntries.Width = base.Width;
             listBoxAutoCompletionEntries.TabStop = false;
             listBoxAutoCompletionEntries.GotFocus += ListBoxAutoCompletionEntries_GotFocus;
-            listBoxAutoCompletionEntries.BorderStyle = BorderStyle.FixedSingle;
+            listBoxAutoCompletionEntries.BorderStyle = BorderStyle.None;
             listBoxAutoCompletionEntries.IntegralHeight = true;
-            listBoxAutoCompletionEntries.Margin = new Padding(0);
             listBoxAutoCompletionEntries.Cursor = Cursors.Arrow;
             listBoxAutoCompletionEntries.MouseMove += ListBoxAutoCompletionEntries_MouseMove;
             listBoxAutoCompletionEntries.MouseDown += ListBoxAutoCompletionEntries_MouseDown;
