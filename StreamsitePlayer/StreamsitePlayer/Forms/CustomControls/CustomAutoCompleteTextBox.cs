@@ -148,30 +148,29 @@ namespace CustomTextBoxTest
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
-            if (base.Text.Length > 0)
-            {
-                RefreshAutoCompletion();
-            }
-            else
-            {
-                HideAutoCompletionList();
-            }
-
+            RefreshAutoCompletion();
         }
 
         protected void RefreshAutoCompletion()
         {
-            var currentAutoCompletion = GetAutoCompleteList(base.Text);
             listBoxAutoCompletionEntries.Items.Clear();
-            if (currentAutoCompletion.Count > 0)
+            if (base.Text.Length > 0)
             {
-                foreach (string currentEntry in currentAutoCompletion)
+                List<string> currentAutoCompletion = GetAutoCompleteList(base.Text);
+                if (currentAutoCompletion.Count > 0)
                 {
-                    listBoxAutoCompletionEntries.Items.Add(currentEntry);
+                    foreach (string currentEntry in currentAutoCompletion)
+                    {
+                        listBoxAutoCompletionEntries.Items.Add(currentEntry);
+                    }
+                    listBoxAutoCompletionEntries.SelectedIndex = 0;
+                    ShowAutoCompletionList();
+                    base.ForeColor = System.Drawing.Color.Black;
                 }
-                listBoxAutoCompletionEntries.SelectedIndex = 0;
-                ShowAutoCompletionList();
-                base.ForeColor = System.Drawing.Color.Black;
+                else
+                {
+                    HideAutoCompletionList();
+                }
             }
             else
             {
@@ -258,10 +257,7 @@ namespace CustomTextBoxTest
                 {
                     _searchIndex = value;
                 }
-                if (base.Text.Length > 0)
-                {
-                    RefreshAutoCompletion();
-                }
+                RefreshAutoCompletion();
             }
         }
 
