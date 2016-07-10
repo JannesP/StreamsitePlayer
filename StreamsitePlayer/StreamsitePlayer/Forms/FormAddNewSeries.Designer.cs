@@ -34,7 +34,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxStreamingProvider = new System.Windows.Forms.ComboBox();
             this.labelCurrentlyLoaded = new System.Windows.Forms.Label();
-            this.backgroundWorkerLoadAutoComplete = new System.ComponentModel.BackgroundWorker();
             this.buttonOpenOverview = new System.Windows.Forms.Button();
             this.textBoxSeries = new CustomTextBoxTest.CustomAutoCompleteTextBox();
             this.SuspendLayout();
@@ -93,11 +92,6 @@
             this.labelCurrentlyLoaded.Text = "Currently loading:";
             this.labelCurrentlyLoaded.Visible = false;
             // 
-            // backgroundWorkerLoadAutoComplete
-            // 
-            this.backgroundWorkerLoadAutoComplete.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadAutoComplete_DoWork);
-            this.backgroundWorkerLoadAutoComplete.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerLoadAutoComplete_RunWorkerCompleted);
-            // 
             // buttonOpenOverview
             // 
             this.buttonOpenOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -155,7 +149,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxStreamingProvider;
         private System.Windows.Forms.Label labelCurrentlyLoaded;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadAutoComplete;
         private System.Windows.Forms.Button buttonOpenOverview;
         private CustomTextBoxTest.CustomAutoCompleteTextBox textBoxSeries;
     }

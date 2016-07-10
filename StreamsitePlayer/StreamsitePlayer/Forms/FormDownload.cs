@@ -209,7 +209,7 @@ namespace SeriesPlayer.Forms
 
         private void FillSeasons()
         {
-            int seasons = currentProvider.GetSeriesCount();
+            int seasons = currentProvider.GetSeasonCount();
             for (int i = 0; i < seasons; i++)
             {
                 listBoxSeason.Items.Add("Season " + (i + 1));
@@ -321,7 +321,7 @@ namespace SeriesPlayer.Forms
 
         private void buttonDownloadSeries_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < currentProvider.GetSeriesCount(); i++)
+            for (int i = 0; i < currentProvider.GetSeasonCount(); i++)
             {
                 List<Episode> episodes = currentProvider.GetEpisodeList(i + 1);
                 foreach (Episode episode in episodes)

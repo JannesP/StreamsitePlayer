@@ -255,7 +255,7 @@ namespace SeriesPlayer
             {
                 if (newEpisode + 1 > streamProvider.GetEpisodeCount(newSeason))
                 {
-                    if (newSeason + 1 > streamProvider.GetSeriesCount())
+                    if (newSeason + 1 > streamProvider.GetSeasonCount())
                     {
                         Util.ShowUserInformation("Already playing the last episode.");
                         nextRequested = false;

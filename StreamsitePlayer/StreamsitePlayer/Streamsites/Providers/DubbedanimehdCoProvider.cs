@@ -16,9 +16,12 @@ namespace SeriesPlayer.Streamsites.Providers
 
         private string[] VALID_SITES = { DubbedanimehdTvStreamingSite.NAME };
 
-        public override string GetLinkInstructions()
+        public override SearchMode SupportedSearchMode
         {
-            return "http://www.dubbedanimehd.co/watch/???/";
+            get
+            {
+                return SearchMode.LOCAL;
+            }
         }
 
         public override string GetReadableSiteName()
@@ -79,12 +82,7 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://www.dubbedanimehd.co/dubbed-anime";
         }
 
-        public override bool IsSearchSupported()
-        {
-            return true;
-        }
-
-        public override Dictionary<string, string> GetSearchIndex()
+        private Dictionary<string, string> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
             string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
@@ -113,6 +111,16 @@ namespace SeriesPlayer.Streamsites.Providers
             }
 
             return index;
+        }
+
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync()
+        {
+            return await Task.Run(() => GetSearchIndex());
         }
     }
 }

@@ -16,9 +16,12 @@ namespace SeriesPlayer.Streamsites.Providers
         public const string NAME = "toonme"; //got renamed to cartooncrazy
         private string[] VALID_SITES = new string[] { CartooncrazyStreamingSite.NAME };
 
-        public override string GetLinkInstructions()
+        public override SearchMode SupportedSearchMode
         {
-            throw new NotImplementedException();
+            get
+            {
+                return SearchMode.LOCAL;
+            }
         }
 
         public override string GetReadableSiteName()
@@ -26,7 +29,7 @@ namespace SeriesPlayer.Streamsites.Providers
             return "cartooncrazy.net";
         }
 
-        public override Dictionary<string, string> GetSearchIndex()
+        private Dictionary<string, string> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
 
@@ -92,11 +95,6 @@ namespace SeriesPlayer.Streamsites.Providers
         public override string GetWebsiteLink()
         {
             return "http://www.cartooncrazy.net/";
-        }
-
-        public override bool IsSearchSupported()
-        {
-            return true;
         }
 
         public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
@@ -172,6 +170,16 @@ namespace SeriesPlayer.Streamsites.Providers
             }
 
             return orderedList;
+        }
+
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync()
+        {
+            return await Task.Run(() => GetSearchIndex());
         }
     }
 }

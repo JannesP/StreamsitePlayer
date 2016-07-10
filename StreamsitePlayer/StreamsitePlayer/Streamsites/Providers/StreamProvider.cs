@@ -94,10 +94,10 @@ namespace SeriesPlayer.Streamsites
             return this.series[season - 1][episode - 1];
         }
         /// <summary>
-        /// Requests the count of series of the series on the StreamProvider.
+        /// Requests the count of seasons of the series on the StreamProvider.
         /// </summary>
         /// <returns>the count of series</returns>
-        public int GetSeriesCount()
+        public int GetSeasonCount()
         {
             return this.series.Count;
         }
@@ -130,11 +130,6 @@ namespace SeriesPlayer.Streamsites
         /// <returns>readable site name</returns>
         public abstract string GetReadableSiteName();
         /// <summary>
-        /// Returns a string which is an explanation for the user which part of the series link he has to provide.
-        /// </summary>
-        /// <returns>an instruction for the user</returns>
-        public abstract string GetLinkInstructions();
-        /// <summary>
         /// Returns all valid streaming sites which are supported on this site.
         /// </summary>
         /// <returns>a list of supported sites</returns>
@@ -158,18 +153,26 @@ namespace SeriesPlayer.Streamsites
             return series;
         }
 
+        public enum SearchMode
+        {
+            REMOTE, LOCAL
+        }
+
+        public abstract SearchMode SupportedSearchMode {
+            get;
+        }
+
         /// <summary>
-        /// Defines if the provider supports search for new series.
+        /// Returns the search result.
         /// </summary>
-        /// <returns>false if not sopported</returns>
-        public abstract bool IsSearchSupported();
+        /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
+        public abstract Task<Dictionary<string, string>> RequestRemoteSearchAsync();
 
         /// <summary>
         /// Returns the complete search index for the streamprovider regardless of the sites available.
-        /// CAREFUL: This call blocks.
         /// </summary>
         /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
-        public abstract Dictionary<string, string> GetSearchIndex();
+        public abstract Task<Dictionary<string, string>> RequestSearchIndexAsync();
 
         public void LoadSeries(Series series)
         {

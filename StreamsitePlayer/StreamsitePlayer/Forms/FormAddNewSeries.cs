@@ -15,8 +15,25 @@ namespace SeriesPlayer.Forms
 {
     public partial class FormAddNewSeries : Form
     {
+        private const string TAG = "FormAddNewSeries";
+
         private FormMain parent;
-        private Dictionary<string, string> searchDictionary;
+
+        private Dictionary<string, string> _searchDictionary = null;
+        private Dictionary<string, string> SearchDictionary {
+            get
+            {
+                if (_searchDictionary == null) _searchDictionary = new Dictionary<string, string>();
+                return _searchDictionary;
+            }
+            set
+            {
+                _searchDictionary = value;
+                textBoxSeries.FuzzyAutoCompleteSource = SearchDictionary.Keys.ToList();
+            }
+        }
+        private Dictionary<string, Dictionary<string, string>> cachedRemoteSearches;
+        StreamProvider currentProvider = null;
 
         public FormAddNewSeries(FormMain parent)
         {
@@ -32,7 +49,6 @@ namespace SeriesPlayer.Forms
 
         private void OpenSeries(string linkExtension)
         {
-            var currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
             if (currentProvider == null) return;
             FormLoadingIndicator.ShowDialog(this, "Loading series. This usually shouldn't take any longer then 30 seconds.");
             int res = currentProvider.LoadSeries(linkExtension, comboBoxStreamingProvider);
@@ -56,9 +72,9 @@ namespace SeriesPlayer.Forms
         {
             string seriesExtension = "";
             string tbText = textBoxSeries.Text;
-            if (searchDictionary.ContainsKey(tbText))
+            if (SearchDictionary.ContainsKey(tbText))
             {
-                seriesExtension = searchDictionary[tbText];
+                seriesExtension = SearchDictionary[tbText];
                 OpenSeries(seriesExtension);
             }
             else
@@ -70,7 +86,8 @@ namespace SeriesPlayer.Forms
 
         private void FormAddNewSeries_FormClosed(object sender, FormClosedEventArgs e)
         {
-            searchDictionary = null;
+            SearchDictionary = null;
+            cachedRemoteSearches = null;
             parent.Enabled = true;
             parent.Focus();
             parent = null;
@@ -78,40 +95,71 @@ namespace SeriesPlayer.Forms
 
         private void comboBoxStreamingProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
-            if (currentProvider.IsSearchSupported())
+            currentProvider = StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem);
+            switch (currentProvider.SupportedSearchMode)
             {
-                backgroundWorkerLoadAutoComplete.RunWorkerAsync(currentProvider);
-                FormLoadingIndicator.ShowDialog(this, "Loading autocomplete list, please be patient ...");
+                case StreamProvider.SearchMode.LOCAL:
+                    FormLoadingIndicator.ShowDialog(this, "Loading autocomplete list, please be patient ...");
+                    currentProvider.RequestSearchIndexAsync().ContinueWith((indexTask) => {
+                        textBoxSeries.Invoke((MethodInvoker)(() => {
+                            SearchDictionary = indexTask.Result;
+                            textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Index;
+                            textBoxSeries.FuzzyAutoCompleteSource = SearchDictionary.Keys.ToList();
+                            buttonOpenOverview.Enabled = true;
+                            textBoxSeries.Enabled = true;
+                            textBoxSeries.Select();
+                            FormLoadingIndicator.CloseDialog();
+                        }));
+                    });
+                    break;
+                case StreamProvider.SearchMode.REMOTE:
+                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
+                    textBoxSeries.FuzzyAutoCompleteSource = new List<string>();
+                    buttonOpenOverview.Enabled = true;
+                    textBoxSeries.Enabled = true;
+                    textBoxSeries.Select();
+                    break;
+                default:
+                    Logger.Log(TAG, "Searchmode not handled!");
+                    break;
             }
         }
 
         private void textBoxSeries_TextChanged(object sender, EventArgs e)
         {
-            bool foundSeriesWithName = searchDictionary.ContainsKey(((TextBox)sender).Text);
-            buttonAdd.Enabled = foundSeriesWithName;
-        }
-
-        private void backgroundWorkerLoadAutoComplete_DoWork(object sender, DoWorkEventArgs e)
-        {
-            searchDictionary = ((StreamProvider)e.Argument).GetSearchIndex();
-            e.Result = searchDictionary;
-        }
-
-        private void backgroundWorkerLoadAutoComplete_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            searchDictionary = (Dictionary<string, string>)e.Result;
-            textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Index;
-            textBoxSeries.FuzzyAutoCompleteSource = searchDictionary.Keys.ToList();
-            buttonOpenOverview.Enabled = true;
-            textBoxSeries.Enabled = true;
-            textBoxSeries.Select();
-            FormLoadingIndicator.CloseDialog();
+            switch (currentProvider.SupportedSearchMode)
+            {
+                case StreamProvider.SearchMode.LOCAL:
+                    bool foundSeriesWithName = SearchDictionary.ContainsKey(((TextBox)sender).Text);
+                    buttonAdd.Enabled = foundSeriesWithName;
+                    break;
+                case StreamProvider.SearchMode.REMOTE:
+                    if (!cachedRemoteSearches.Keys.Contains(textBoxSeries.Text))
+                    {
+                        string currentTextBoxSeriesText = textBoxSeries.Text;
+                        cachedRemoteSearches.Add(currentTextBoxSeriesText, new Dictionary<string, string>());
+                        currentProvider.RequestRemoteSearchAsync().ContinueWith((requestedSearchTask) => {
+                            cachedRemoteSearches[currentTextBoxSeriesText] = requestedSearchTask.Result;
+                            if (currentTextBoxSeriesText == textBoxSeries.Text)
+                            {
+                                SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
+                            }
+                        });
+                    }
+                    else
+                    {
+                        SearchDictionary = cachedRemoteSearches[textBoxSeries.Text];
+                    }
+                    break;
+                default:
+                    Logger.Log(TAG, "Searchmode not handled!");
+                    break;
+            }
         }
 
         private void buttonOpenOverview_Click(object sender, EventArgs e)
         {
-            Util.OpenLinkInDefaultBrowser(StreamProvider.Create((string)comboBoxStreamingProvider.SelectedItem).GetWebsiteLink());
+            Util.OpenLinkInDefaultBrowser(currentProvider.GetWebsiteLink());
         }
     }
 }

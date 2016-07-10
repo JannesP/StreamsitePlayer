@@ -20,11 +20,6 @@ namespace SeriesPlayer.Streamsites.Providers
 
         private readonly string[] VALID_SITES = { BsToStreamcloudStreamingSite.NAME, BsToVivoStreamingSite.NAME, StreamcloudStreamingSite.NAME };
 
-        public override string GetLinkInstructions()
-        {
-            return "http://bs.to/serie/???/...";
-        }
-
         public override string GetReadableSiteName()
         {
             return "bs.to";
@@ -142,12 +137,25 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://bs.to/andere-serien";
         }
 
-        public override bool IsSearchSupported()
+        public override SearchMode SupportedSearchMode
         {
-            return true;
+            get
+            {
+                return SearchMode.LOCAL;
+            }
         }
 
-        public override Dictionary<string, string> GetSearchIndex()
+        public async override Task<Dictionary<string,string>> RequestSearchIndexAsync()
+        {
+            return await Task.Run(() => GetSearchIndex());
+        }
+
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Dictionary<string, string> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
             string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
@@ -170,5 +178,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
             return index;
         }
+
+        
     }
 }

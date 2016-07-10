@@ -36,19 +36,17 @@ namespace SeriesPlayer.Streamsites.Providers
             base.series = new Series(seasons, "TestName", NAME, "test-series", "http://www.google.de/");
         }
 
-        public override string GetLinkInstructions()
+        public override SearchMode SupportedSearchMode
         {
-            return "This is a test class ... just enter nothing ^^";
+            get
+            {
+                return SearchMode.LOCAL;
+            }
         }
 
         public override string GetReadableSiteName()
         {
             return "test-provider.bz";
-        }
-
-        public override Dictionary<string, string> GetSearchIndex()
-        {
-            throw new NotImplementedException();
         }
 
         public override string[] GetValidStreamingSites()
@@ -61,14 +59,19 @@ namespace SeriesPlayer.Streamsites.Providers
             return "https://www.google.com/";
         }
 
-        public override bool IsSearchSupported()
-        {
-            return false;
-        }
-
         public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
         {
             return StreamProvider.RESULT_OK;
+        }
+
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<Dictionary<string, string>> RequestSearchIndexAsync()
+        {
+            return Task.Run(() => { return new Dictionary<string, string>(); } );
         }
     }
 }

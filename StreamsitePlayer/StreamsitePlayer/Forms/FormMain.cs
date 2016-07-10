@@ -271,7 +271,7 @@ namespace SeriesPlayer
         {
             currentProvider = StreamProvider.Create(series.Provider);
             currentProvider.LoadSeries(series);
-            if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
+            if (currentProvider.GetSeasonCount() != 0) selectedSeason = 1;
             if (player != null)
             {
                 player.StreamProvider = currentProvider;
@@ -318,7 +318,7 @@ namespace SeriesPlayer
                 FormLoadingIndicator.CloseDialog();
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
-                    if (currentProvider.GetSeriesCount() != 0) selectedSeason = 1;
+                    if (currentProvider.GetSeasonCount() != 0) selectedSeason = 1;
                     comboBoxChangeSeries.Items.Insert(comboBoxChangeSeries.Items.Count - 1, currentProvider.GetSeries());
                     comboBoxChangeSeries.SelectedItem = currentProvider.GetSeries();
                     Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
@@ -422,10 +422,10 @@ namespace SeriesPlayer
         {
             List<Button> buttons = new List<Button>();
 
-            int seriesCount = currentProvider.GetSeriesCount();
+            int seriesCount = currentProvider.GetSeasonCount();
             for (int i = 0; i < seriesCount; i++)
             {
-                Button b = CreateNewButton(parent, "S" + (i + 1).ToString(), "Series " + (i + 1), tooltip);
+                Button b = CreateNewButton(parent, "S" + (i + 1).ToString(), "Season " + (i + 1), tooltip);
                 b.Height /= 2;
                 b.Click += this.OnSeriesButtonClicked;
                 buttons.Add(b);
