@@ -113,11 +113,14 @@ namespace SeriesPlayer.Forms
                     });
                     break;
                 case StreamProvider.SearchMode.REMOTE:
-                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
-                    textBoxSeries.FuzzyAutoCompleteSource = new List<string>();
-                    buttonOpenOverview.Enabled = true;
-                    textBoxSeries.Enabled = true;
-                    textBoxSeries.Select();
+                    textBoxSeries.Invoke((MethodInvoker)(() =>
+                    {
+                        textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
+                        textBoxSeries.FuzzyAutoCompleteSource = new List<string>();
+                        buttonOpenOverview.Enabled = true;
+                        textBoxSeries.Enabled = true;
+                        textBoxSeries.Select();
+                    }));
                     break;
                 default:
                     Logger.Log(TAG, "Searchmode not handled!");
