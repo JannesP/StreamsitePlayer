@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -67,13 +68,15 @@ namespace SeriesPlayer.Streamsites
         /// Returns if the extraction of the file is supported.
         /// </summary>
         public abstract bool IsFileDownloadSupported();
+
         /// <summary>
-        /// Requests the jw link. All results and updates are sent to the callback receiver !in another thread!.
+        /// Requests the jw link.
         /// </summary>
-        public abstract void RequestJwData(IJwCallbackReceiver receiver, int requestId);
+        public abstract Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct);
+
         /// <summary>
-        /// Requests the jw link. All results and updates are sent to the callback receiver !in another thread!.
+        /// Requests the file link.
         /// </summary>
-        public abstract void RequestFile(IFileCallbackReceiver receiver, int requestId);
+        public abstract Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct);
     }
 }

@@ -170,7 +170,6 @@
     <Compile Include="Streamsites\Sites\BsToVivoStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\BsToStreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdTvStreamingSite.cs" />
-    <Compile Include="Streamsites\Sites\IFileCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\CartooncrazyStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\VivoStreamingSite.cs" />
     <Compile Include="Utility\AutoClosingMessageBox.cs" />
@@ -186,7 +185,6 @@
     <Compile Include="Streamsites\Episode.cs" />
     <Compile Include="Streamsites\Providers\BsToStreamProvider.cs" />
     <Compile Include="Streamsites\Providers\TestProvider.cs" />
-    <Compile Include="Streamsites\Sites\IJwCallbackReceiver.cs" />
     <Compile Include="Streamsites\Sites\StreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\StreamingSite.cs" />
     <Compile Include="Streamsites\Providers\StreamProvider.cs" />

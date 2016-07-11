@@ -12,12 +12,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SeriesPlayer.Forms
 {
-    public partial class FormDownload : Form, IFileCallbackReceiver
+    public partial class FormDownload : Form, IProgress<int>
     {
         private StreamProvider currentProvider;
         private Dictionary<string, string> downloadList = new Dictionary<string, string>();
@@ -30,6 +31,23 @@ namespace SeriesPlayer.Forms
         private const string DOWNLOADS = @"downloads\";
         private List<Episode> requestedEpisodes = new List<Episode>();
         private bool requesting = false;
+
+        private CancellationTokenSource _currentCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource CurrentCancellationTokenSource
+        {
+            get
+            {
+                return _currentCancellationTokenSource;
+            }
+            set
+            {
+                if (_currentCancellationTokenSource != null && !_currentCancellationTokenSource.IsCancellationRequested)
+                {
+                    _currentCancellationTokenSource.Cancel();
+                }
+                _currentCancellationTokenSource = value;
+            }
+        }
 
         public FormDownload(StreamProvider provider)
         {
@@ -252,28 +270,13 @@ namespace SeriesPlayer.Forms
             }
         }
 
-        public void FileRequestStatusUpdate(int remainingTime, int max, int rqeuestId)
+        public void ReceiveFileLink(string file, Episode requestedEpisode)
         {
-            stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.WARNING;
-            stateProgressBarLinkRequest.Maximum = max;
-            stateProgressBarLinkRequest.Value = max - remainingTime;
-            if (TaskbarManager.IsPlatformSupported)
+            if (labelEpisodesLeft.InvokeRequired)
             {
-                TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.Paused);
-                TaskbarManager.Instance.SetProgressValue(this.Handle, (ulong)Convert.ToUInt32((max - remainingTime)), (ulong)Convert.ToUInt32(max));
+                labelEpisodesLeft.Invoke((MethodInvoker)(() => ReceiveFileLink(file, requestedEpisode)));
+                return;
             }
-
-            if (remainingTime == 0)
-            {
-                stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.NORMAL;
-            }
-
-            stateProgressBarLinkRequest.Visible = true;
-            labelLinkRequest.Visible = true;
-        }
-
-        public void ReceiveFileLink(string file, int requestId)
-        {
             requesting = false;
             CheckForRequest();
             if (!requesting)
@@ -283,7 +286,7 @@ namespace SeriesPlayer.Forms
             }
             if (file == "") return;
             
-            Episode e = requested[requestId];
+            Episode e = requestedEpisode;
             string season = e.Season == 0 ? "" : "S" + e.Season.ToString();
             string fileName = season + " E" + e.Number + " - " + e.Name + GetFileExtension(file);
             requested.Remove(requestId);
@@ -359,11 +362,14 @@ namespace SeriesPlayer.Forms
                             siteName = links.Keys.ToArray()[1];
                         }
                         site = StreamingSite.CreateStreamingSite(siteName, requestedEpisodes[0].GetLink(siteName));
-                    
-                        requested.Add(requestId, requestedEpisodes[0]);
+                        Episode currentRequest = requestedEpisodes[0];
                         requestedEpisodes.RemoveAt(0);
-                        
-                        site.RequestFile(this, requestId++);
+                        site.RequestFileAsync(this, CurrentCancellationTokenSource.Token).ContinueWith((fileTask) => {
+                            if (!fileTask.IsCanceled && !fileTask.IsFaulted)
+                            {
+                                ReceiveFileLink(fileTask.Result, currentRequest);
+                            }
+                        });
                     }
 
                 }
@@ -378,6 +384,7 @@ namespace SeriesPlayer.Forms
                 if (dr == DialogResult.Yes)
                 {
                     CancelDownloads();
+                    CurrentCancellationTokenSource.Cancel();
                 }
                 else
                 {
@@ -429,6 +436,8 @@ namespace SeriesPlayer.Forms
                 if (dr == DialogResult.Yes)
                 {
                     CancelDownloads();
+                    CurrentCancellationTokenSource.Cancel();
+                    CurrentCancellationTokenSource = new CancellationTokenSource();
                 }
             }
         }
@@ -469,6 +478,25 @@ namespace SeriesPlayer.Forms
                 Directory.CreateDirectory(downloadDir);
             }
             Process.Start(downloadDir);
+        }
+
+        public void Report(int value)
+        {
+            stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.WARNING;
+            stateProgressBarLinkRequest.Value = value;
+            if (TaskbarManager.IsPlatformSupported)
+            {
+                TaskbarManager.Instance.SetProgressState(this.Handle, TaskbarProgressBarState.Paused);
+                TaskbarManager.Instance.SetProgressValue(this.Handle, (ulong)Convert.ToUInt32(value), (ulong)Convert.ToUInt32(stateProgressBarLinkRequest.Maximum));
+            }
+
+            if (value == 0)
+            {
+                stateProgressBarLinkRequest.CurrentState = StateProgressBar.State.NORMAL;
+            }
+
+            stateProgressBarLinkRequest.Visible = true;
+            labelLinkRequest.Visible = true;
         }
     }
 }

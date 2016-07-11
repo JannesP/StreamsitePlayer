@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
+using System.Threading;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
@@ -14,8 +15,6 @@ namespace SeriesPlayer.Streamsites.Sites
         public const string NAME = "Vivo";
 
         private bool continued = false;
-        private IFileCallbackReceiver fileReceiver = null;
-        private IJwCallbackReceiver jwReceiver = null;
         private int fileRequestId = int.MaxValue;
         private int jwRequestId = int.MaxValue;
         private OffscreenChromiumBrowser requestBrowser;
@@ -24,74 +23,50 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             requestBrowser = new OffscreenChromiumBrowser();
             requestBrowser.WaitForInit();
-            requestBrowser.LoadingStateChanged += RequestBrowser_LoadingStateChanged;
         }
 
-        private void RequestBrowser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+        private async Task ClickOnContinue()
         {
-            if (!e.IsLoading)
+            var btnExists = await requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('access') != null;");
+            Logger.Log("VivoLoading", "btnExists: " + btnExists);
+            if (btnExists != null && Convert.ToBoolean(btnExists))
             {
-                if (!continued)
-                {
-                    Task.Delay(500).ContinueWith(t => ClickOnContinue());
-                }
-                else
-                {
-                    Task.Delay(500).ContinueWith(t => FindAndProcessLink());
-                }
-            }
-        }
-
-        private void ClickOnContinue()
-        {
-            if (!continued)
-            {
-                var btnExists = requestBrowser.EvaluateJavaScriptRaw("document.getElementById('access') != null;").GetAwaiter().GetResult();
-                Logger.Log("VivoLoading", "btnExists: " + btnExists);
-                if (btnExists != null && Convert.ToBoolean(btnExists))
-                {
-                    requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
-                    requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
-                    continued = true;
-                }
-                else
-                {
-                    Task.Delay(100).ContinueWith(t => ClickOnContinue());
-                }
-            }
-        }
-
-        private void FindAndProcessLink()
-        {
-            string fileUrl = Convert.ToString(requestBrowser.EvaluateJavaScriptRaw(
-                        @"(function() {
-                            var elements = document.getElementsByClassName('stream-content');
-                            if (elements.length > 0) {
-                                return elements[0].getAttribute('data-url');
-                            } else {
-                                return 'failed';
-                            }
-                        })();"
-                    ).GetAwaiter().GetResult());
-            Logger.Log("VivoLoading", "fileUrl: " + fileUrl);
-            if (fileUrl != "")
-            {
-                if (fileReceiver != null)
-                {
-                    fileReceiver.ReceiveFileLink(fileUrl, fileRequestId);
-                    fileReceiver = null;
-                }
-                if (jwReceiver != null)
-                {
-                    fileUrl += "\",\ntype: \"mp4\",\nprovider: \"http";
-                    jwReceiver.ReceiveJwLinks(fileUrl, jwRequestId);
-                    jwReceiver = null;
-                }
-
+                requestBrowser.ExecuteScriptAsync("document.getElementById('access').disabled = false;");
+                requestBrowser.ExecuteScriptAsync("document.getElementById('access').click();");
             }
             else
             {
-                Task.Delay(500).ContinueWith(t => FindAndProcessLink());
+                await Task.Delay(100).ContinueWith(t => ClickOnContinue());
+            }
+        }
+
+        private async Task<string> FindLink()
+        {
+            if (!continued)
+            {
+                await ClickOnContinue();
+                continued = true;
+            }
+            string fileUrl = Convert.ToString(await requestBrowser.EvaluateJavaScriptRawAsync(
+                    @"(function() {
+                        var elements = document.getElementsByClassName('stream-content');
+                        if (elements.length > 0) {
+                            return elements[0].getAttribute('data-url');
+                        } else {
+                            return 'failed';
+                        }
+                    })();"
+                ));
+            Logger.Log("VivoLoading", "fileUrl: " + fileUrl);
+            if (fileUrl != "")
+            {
+                return fileUrl;
+            }
+            else
+            {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                return (await Task.Delay(500).ContinueWith(t => FindLink())).Result;
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
 
@@ -120,18 +95,16 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            this.fileRequestId = requestId;
-            fileReceiver = receiver;
             requestBrowser.Load(base.link);
+            return await FindLink();
         }
 
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            this.jwRequestId = requestId;
-            jwReceiver = receiver;
             requestBrowser.Load(base.link);
+            return await FindLink();
         }
     }
 }

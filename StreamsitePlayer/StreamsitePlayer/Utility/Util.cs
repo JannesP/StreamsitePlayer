@@ -84,7 +84,7 @@ namespace SeriesPlayer
             }
         }
 
-        private static string RequestHtmlSite(string url)
+        private async static Task<string> RequestHtmlSiteAsync(string url)
         {
             string responseFromServer = "";
             long start = DateTime.Now.Ticks;
@@ -94,7 +94,7 @@ namespace SeriesPlayer
                 WebRequest request = WebRequest.Create(url);
                 Logger.Log("UA", ((HttpWebRequest)request).UserAgent);
                 // Get the response.
-                WebResponse response = request.GetResponse();
+                WebResponse response = await request.GetResponseAsync();
                 // Get the stream containing content returned by the server.
                 Stream dataStream = response.GetResponseStream();
                 // Open the stream using a StreamReader for easy access.
@@ -110,7 +110,7 @@ namespace SeriesPlayer
             {
                 if (((HttpWebResponse)ex.Response).Server.Contains("cloudflare"))
                 {
-                    responseFromServer = GetBrowserResponse(url);
+                    responseFromServer = await GetBrowserResponseAsync(url);
                 }
             }
             catch (WebException)
@@ -120,12 +120,12 @@ namespace SeriesPlayer
             return responseFromServer;
         }
 
-        private static string GetBrowserResponse(string url)
+        private async static Task<string> GetBrowserResponseAsync(string url)
         {
             if (requestBrowser == null) requestBrowser = new OffscreenChromiumBrowser();
             requestBrowser.WaitForInit();
             requestBrowser.Load(url);
-            string result = WaitForLoadingBrowser(requestBrowser);
+            string result = await Task.Run(() => WaitForLoadingBrowser(requestBrowser));
             requestBrowser.Load("about:blank");
             return result;
         }
@@ -152,9 +152,9 @@ namespace SeriesPlayer
             return browser.HtmlSource;
         }
 
-        public static string RequestSimplifiedHtmlSite(string url)
+        public async static Task<string> RequestSimplifiedHtmlSiteAsync(string url)
         {
-            string requestedRaw = RequestHtmlSite(url);
+            string requestedRaw = await RequestHtmlSiteAsync(url);
             long start = DateTime.Now.Ticks;
             requestedRaw = requestedRaw.Replace("\r", "");
             requestedRaw = requestedRaw.Replace("\n", "");

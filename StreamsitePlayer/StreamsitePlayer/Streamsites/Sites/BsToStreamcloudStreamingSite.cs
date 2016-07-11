@@ -17,37 +17,11 @@ namespace SeriesPlayer.Streamsites.Sites
         public BsToStreamcloudStreamingSite(string link) : base(link)
         { }
 
-        private void RequestStreamcloudJw(string url, IJwCallbackReceiver receiver, int requestId)
+        private async Task<string> GetStreamcloudLinkAsync(string url)
         {
-            string res = Util.RequestSimplifiedHtmlSite(url);
+            string res = await Util.RequestSimplifiedHtmlSiteAsync(url);
             string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
-            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
-            {
-                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartStreamcloudJwRequest(streamcloudLink, receiver, requestId)));
-            }
-        }
-
-        private void RequestStreamcloudFile(string url, IFileCallbackReceiver receiver, int requestId)
-        {
-            string res = Util.RequestSimplifiedHtmlSite(url);
-            string streamcloudLink = "http://streamcloud.eu/" + res.GetSubstringBetween(0, "<a href=\"http://streamcloud.eu/", "\"");
-            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
-            {
-                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartStreamcloudFileRequest(streamcloudLink, receiver, requestId)));
-            }
-        }
-
-        private void StartStreamcloudJwRequest(string streamcloudlink, IJwCallbackReceiver receiver, int requestId)
-        {
-
-            streamcloudStreamingSite = new StreamcloudStreamingSite(streamcloudlink);
-            streamcloudStreamingSite.RequestJwData(receiver, requestId);
-        }
-
-        private void StartStreamcloudFileRequest(string streamcloudlink, IFileCallbackReceiver receiver, int requestId)
-        {
-            streamcloudStreamingSite = new StreamcloudStreamingSite(streamcloudlink);
-            streamcloudStreamingSite.RequestFile(receiver, requestId);
+            return streamcloudLink;
         }
 
         public override int GetEstimateWaitTime()
@@ -79,16 +53,20 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            Thread t = new Thread(() => RequestStreamcloudFile(link, receiver, requestId));
-            t.Start();
+            string streamcloudUrl = await GetStreamcloudLinkAsync(base.link);
+            ct.ThrowIfCancellationRequested();
+            streamcloudStreamingSite = new StreamcloudStreamingSite(streamcloudUrl);
+            return await streamcloudStreamingSite.RequestJwDataAsync(progress, ct);
         }
 
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            Thread t = new Thread(() => RequestStreamcloudJw(link, receiver, requestId));
-            t.Start();
+            string streamcloudUrl = await GetStreamcloudLinkAsync(base.link);
+            ct.ThrowIfCancellationRequested();
+            streamcloudStreamingSite = new StreamcloudStreamingSite(streamcloudUrl);
+            return await streamcloudStreamingSite.RequestFileAsync(progress, ct);
         }
     }
 }

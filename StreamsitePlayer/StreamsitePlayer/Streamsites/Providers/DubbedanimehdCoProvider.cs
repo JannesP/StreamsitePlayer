@@ -40,7 +40,7 @@ namespace SeriesPlayer.Streamsites.Providers
             base.siteLinkExtension = siteLinkExtension;
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
+            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension).GetAwaiter().GetResult();
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "wp-post-image\" alt=\"", "\" />");
@@ -82,10 +82,10 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://www.dubbedanimehd.co/dubbed-anime";
         }
 
-        private Dictionary<string, string> GetSearchIndex()
+        private async Task<Dictionary<string, string>> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
-            string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
+            string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink());
 
             const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.co/watch/";
             const string END_LINK = "' title='";

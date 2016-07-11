@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
@@ -15,6 +16,7 @@ namespace SeriesPlayer.Streamsites.Sites
         public const int WAIT_TIME_UNKNOWN = 123456;
         public string trueLink;
         private OffscreenChromiumBrowser requestBrowser;
+        private bool continued = false;
 
         private bool finalSiteLoaded;
 
@@ -63,7 +65,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     startedWaiting = DateTime.Now.Ticks;
                 }
             }
-            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('countdown') == null;").GetAwaiter().GetResult()))
+            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('countdown') == null;").GetAwaiter().GetResult()))
             {
                 startedWaiting = 0;
                 return 0;
@@ -79,26 +81,29 @@ namespace SeriesPlayer.Streamsites.Sites
             return NAME;
         }
 
-        private bool ContinueWhenReady()
+        private async Task ContinueWhenReady(IProgress<int> progress, CancellationToken ct)
         {
-            if (!requestBrowser.IsPageLoaded) return false;
-            //check if button exists
-            bool btn_downloadExists = Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download') != null;").GetAwaiter().GetResult());
-            if (!btn_downloadExists) return false;
-            //check if button is 'blue' (active)
-            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRaw("document.getElementById('btn_download').classList.contains('blue');").GetAwaiter().GetResult()))
+            await Task.Run(async () =>
             {
-                Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
-                requestBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('btn_download').click();");
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                while (!continued)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(100);
+                    progress.Report(GetRemainingWaitTime() / GetEstimateWaitTime() * 100);
+                    if (!requestBrowser.IsPageLoaded) continue;
+                    //check if button exists
+                    bool btn_downloadExists = Convert.ToBoolean(await requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('btn_download') != null;"));
+                    if (!btn_downloadExists) continue;
+                    //check if button is 'blue' (active)
+                    if (Convert.ToBoolean(await requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('btn_download').classList.contains('blue');")))
+                    {
+                        Logger.Log("SITE_REQUEST_STREAMCLOUD", "Clicking on watchButton");
+                        requestBrowser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("document.getElementById('btn_download').click();");
+                        continued = true;
+                    }
+                }
+            });
         }
-
-        private bool continued = false;
 
         public override int GetEstimateWaitTime()
         {
@@ -109,64 +114,31 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             return true;
         }
-
-        System.Threading.Timer timerReference;
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
+        
+        public async Task<string> GetFile(IProgress<int> progress, CancellationToken ct)
         {
-            if (!continued)
+            await ContinueWhenReady(progress, ct);
+
+            return await Task.Run(async () =>
             {
-                continued = ContinueWhenReady();
-                receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-
-                RequestJwDataLoop(receiver, requestId);
-            }
-            else
-            {
-                if (!requestBrowser.IsPageLoaded || !finalSiteLoaded)
+                string file = "";
+                while (!requestBrowser.IsPageLoaded || !finalSiteLoaded)
                 {
-                    Logger.Log("SITE_REQUEST_STREAMCLOUD", "Webbrowser is not fully loaded yet. Waiting ...");
-                    receiver.JwLinkStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-
-                    RequestJwDataLoop(receiver, requestId);
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(500);
                 }
-                else
+                string htmlText = requestBrowser.HtmlSource;
+                if (htmlText == "")
                 {
-                    string htmlText = requestBrowser.HtmlSource;
-                    if (htmlText == "")
-                    {
-                        Logger.Log("SITE_REQUEST_STREAMCLOUD", "htmlText == \"\", failed to get file.");
-                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
-                        receiver.ReceiveJwLinks("", requestId);
-                        return;
-                    }
-                    string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
-                    string image = htmlText.GetSubstringBetween(0, "image: \"", "\"");
-                    if (file == "" || image == "")
-                    {
-                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
-                        receiver.ReceiveJwLinks("", requestId);
-                        return;
-                    }
-                    receiver.ReceiveJwLinks(file, requestId);
+                    ct.ThrowIfCancellationRequested();
+                    Logger.Log("SITE_REQUEST_STREAMCLOUD", "htmlText == \"\", failed to get file.");
+                    Util.ShowUserInformation("Streamcloud didn't load properly, trying again . . .");
+                    return await GetFile(progress, ct);
                 }
-            }
-        }
-
-        private void RequestJwDataLoop(IJwCallbackReceiver receiver, int requestId)
-        {
-            timerReference = new System.Threading.Timer((state) =>
-            {
-                if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
-
-                if (receiver is Control && ((Control)receiver).InvokeRequired)
-                {
-                    ((Control)receiver).Invoke((MethodInvoker)(() => RequestJwData(receiver, requestId)));
-                }
-                else
-                {
-                    RequestJwData(receiver, requestId);
-                }
-            }, null, 500, -1);
+                file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
+                ct.ThrowIfCancellationRequested();
+                return file;
+            });
         }
 
         public override bool IsFileDownloadSupported()
@@ -174,51 +146,14 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        private void RequestFileLoop(IFileCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            timerReference = new System.Threading.Timer((state) =>
-            {
-                if (receiver == null || (receiver is Control && ((Control)receiver).IsDisposed)) return;    //if receiver is disposed or null
-
-                if (receiver is Control && ((Control)receiver).InvokeRequired)
-                {
-                    ((Control)receiver).Invoke((MethodInvoker)(() => RequestFile(receiver, requestId)));
-                }
-                else
-                {
-                    RequestFile(receiver, requestId);
-                }
-
-            }, null, 500, -1);
+            return await GetFile(progress, ct);
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            if (!continued)
-            {
-                continued = ContinueWhenReady();
-                receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-                Console.WriteLine("Continued: " + continued);
-                RequestFileLoop(receiver, requestId);
-            }
-            else
-            {
-                if (!requestBrowser.IsPageLoaded || !finalSiteLoaded)
-                {
-                    receiver.FileRequestStatusUpdate(GetRemainingWaitTime(), GetEstimateWaitTime(), requestId);
-                    RequestFileLoop(receiver, requestId);
-                }
-                else
-                {
-                    string htmlText = requestBrowser.HtmlSource;
-                    string file = htmlText.GetSubstringBetween(0, "file: \"", "\"");
-                    if (file == "")
-                    {
-                        Util.ShowUserInformation("Streamcloud didn't load properly, please try again.");
-                    }
-                    receiver.ReceiveFileLink(file, requestId);
-                }
-            }
+            return await GetFile(progress, ct);
         }
     }
 }

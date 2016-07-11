@@ -29,29 +29,29 @@ namespace SeriesPlayer.Streamsites.Providers
             return "cartooncrazy.net";
         }
 
-        private Dictionary<string, string> GetSearchIndex()
+        private async Task<Dictionary<string, string>> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
 
-            string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink() + "cartoon-list/");
+            string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "cartoon-list/");
             index.AddAll(ParseSeriesOverview(site));
             int nextIndex = site.IndexOf("next page-numbers");
             while (nextIndex != -1)
             {
                 Application.DoEvents();
                 string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
-                site = Util.RequestSimplifiedHtmlSite(nextPage);
+                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
                 index.AddAll(ParseSeriesOverview(site));
                 nextIndex = site.IndexOf("next page-numbers");
             }
-            site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink() + "anime-dubbed/");
+            site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "anime-dubbed/");
             index.AddAll(ParseSeriesOverview(site));
             nextIndex = site.IndexOf("next page-numbers");
             while (nextIndex != -1)
             {
                 Application.DoEvents();
                 string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
-                site = Util.RequestSimplifiedHtmlSite(nextPage);
+                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
                 index.AddAll(ParseSeriesOverview(site));
                 nextIndex = site.IndexOf("next page-numbers");
             }
@@ -106,7 +106,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
             int result = StreamProvider.RESULT_OK;
             string seriesUrl = GetWebsiteLink().Remove(GetWebsiteLink().Length - 1) + siteLinkExtension;
-            string page = Util.RequestSimplifiedHtmlSite(seriesUrl);
+            string page = Util.RequestSimplifiedHtmlSiteAsync(seriesUrl).GetAwaiter().GetResult();
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
             string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.me/img/star-icon.png\"></noscript>", "</h1>");
@@ -132,7 +132,7 @@ namespace SeriesPlayer.Streamsites.Providers
         {
             List<Episode> episodes = new List<Episode>();
 
-            string list = Util.RequestSimplifiedHtmlSite(html.GetSubstringBetween(0, "$(\"#load\").load('", "')"));
+            string list = Util.RequestSimplifiedHtmlSiteAsync(html.GetSubstringBetween(0, "$(\"#load\").load('", "')")).GetAwaiter().GetResult();
 
             int startIndex = list.IndexOf("<table id=\"episode-list-entry-tbl\">");
             if (startIndex == -1) return episodes;

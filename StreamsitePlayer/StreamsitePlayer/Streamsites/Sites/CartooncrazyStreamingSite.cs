@@ -40,49 +40,24 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
-        {
-            Thread thread = new Thread(() => ReturnFileLink(receiver, requestId));
-            thread.Start();
-        }
-
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
-        {
-            Thread thread = new Thread(() => ReturnJwLink(receiver, requestId));
-            thread.Start();
-        }
-
-        private void ReturnFileLink(IFileCallbackReceiver receiver, int requestId)
-        {
-            receiver.ReceiveFileLink(GetFileLink(), requestId);
-        }
-
-        private void ReturnJwLink(IJwCallbackReceiver receiver, int requestId)
-        {
-            string jwString = GetFileLink();
-            jwString += "\",\ntype: \"mp4";
-
-            receiver.ReceiveJwLinks(jwString, requestId);
-        }
-
-        private string GetFileLink()
+        private async Task<string> GetFileLink()
         {
             string link = "";
 
-            string page = Util.RequestSimplifiedHtmlSite(base.link);
+            string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
             string iFrame = page.GetSubstringBetween(0, "<iframe src=\"", "\" ");
-            link = CheckNextIframeForLink(iFrame);
+            link = await CheckNextIframeForLink(iFrame);
 
             return link;
         }
 
-        private string CheckNextIframeForLink(string iFrameLink)
+        private async Task<string> CheckNextIframeForLink(string iFrameLink)
         {
             if (iFrameLink == "")
             {
                 return "";
             }
-            string page = Util.RequestSimplifiedHtmlSite(iFrameLink);
+            string page = await Util.RequestSimplifiedHtmlSiteAsync(iFrameLink);
             page = page.Replace(" ", "");
             int index = 0;
             string link = page.GetSubstringBetween(0, ":[{file:\"", "\"", out index);
@@ -99,12 +74,22 @@ namespace SeriesPlayer.Streamsites.Sites
             }
             if (link == "")
             {
-                return CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframesrc=\"", "\""));
+                return await CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframesrc=\"", "\""));
             }
             else
             {
                 return link;
             }
+        }
+
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
+        {
+            return (await GetFileLink()) + "\",\ntype: \"mp4";
+        }
+
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
+        {
+            return await GetFileLink();
         }
     }
 }

@@ -14,10 +14,11 @@ using SeriesPlayer.JwPlayer;
 using SeriesPlayer.Player;
 using SeriesPlayer.Utility;
 using SeriesPlayer.Forms;
+using System.Threading;
 
 namespace SeriesPlayer
 {
-    public partial class FormJwPlayer : Form, ISitePlayer, IJwCallbackReceiver, ScriptingInterface.IJwEventListener, IUserInformer
+    public partial class FormJwPlayer : Form, ISitePlayer, ScriptingInterface.IJwEventListener, IUserInformer, IProgress<int>
     {
         public event OnEpisodeChangeHandler EpisodeChange;
 
@@ -30,7 +31,24 @@ namespace SeriesPlayer
         private JwPlayerControl jwPlayer;
         private bool nextRequested = false;
         private long lastPosition = 0;
-        
+        private CancellationTokenSource _currentCancellationTokenSource = null;
+        private CancellationTokenSource CurrentCancellationTokenSource
+        {
+            get
+            {
+                return _currentCancellationTokenSource;
+            }
+            set
+            {
+                if (_currentCancellationTokenSource != null && !_currentCancellationTokenSource.IsCancellationRequested)
+                {
+                    _currentCancellationTokenSource.Cancel();
+                }
+                _currentCancellationTokenSource = value;
+            }
+        }
+
+
 
         public FormJwPlayer()
         {
@@ -359,18 +377,36 @@ namespace SeriesPlayer
                 StreamingSite site = StreamingSite.CreateStreamingSite(streamProvider.GetValidStreamingSites()[usedProvider], episodeLink);
                 siteWaitTime = site.GetEstimateWaitTime();
                 playNextId = ++validRequestId;
-                site.RequestJwData(this, validRequestId);
                 progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
                 progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
                 Util.ShowUserInformation("Playing next: " + streamProvider.GetEpisode(season, episode).Number + " - " + streamProvider.GetEpisode(season, episode).Name);
                 OnEpisodeChange(new EpisodeChangeEventArgs(streamProvider.GetEpisode(season, episode)));
+                StartJwDataRequest(site);
             }
             else
             {
                 Util.ShowUserInformation("Didn't find any links for the episode, jumping to the next one.");
                 Next();
             }
-            
+        }
+
+        private void StartJwDataRequest(StreamingSite site)
+        {
+            CurrentCancellationTokenSource = new CancellationTokenSource();
+            site.RequestJwDataAsync(this, CurrentCancellationTokenSource.Token).ContinueWith((jwDataTask) => {
+                if (!jwDataTask.IsCanceled)
+                {
+                    if (jwDataTask.IsFaulted)
+                    {
+                        ShowUserMessage("Requesting link failed, retrying . . .");
+                        StartJwDataRequest(site);
+                    }
+                    else
+                    {
+                        ReceiveJwLinks(jwDataTask.Result);
+                    }
+                }
+            });
         }
 
         public void RestartStream()
@@ -433,42 +469,39 @@ namespace SeriesPlayer
             }
         }
 
-        public void ReceiveJwLinks(string file, int requestId)
+        public void ReceiveJwLinks(string file)
         {
-            if (requestId == playNextId)
+            if (jwPlayer.InvokeRequired)
             {
-                if (jwPlayer.InvokeRequired)
-                {
-                    jwPlayer.Invoke((MethodInvoker)(() => ReceiveJwLinks(file, requestId)));
-                    return;
-                }
-                if (file == "")
-                {
-                    Logger.Log("JwLink", "Got no file link");
-                    Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond properly.");
-                    progressBarRequestingStatus.Value = 0;
-                    progressBarRequestingStatus.CurrentState = StateProgressBar.State.ERROR;
-                }
-                else
-                {
-                    Logger.Log("JwLink", "Received link for playNextId " + playNextId + " with the file " + file);
-                    nextFullscreen = jwPlayer.Maximized;
-                    Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
-                    string displayTitle = (newEpisode.Season == 0 ? "" : "Season " + newEpisode.Season + " ");
-                    string episodeString = "Episode " + newEpisode.Number;
-                    displayTitle += episodeString;
-                    displayTitle += episodeString == newEpisode.Name ? "" : " - " + newEpisode.Name;
-                    jwPlayer.Play(file, displayTitle);
-                    jwPlayer.Visible = true;
-                    jwPlayer.Focus();
-
-                    progressBarRequestingStatus.Visible = false;
-                    labelRequestingStatus.Visible = false;
-                    progressBarLoadingNext.Visible = false;
-                    this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
-                }
-                nextRequested = false;
+                jwPlayer.Invoke((MethodInvoker)(() => ReceiveJwLinks(file)));
+                return;
             }
+            if (file == "")
+            {
+                Logger.Log("JwLink", "Got no file link");
+                Util.ShowUserInformation("Couldn't load episode because the hoster didn't respond properly.");
+                progressBarRequestingStatus.Value = 0;
+                progressBarRequestingStatus.CurrentState = StateProgressBar.State.ERROR;
+            }
+            else
+            {
+                Logger.Log("JwLink", "Received link for playNextId " + playNextId + " with the file " + file);
+                nextFullscreen = jwPlayer.Maximized;
+                Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
+                string displayTitle = (newEpisode.Season == 0 ? "" : "Season " + newEpisode.Season + " ");
+                string episodeString = "Episode " + newEpisode.Number;
+                displayTitle += episodeString;
+                displayTitle += episodeString == newEpisode.Name ? "" : " - " + newEpisode.Name;
+                jwPlayer.Play(file, displayTitle);
+                jwPlayer.Visible = true;
+                jwPlayer.Focus();
+
+                progressBarRequestingStatus.Visible = false;
+                labelRequestingStatus.Visible = false;
+                progressBarLoadingNext.Visible = false;
+                this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
+            }
+            nextRequested = false;
         }
 
         public void OnPlaylocationChanged(long timePlayed, long timeLeft, long timeTotal)
@@ -571,6 +604,7 @@ namespace SeriesPlayer
 
         private void FormJwPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
+            CurrentCancellationTokenSource.Cancel();
             WinAPIHelper.AllowIdle();
             WinAPIHelper.ResumeDrawing(this.Handle);
             Util.RemoveUserInformer(this);
@@ -707,6 +741,54 @@ namespace SeriesPlayer
         void ScriptingInterface.IJwEventListener.Invoke(Delegate method)
         {
             Invoke(method);
+        }
+
+        public void Report(int value)
+        {
+            bool isPlaying;
+            try
+            {
+                isPlaying = IsPlaying;
+            }
+            catch { isPlaying = false; }
+            progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;
+            if (!isPlaying)
+            {
+                jwPlayer.Visible = false;
+                progressBarRequestingStatus.Visible = true;
+                labelRequestingStatus.Visible = true;
+                progressBarLoadingNext.Visible = false;
+            }
+            else
+            {
+                jwPlayer.Visible = true;
+                progressBarRequestingStatus.Visible = false;
+                labelRequestingStatus.Visible = false;
+                progressBarLoadingNext.Visible = true;
+            }
+            if (value == progressBarLoadingNext.Maximum || value == 0)
+            {
+                progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
+                progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
+            }
+            else
+            {
+                progressBarRequestingStatus.Style = ProgressBarStyle.Continuous;
+                progressBarLoadingNext.Style = ProgressBarStyle.Continuous;
+            }
+            
+            progressBarRequestingStatus.Value = value;
+            progressBarLoadingNext.Value = value;
+            string baseMsg = "Processing " + streamProvider.GetValidStreamingSites()[0] + " page";
+            string baseTitle = "Currently loading Season " + currentSeason + " Episode " + currentEpisode;
+            string pointsString = "";
+            for (int i = 0; i < pointsOnMessage; i++)
+            {
+                pointsString += " .";
+            }
+            pointsOnMessage = ++pointsOnMessage % 5;
+            labelRequestingStatus.Text = baseMsg + pointsString;
+            base.Text = baseTitle + pointsString;
         }
     }
 }

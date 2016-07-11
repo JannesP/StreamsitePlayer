@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace SeriesPlayer.Streamsites.Sites
 {
@@ -44,88 +45,40 @@ namespace SeriesPlayer.Streamsites.Sites
 
         private bool iFrameNavigated = false;
         private string iFrameUrl = "";
-        IJwCallbackReceiver jwReceiver;
-        IFileCallbackReceiver fileReceiver;
-        int requestId;
-        /*private void TargetBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            WebBrowser browser = (WebBrowser)sender;
 
-            if (!iFrameNavigated)
-            {
-                Logger.Log("SITE_REQUEST_DAHD", "Loaded Source. Searching for IFrame.");
-                string htmlText = GetTargetBrowser().DocumentText;
-
-                string iFrameSearch = "id='video' src='";
-                string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
-                Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
-                GetTargetBrowser().Navigate(iframeUrl);
-                iFrameNavigated = true;
-                iFrameUrl = iframeUrl;
-            }
-            else if (iFrameNavigated && GetTargetBrowser().Url.AbsolutePath.Contains("embed"))
-            {
-                Logger.Log("NAV", GetTargetBrowser().Url.AbsolutePath);
-                Logger.Log("SITE_REQUEST_DAHD", "Loaded IFrame. Searching for file.");
-                string html = GetTargetBrowser().DocumentText;
-                string file = html.GetSubstringBetween(0, "var x04c = unescape('", "');");
-                file = WebUtility.UrlDecode(file);
-                if (fileReceiver != null)
-                {
-                    Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");
-                    fileReceiver.ReceiveFileLink(file, requestId);
-                    GetTargetBrowser().Dispose();
-                    return;
-                }
-                Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
-                if (jwReceiver != null)
-                {
-                    jwReceiver.ReceiveJwLinks(file, requestId);
-                }
-                GetTargetBrowser().Dispose();
-            }
-
-        }*/
-
-        private void HandleRequest()
-        {
-            string htmlText = Util.RequestSimplifiedHtmlSite(base.link);
-            string iFrameSearch = "id='video' src='";
-            string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
-            Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
-
-            htmlText = Util.RequestSimplifiedHtmlSite(iframeUrl);
-            string file = htmlText.GetSubstringBetween(0, "var x04c = unescape('", "');");
-            file = WebUtility.UrlDecode(file);
-            Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
-            if (fileReceiver != null)
-            {
-                Logger.Log("SITE_REQUEST_DAHD", "fileReceiver.ReceiveFileLink()");
-                fileReceiver.ReceiveFileLink(file, requestId);
-            }
-            if (jwReceiver != null)
-            {
-                jwReceiver.ReceiveJwLinks(file, requestId);
-            }
-        }
-
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
-        {
-            this.jwReceiver = receiver;
-            this.requestId = requestId;
-            HandleRequest();
-        }
-
+        
         public override bool IsFileDownloadSupported()
         {
             return true;
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        private async Task<string> HandleRequest(CancellationToken ct)
         {
-            this.fileReceiver = receiver;
-            this.requestId = requestId;
-            HandleRequest();
+            string htmlText = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
+            ct.ThrowIfCancellationRequested();
+            string iFrameSearch = "id='video' src='";
+            string iframeUrl = htmlText.GetSubstringBetween(0, iFrameSearch, "'");
+            Logger.Log("SITE_REQUEST_DAHD", "Found IFrame for: " + iframeUrl);
+
+            htmlText = await Util.RequestSimplifiedHtmlSiteAsync(iframeUrl);
+            string file = htmlText.GetSubstringBetween(0, "var x04c = unescape('", "');");
+            file = WebUtility.UrlDecode(file);
+            Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
+            return file;
+        }
+
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
+        {
+            string link = await HandleRequest(ct);
+            ct.ThrowIfCancellationRequested();
+            return link;
+        }
+
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
+        {
+            string link = await HandleRequest(ct);
+            ct.ThrowIfCancellationRequested();
+            return link;
         }
     }
 }

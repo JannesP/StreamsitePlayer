@@ -17,37 +17,11 @@ namespace SeriesPlayer.Streamsites.Sites
         public BsToVivoStreamingSite(string link) : base(link)
         { }
 
-        private void RequestVivoJw(string url, IJwCallbackReceiver receiver, int requestId)
+        private async Task<string> GetVivoLinkAsync(string url)
         {
-            string res = Util.RequestSimplifiedHtmlSite(url);
+            string res = await Util.RequestSimplifiedHtmlSiteAsync(url);
             string vivoLink = "http://vivo.sx/" + res.GetSubstringBetween(0, "<a href=\"http://vivo.sx/", "\"");
-            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
-            {
-                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartVivoJwRequest(vivoLink, receiver, requestId)));
-            }
-        }
-
-        private void RequestVivoFile(string url, IFileCallbackReceiver receiver, int requestId)
-        {
-            string res = Util.RequestSimplifiedHtmlSite(url);
-            string vivoLink = "http://vivo.sx/" + res.GetSubstringBetween(0, "<a href=\"http://vivo.sx/", "\"");
-            if (FormMain.threadTrick != null && !FormMain.threadTrick.IsDisposed)
-            {
-                FormMain.threadTrick.Invoke((MethodInvoker)(() => StartVivoFileRequest(vivoLink, receiver, requestId)));
-            }
-        }
-
-        private void StartVivoJwRequest(string streamcloudlink, IJwCallbackReceiver receiver, int requestId)
-        {
-
-            vivoStreamingSite = new VivoStreamingSite(streamcloudlink);
-            vivoStreamingSite.RequestJwData(receiver, requestId);
-        }
-
-        private void StartVivoFileRequest(string streamcloudlink, IFileCallbackReceiver receiver, int requestId)
-        {
-            vivoStreamingSite = new VivoStreamingSite(streamcloudlink);
-            vivoStreamingSite.RequestFile(receiver, requestId);
+            return vivoLink;
         }
 
         public override int GetEstimateWaitTime()
@@ -79,16 +53,18 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        public override void RequestFile(IFileCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            Thread t = new Thread(() => RequestVivoFile(link, receiver, requestId));
-            t.Start();
+            string vivoUrl = await GetVivoLinkAsync(base.link);
+            vivoStreamingSite = new VivoStreamingSite(vivoUrl);
+            return await vivoStreamingSite.RequestJwDataAsync(progress, ct);
         }
 
-        public override void RequestJwData(IJwCallbackReceiver receiver, int requestId)
+        public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            Thread t = new Thread(() => RequestVivoJw(link, receiver, requestId));
-            t.Start();
+            string vivoUrl = await GetVivoLinkAsync(base.link);
+            vivoStreamingSite = new VivoStreamingSite(vivoUrl);
+            return await vivoStreamingSite.RequestFileAsync(progress, ct);
         }
     }
 }

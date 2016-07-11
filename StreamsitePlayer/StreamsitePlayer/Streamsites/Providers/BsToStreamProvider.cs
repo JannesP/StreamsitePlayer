@@ -36,13 +36,13 @@ namespace SeriesPlayer.Streamsites.Providers
             base.siteLinkExtension = siteLinkExtension;
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension);
+            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension).GetAwaiter().GetResult();
             int seriesCount = ScanForSeasonCount(htmlEpisodeOverview, siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             for (int i = 2; i <= seriesCount; i++)
             {
-                htmlEpisodeOverview = Util.RequestSimplifiedHtmlSite(URL_PRE + siteLinkExtension + "/" + i);
+                htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension + "/" + i).GetAwaiter().GetResult();
                 seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "<h2>", "<");
@@ -155,10 +155,10 @@ namespace SeriesPlayer.Streamsites.Providers
             throw new NotImplementedException();
         }
 
-        private Dictionary<string, string> GetSearchIndex()
+        private async Task<Dictionary<string, string>> GetSearchIndex()
         {
             var index = new Dictionary<string, string>();
-            string site = Util.RequestSimplifiedHtmlSite(GetWebsiteLink());
+            string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink());
 
             const string SERIES_SEARCH = "<li><a href=\"serie/";
             const string END_LINK = "\">";

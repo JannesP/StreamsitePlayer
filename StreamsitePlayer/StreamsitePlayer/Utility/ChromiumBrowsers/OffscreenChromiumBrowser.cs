@@ -52,7 +52,7 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
         }
 
-        public async Task<object> EvaluateJavaScriptRaw(string script)
+        public async Task<object> EvaluateJavaScriptRawAsync(string script)
         {
             object result = null;
             if (IsPageLoaded)
@@ -66,11 +66,11 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
                             var response = res.Result;
                             result = response.Success ? (response.Result ?? null) : response.Result;
                         }
-                    }).ConfigureAwait(false);
+                    });
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.InnerException.Message);
+                    Logger.Log(e.InnerException);
                 }
             }
             return result;
