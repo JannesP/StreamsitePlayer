@@ -125,12 +125,12 @@ namespace SeriesPlayer
             if (requestBrowser == null) requestBrowser = new OffscreenChromiumBrowser();
             requestBrowser.WaitForInit();
             requestBrowser.Load(url);
-            string result = await Task.Run(() => WaitForLoadingBrowser(requestBrowser));
+            string result = await WaitForLoadingBrowser(requestBrowser);
             requestBrowser.Load("about:blank");
             return result;
         }
 
-        private static string WaitForLoadingBrowser(OffscreenChromiumBrowser browser)
+        private async static Task<string> WaitForLoadingBrowser(OffscreenChromiumBrowser browser)
         {
             ShowUserInformation("Waiting for Cloudflare protection ...");
             long timeout = 20 * TimeSpan.TicksPerSecond;
@@ -144,12 +144,12 @@ namespace SeriesPlayer
                 {
                     return "";
                 }
-                else if (!browser.IsLoading && browser.GetBrowser().HasDocument && !browser.HtmlSource.Contains("Checking your browser before accessing"))
+                else if (!browser.IsLoading && browser.GetBrowser().HasDocument && !(await browser.GetHtmlSourceAsync()).Contains("Checking your browser before accessing"))
                 {
                     break;
                 }
             }
-            return browser.HtmlSource;
+            return await browser.GetHtmlSourceAsync();
         }
 
         public async static Task<string> RequestSimplifiedHtmlSiteAsync(string url)

@@ -28,14 +28,9 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             base.LifeSpanHandler = this;
         }
 
-        public string HtmlSource
+        public async Task<string> GetHtmlSourceAsync()
         {
-            get
-            {
-                Task<string> sourceTask = GetBrowser().MainFrame.GetSourceAsync();
-                sourceTask.Wait();
-                return sourceTask.Result;
-            }
+            return await GetBrowser().MainFrame.GetSourceAsync();
         }
 
         public bool IsPageLoaded

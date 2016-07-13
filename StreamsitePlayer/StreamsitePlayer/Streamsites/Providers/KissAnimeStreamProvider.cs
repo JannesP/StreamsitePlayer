@@ -1,4 +1,5 @@
-﻿using SeriesPlayer.Utility.ChromiumBrowsers;
+﻿using SeriesPlayer.Streamsites.Sites;
+using SeriesPlayer.Utility.ChromiumBrowsers;
 using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string[] GetValidStreamingSites()
         {
-            throw new NotImplementedException();
+            return new string[] { KissAnimeStreamingSite.NAME };
         }
 
         public override string GetWebsiteLink()
@@ -75,29 +76,74 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://kissanime.to/";
         }
 
-        public override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
+        public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
         {
-            throw new NotImplementedException();
+            base.siteLinkExtension = siteLinkExtension;
+            series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
+            if (series != null) return StreamProvider.RESULT_USE_CACHED;
+
+            string seriesPage = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() +"Anime/" + siteLinkExtension);
+
+            List<Episode> episodes = new List<Episode>();
+
+            int startIndex = seriesPage.IndexOf("<table class=\"listing\">");
+            int endIndex = seriesPage.IndexOf("</table>", startIndex);
+
+            int currentIndex = startIndex;
+            while (currentIndex < endIndex && currentIndex > -1)
+            {
+                Episode e = new Episode();
+                string link = GetWebsiteLink() + seriesPage.GetSubstringBetween(currentIndex, "href=\"/", "\"", out currentIndex);
+                e.AddLink(KissAnimeStreamingSite.NAME, link);
+                string epName = seriesPage.GetSubstringBetween(currentIndex, ">", "</a>", out currentIndex);
+                e.Name = epName;
+                e.Season = 1;
+                if (currentIndex < endIndex)
+                {
+                    episodes.Insert(0, e);
+                }
+            }
+
+            for (int i = 0; i < episodes.Count; i++)
+            {
+                episodes[i].Number = i + 1;
+            }
+
+            int titleStartIndex = seriesPage.IndexOf("bigChar\" href=");
+            string name = "";
+            if (titleStartIndex != -1)
+            {
+                name = seriesPage.GetSubstringBetween(titleStartIndex, "\">", "</a>");
+            }
+            List<List<Episode>> seasons = new List<List<Episode>>() { episodes };
+            Series s = new Series(seasons, name, NAME, siteLinkExtension, GetWebsiteLink() + "Anime/" + siteLinkExtension);
+            base.series = s;
+            Seriescache.CacheSeriesAsync(s);
+
+            return StreamProvider.RESULT_OK;
         }
 
         public async override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
-            if (requestBrowser == null)
+            if (keyword.Contains("\"") || keyword.Contains("'"))
             {
-                requestBrowser.Load("http://www.kissanime.to/");
+                Util.ShowUserInformation("Don't use \" or ' in your search!");
+                return new Dictionary<string, string>();
+            }
+            if (!requestBrowser.IsPageLoaded)
+            {
                 await Task.Run(async () =>
                 {
                     while (!requestBrowser.IsPageLoaded)
                     {
                         ct.ThrowIfCancellationRequested();
-                        await Task.Delay(500);
+                        await Task.Delay(200);
                     }
                 });
-                ct.ThrowIfCancellationRequested();
             }
+            ct.ThrowIfCancellationRequested();
             if (keyword.Length > 1)
             {
-                //await requestBrowser.ExecuteJavaScriptRawAsync(@"ajaxResponseHandler.onSearchResponse('message');");
                 string script = @"$.ajax({
                     type: 'POST',
                     url: '/Search/SearchSuggest',
@@ -110,7 +156,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 string response = await ajaxResponseHandler.WaitForSearchResponseAsync(keyword, ct);
                 var result = new Dictionary<string, string>();
 
-                const string SERIES_SEARCH = "<a href=\"http://kissanime.to/";
+                const string SERIES_SEARCH = "<a href=\"http://kissanime.to/Anime/";
                 const string END_LINK = "\">";
                 const string END_NAME = "</a>";
 
@@ -132,7 +178,7 @@ namespace SeriesPlayer.Streamsites.Providers
                         }
                         else
                         {
-                            Logger.Log("KISSANIME", "A series with the name: " + name + " for the link: " + seriesExtension + "already exists!");
+                            Logger.Log("KISSANIME", "A series with the name: " + name + " for the link: " + seriesExtension + " already exists and was ignored!");
                         }
                     }
                 }

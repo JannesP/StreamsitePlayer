@@ -574,7 +574,12 @@ namespace SeriesPlayer
 
         public async void OnReady()
         {
-            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + await jwPlayer.GetPositionAsync() + "\n\tLength: " + await jwPlayer.GetDurationAsync());
+            //TODO: Fix crashes!
+            /*Logger.Log("JwPlayerOnReady", "Event fired at:");
+            long pos = await jwPlayer.GetPositionAsync();
+            Logger.Log("JwPlayerOnReady", "Position: " + pos);
+            long duration = await jwPlayer.GetDurationAsync();
+            Logger.Log("JwPlayerOnReady", "Length: " + duration);*/
             CheckForLateStart();
             jwPlayer.SetVolume(Settings.GetNumber(Settings.VOLUME));
             jwPlayer.SetMute(Settings.GetBool(Settings.MUTED));
@@ -758,55 +763,53 @@ namespace SeriesPlayer
 
         public async void Report(int value)
         {
-            if (labelRequestingStatus.InvokeRequired)
-            {
-                labelRequestingStatus.Invoke((MethodInvoker)(() => Report(value)));
-                return;
-            }
             bool isPlaying;
             try
             {
                 isPlaying = await GetIsPlayingAsync();
             }
             catch { isPlaying = false; }
-            progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;
-            if (!isPlaying)
+            labelRequestingStatus.Invoke((MethodInvoker)(() =>
             {
-                jwPlayer.Visible = false;
-                progressBarRequestingStatus.Visible = true;
-                labelRequestingStatus.Visible = true;
-                progressBarLoadingNext.Visible = false;
-            }
-            else
-            {
-                jwPlayer.Visible = true;
-                progressBarRequestingStatus.Visible = false;
-                labelRequestingStatus.Visible = false;
-                progressBarLoadingNext.Visible = true;
-            }
-            if (value == progressBarLoadingNext.Maximum || value == 0)
-            {
-                progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
-                progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
-            }
-            else
-            {
-                progressBarRequestingStatus.Style = ProgressBarStyle.Continuous;
-                progressBarLoadingNext.Style = ProgressBarStyle.Continuous;
-            }
-            
-            progressBarRequestingStatus.Value = value;
-            progressBarLoadingNext.Value = value;
-            string baseMsg = "Processing " + streamProvider.GetValidStreamingSites()[0] + " page";
-            string baseTitle = "Currently loading Season " + currentSeason + " Episode " + currentEpisode;
-            string pointsString = "";
-            for (int i = 0; i < pointsOnMessage; i++)
-            {
-                pointsString += " .";
-            }
-            pointsOnMessage = ++pointsOnMessage % 5;
-            labelRequestingStatus.Text = baseMsg + pointsString;
-            base.Text = baseTitle + pointsString;
+                progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;
+                if (!isPlaying)
+                {
+                    jwPlayer.Visible = false;
+                    progressBarRequestingStatus.Visible = true;
+                    labelRequestingStatus.Visible = true;
+                    progressBarLoadingNext.Visible = false;
+                }
+                else
+                {
+                    jwPlayer.Visible = true;
+                    progressBarRequestingStatus.Visible = false;
+                    labelRequestingStatus.Visible = false;
+                    progressBarLoadingNext.Visible = true;
+                }
+                if (value == progressBarLoadingNext.Maximum || value == 0)
+                {
+                    progressBarLoadingNext.Style = ProgressBarStyle.Marquee;
+                    progressBarRequestingStatus.Style = ProgressBarStyle.Marquee;
+                }
+                else
+                {
+                    progressBarRequestingStatus.Style = ProgressBarStyle.Continuous;
+                    progressBarLoadingNext.Style = ProgressBarStyle.Continuous;
+                }
+
+                progressBarRequestingStatus.Value = value;
+                progressBarLoadingNext.Value = value;
+                string baseMsg = "Processing " + streamProvider.GetValidStreamingSites()[0] + " page";
+                string baseTitle = "Currently loading Season " + currentSeason + " Episode " + currentEpisode;
+                string pointsString = "";
+                for (int i = 0; i < pointsOnMessage; i++)
+                {
+                    pointsString += " .";
+                }
+                pointsOnMessage = ++pointsOnMessage % 5;
+                labelRequestingStatus.Text = baseMsg + pointsString;
+                base.Text = baseTitle + pointsString;
+            }));
         }
     }
 }

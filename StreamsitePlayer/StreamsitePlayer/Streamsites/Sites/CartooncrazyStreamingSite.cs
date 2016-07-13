@@ -86,14 +86,12 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            string result = (await GetFileLink(ct)) + "\",\ntype: \"mp4";
-            ct.ThrowIfCancellationRequested();
-            return result;
+            return await RequestFileAsync(progress, ct) + "\",\ntype: \"mp4";
         }
 
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            string result = (await GetFileLink(ct)) + "\",\ntype: \"mp4";
+            string result = await GetFileLink(ct);
             ct.ThrowIfCancellationRequested();
             return result;
         }

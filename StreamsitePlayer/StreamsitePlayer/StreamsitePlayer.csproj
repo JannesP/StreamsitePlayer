@@ -172,6 +172,7 @@
     <Compile Include="Streamsites\Sites\BsToStreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdTvStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\CartooncrazyStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\KissAnimeStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\VivoStreamingSite.cs" />
     <Compile Include="Utility\AutoClosingMessageBox.cs" />
     <Compile Include="Utility\ChromiumBrowsers\OffscreenChromiumBrowser.cs" />

@@ -314,7 +314,7 @@ namespace SeriesPlayer
             Series found = null;
             foreach (object o in comboBoxChangeSeries.Items)
             {
-                if (series.Equals((Series)o))
+                if (o is Series && series.Equals((Series)o))
                 {
                     found = (Series)o;
                     break;

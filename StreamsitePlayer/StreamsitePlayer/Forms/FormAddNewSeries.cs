@@ -168,13 +168,12 @@ namespace SeriesPlayer.Forms
             switch (currentProvider.SupportedSearchMode)
             {
                 case StreamProvider.SearchMode.LOCAL:
-                    bool foundSeriesWithName = SearchDictionary.ContainsKey(((TextBox)sender).Text);
-                    buttonAdd.Enabled = foundSeriesWithName;
+                    buttonAdd.Enabled = SearchDictionary.ContainsKey(((TextBox)sender).Text); ;
                     break;
                 case StreamProvider.SearchMode.REMOTE:
+                    string currentTextBoxSeriesText = textBoxSeries.Text;
                     if (!cachedRemoteSearches.Keys.Contains(textBoxSeries.Text))
                     {
-                        string currentTextBoxSeriesText = textBoxSeries.Text;
                         cachedRemoteSearches.Add(currentTextBoxSeriesText, new Dictionary<string, string>());
                         currentProvider.RequestRemoteSearchAsync(currentTextBoxSeriesText, CurrentCancellationTokenSource.Token).ContinueWith((requestedSearchTask) => {
                             textBoxSeries.Invoke((MethodInvoker)(() =>
@@ -193,12 +192,14 @@ namespace SeriesPlayer.Forms
                                         SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
                                     }
                                 }
+                                buttonAdd.Enabled = SearchDictionary.ContainsKey(currentTextBoxSeriesText);
                             }));
                         });
                     }
                     else
                     {
-                        SearchDictionary = cachedRemoteSearches[textBoxSeries.Text];
+                        SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
+                        buttonAdd.Enabled = SearchDictionary.ContainsKey(currentTextBoxSeriesText);
                     }
                     break;
                 default:

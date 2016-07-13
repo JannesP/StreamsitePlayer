@@ -32,8 +32,8 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
         {
-            series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             base.siteLinkExtension = siteLinkExtension;
+            series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
 
             string htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension);

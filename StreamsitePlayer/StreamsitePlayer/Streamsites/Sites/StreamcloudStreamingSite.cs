@@ -113,7 +113,7 @@ namespace SeriesPlayer.Streamsites.Sites
                     ct.ThrowIfCancellationRequested();
                     await Task.Delay(500);
                 }
-                string htmlText = requestBrowser.HtmlSource;
+                string htmlText = await requestBrowser.GetHtmlSourceAsync();
                 if (htmlText == "")
                 {
                     ct.ThrowIfCancellationRequested();
