@@ -34,18 +34,18 @@ namespace SeriesPlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
+        public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
         {
-            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension);
+            base.series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             base.siteLinkExtension = siteLinkExtension;
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension).GetAwaiter().GetResult();
+            string htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "wp-post-image\" alt=\"", "\" />");
             base.series = new Series(seasons, seriesName, NAME, siteLinkExtension, URL_PRE + siteLinkExtension);
-            Seriescache.CacheSeries(base.series);
+            Seriescache.CacheSeriesAsync(base.series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }

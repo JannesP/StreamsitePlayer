@@ -97,16 +97,16 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://www.cartooncrazy.net/";
         }
 
-        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
+        public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
         {
             siteLinkExtension = siteLinkExtension.Replace("&001", "/anime/").Replace("&002", "/cartoon/");
             base.siteLinkExtension = siteLinkExtension;
-            base.series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""));
+            base.series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""));
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
 
             int result = StreamProvider.RESULT_OK;
             string seriesUrl = GetWebsiteLink().Remove(GetWebsiteLink().Length - 1) + siteLinkExtension;
-            string page = Util.RequestSimplifiedHtmlSiteAsync(seriesUrl).GetAwaiter().GetResult();
+            string page = await Util.RequestSimplifiedHtmlSiteAsync(seriesUrl);
             if (page == "") return StreamProvider.RESULT_SERIES_MISSING;
 
             string seriesName = page.GetSubstringBetween(0, "<img src=\"http://www.cartooncrazy.me/img/star-icon.png\"></noscript>", "</h1>");
@@ -120,19 +120,19 @@ namespace SeriesPlayer.Streamsites.Providers
                 .Replace(" Episodes", "");
 
             List <List<Episode>> seasons = new List<List<Episode>>();
-            seasons.Add(ScanForEpisodes(page, seriesName));
+            seasons.Add(await ScanForEpisodes(page, seriesName));
             base.series = new Series(seasons, seriesName, NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""), seriesUrl);
-            Seriescache.CacheSeries(base.series);
+            Seriescache.CacheSeriesAsync(base.series);
             FormMain.SeriesOpenCallback(null);
 
             return result;
         }
 
-        private static List<Episode> ScanForEpisodes(string html, string seriesName)
+        private async static Task<List<Episode>> ScanForEpisodes(string html, string seriesName)
         {
             List<Episode> episodes = new List<Episode>();
 
-            string list = Util.RequestSimplifiedHtmlSiteAsync(html.GetSubstringBetween(0, "$(\"#load\").load('", "')")).GetAwaiter().GetResult();
+            string list = await Util.RequestSimplifiedHtmlSiteAsync(html.GetSubstringBetween(0, "$(\"#load\").load('", "')"));
 
             int startIndex = list.IndexOf("<table id=\"episode-list-entry-tbl\">");
             if (startIndex == -1) return episodes;

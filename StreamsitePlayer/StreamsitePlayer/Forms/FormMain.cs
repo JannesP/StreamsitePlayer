@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SeriesPlayer
@@ -49,7 +50,7 @@ namespace SeriesPlayer
             numericUpDownSkipEnd.Value = Settings.GetNumber(Settings.SKIP_END);
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
 
-            LoadCachedSeries();
+            LoadCachedSeriesAsync();
             if (Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED))
             {
                 CreateTcp();
@@ -196,7 +197,7 @@ namespace SeriesPlayer
             }
         }
 
-        public void LoadCachedSeries()
+        public async Task LoadCachedSeriesAsync()
         {
             List<string> cachedSeriesFiles = Seriescache.FindCachedSeries();
             string lastPlayedSeries = Settings.GetString(Settings.LAST_SERIES);
@@ -207,7 +208,7 @@ namespace SeriesPlayer
                 cachedSeriesFiles[i] = cachedSeriesFiles[i].Replace(".series", "");
                 string seriesExtension = cachedSeriesFiles[i].Substring(cachedSeriesFiles[i].LastIndexOf('.') + 1);
                 string provider = cachedSeriesFiles[i].Substring(0, cachedSeriesFiles[i].LastIndexOf('.'));
-                Series s = Seriescache.ReadCachedSeries(provider, seriesExtension);
+                Series s = await Seriescache.ReadCachedSeriesAsync(provider, seriesExtension);
                 if (s != null)
                 {
                     if (s.LinkExtension == lastPlayedSeries)
@@ -218,17 +219,19 @@ namespace SeriesPlayer
                     series.Add(s);
                 }
             }
-            comboBoxChangeSeries.Items.Clear();
-            comboBoxChangeSeries.Items.AddRange(series.ToArray());
-            comboBoxChangeSeries.Items.Add("-- add new --");
-            comboBoxChangeSeries.SelectedIndexChanged -= ComboBoxChangeSeries_SelectedIndexChanged;
-            comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
+            comboBoxChangeSeries.Invoke((MethodInvoker)(() => {
+                comboBoxChangeSeries.Items.Clear();
+                comboBoxChangeSeries.Items.AddRange(series.ToArray());
+                comboBoxChangeSeries.Items.Add("-- add new --");
+                comboBoxChangeSeries.SelectedIndexChanged -= ComboBoxChangeSeries_SelectedIndexChanged;
+                comboBoxChangeSeries.SelectedIndexChanged += ComboBoxChangeSeries_SelectedIndexChanged;
 
-            if (lastSeries != null)
-            {
-                Logger.Log("LOADING", "Selecting last played series: " + lastSeries.LinkExtension);
-                comboBoxChangeSeries.SelectedItem = lastSeries;
-            }
+                if (lastSeries != null)
+                {
+                    Logger.Log("LOADING", "Selecting last played series: " + lastSeries.LinkExtension);
+                    comboBoxChangeSeries.SelectedItem = lastSeries;
+                }
+            }));
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -308,26 +311,32 @@ namespace SeriesPlayer
             }
         }
 
-        private void CreateAndSelectSeries(string linkExtension)
+        private async void CreateAndSelectSeries(string linkExtension)
         {
             if (currentProvider != null)
             {
                 this.player = null;
                 FormLoadingIndicator.ShowDialog(this, "Loading series. This usually shouldn't take any longer then 30 seconds.");
-                int res = currentProvider.LoadSeries(linkExtension, comboBoxChangeSeries);
+                int res = await currentProvider.LoadSeriesAsync(linkExtension, comboBoxChangeSeries);
                 FormLoadingIndicator.CloseDialog();
                 if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
                 {
-                    if (currentProvider.GetSeasonCount() != 0) selectedSeason = 1;
-                    comboBoxChangeSeries.Items.Insert(comboBoxChangeSeries.Items.Count - 1, currentProvider.GetSeries());
-                    comboBoxChangeSeries.SelectedItem = currentProvider.GetSeries();
-                    Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
-                    Settings.SaveFileSettings();
-                    BuildUIForCurrentProvider();
-                    HighlightCurrentEpisode(true);
+                    comboBoxChangeSeries.Invoke((MethodInvoker)(() =>
+                    {
+                        if (currentProvider.GetSeasonCount() != 0) selectedSeason = 1;
+                        comboBoxChangeSeries.Items.Insert(comboBoxChangeSeries.Items.Count - 1, currentProvider.GetSeries());
+                        comboBoxChangeSeries.SelectedItem = currentProvider.GetSeries();
+                        Settings.WriteValue(Settings.LAST_SERIES, currentProvider.GetLinkExtension());
+                        Settings.SaveFileSettings();
+                        BuildUIForCurrentProvider();
+                        HighlightCurrentEpisode(true);
+                    }));
                 }
             }
-            flowPanelEpisodeButtons.Focus();
+            flowPanelEpisodeButtons.Invoke((MethodInvoker)(() =>
+            {
+                flowPanelEpisodeButtons.Focus();
+            }));
         }
 
         private void RefreshSeries(Series series)
@@ -526,7 +535,7 @@ namespace SeriesPlayer
             currentProvider.GetSeries().LastPlayedSeason = e.NewEpisode.Season;
             Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetLinkExtension());
             Settings.SaveFileSettings();
-            Seriescache.CacheSeries(currentProvider.GetSeries());
+            Seriescache.CacheSeriesAsync(currentProvider.GetSeries());
 
             HighlightCurrentEpisode(true);
         }

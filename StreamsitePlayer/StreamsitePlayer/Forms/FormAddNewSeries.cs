@@ -47,17 +47,20 @@ namespace SeriesPlayer.Forms
             parent.Enabled = false;
         }
 
-        private void OpenSeries(string linkExtension)
+        private async void OpenSeries(string linkExtension)
         {
             if (currentProvider == null) return;
             FormLoadingIndicator.ShowDialog(this, "Loading series. This usually shouldn't take any longer then 30 seconds.");
-            int res = currentProvider.LoadSeries(linkExtension, comboBoxStreamingProvider);
+            int res = await currentProvider.LoadSeriesAsync(linkExtension, comboBoxStreamingProvider);
             FormLoadingIndicator.CloseDialog();
             if (res == StreamProvider.RESULT_OK || res == StreamProvider.RESULT_USE_CACHED)
             {
                 Settings.WriteValue(Settings.LAST_PLAYED_SERIES, currentProvider.GetSeries().LinkExtension);
-                parent.LoadCachedSeries();
-                parent.SelectSeries(currentProvider.GetSeries());
+                await parent.LoadCachedSeriesAsync();
+                parent.Invoke((MethodInvoker)(() =>
+                {
+                    parent.SelectSeries(currentProvider.GetSeries());
+                }));
             }
             base.Close();
         }

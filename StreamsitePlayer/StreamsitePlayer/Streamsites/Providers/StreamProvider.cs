@@ -70,7 +70,7 @@ namespace SeriesPlayer.Streamsites
         /// Initilizes the class and requests all the series data.
         /// </summary>
         /// <param name="siteLinkExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
-        public abstract int LoadSeries(string siteLinkExtension, Control threadAnchor);
+        public abstract Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor);
         /// <summary>
         /// Requests the cound of episodes in the given series.
         /// </summary>

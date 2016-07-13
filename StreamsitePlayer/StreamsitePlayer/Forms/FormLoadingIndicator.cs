@@ -22,9 +22,12 @@ namespace SeriesPlayer.Forms
         {
             if (currentForm == null)
             {
-                FormLoadingIndicator form = new FormLoadingIndicator(parent, message);
-                FormLoadingIndicator.currentForm = form;
-                form.ShowParentCentered(parent);
+                parent.Invoke((MethodInvoker)(() =>
+                {
+                    FormLoadingIndicator form = new FormLoadingIndicator(parent, message);
+                    FormLoadingIndicator.currentForm = form;
+                    form.ShowParentCentered(parent);
+                }));
             }
         }
 
@@ -32,9 +35,12 @@ namespace SeriesPlayer.Forms
         {
             if (currentForm != null)
             {
-                closeForm = true;
-                currentForm.Close();
-                currentForm = null;
+                currentForm.Invoke((MethodInvoker)(() =>
+                {
+                    closeForm = true;
+                    currentForm.Close();
+                    currentForm = null;
+                }));
             }
         }
 

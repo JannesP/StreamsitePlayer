@@ -59,9 +59,9 @@ namespace SeriesPlayer.Streamsites.Providers
             return "https://www.google.com/";
         }
 
-        public override int LoadSeries(string siteLinkNameExtension, Control threadAnchor)
+        public async override Task<int> LoadSeriesAsync(string siteLinkNameExtension, Control threadAnchor)
         {
-            return StreamProvider.RESULT_OK;
+            return await Task.Run(() => { return StreamProvider.RESULT_OK; });
         }
 
         public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()

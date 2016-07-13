@@ -745,6 +745,11 @@ namespace SeriesPlayer
 
         public void Report(int value)
         {
+            if (labelRequestingStatus.InvokeRequired)
+            {
+                labelRequestingStatus.Invoke((MethodInvoker)(() => Report(value)));
+                return;
+            }
             bool isPlaying;
             try
             {

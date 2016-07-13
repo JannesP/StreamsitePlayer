@@ -34,41 +34,27 @@ namespace SeriesPlayer.Streamsites.Sites
             if (!e.IsLoading)
             {
                 Logger.Log("STREAMCLOUD_NAVIGATION", e.Browser.MainFrame.Url);
-                if (e.Browser.MainFrame.Url == trueLink && continued)
+                if (e.Browser.MainFrame.Url == trueLink)
                 {
-                    finalSiteLoaded = true;
-                    Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
+                    if (continued)
+                    {
+                        finalSiteLoaded = true;
+                        Logger.Log("STREAMCLOUD_NAVIGATION", "Navigated to the correct link, continued: " + continued);
+                    }
+                    else
+                    {
+                        startedWaiting = DateTime.Now.Ticks;
+                    }
                 }
             }
-        }
-
-        private int GetSecondsFromString(string s)
-        {
-            int x = 0;
-            string[] parts = s.Split(':');
-            x += int.Parse(parts[0]) * 60;
-            x += int.Parse(parts[1]);
-            return x;
         }
 
         private long startedWaiting = 0; 
         public override int GetRemainingWaitTime()
         {
-            if (!requestBrowser.IsPageLoaded)
+            if (!requestBrowser.IsPageLoaded || startedWaiting == 0)
             {
                 return GetEstimateWaitTime();
-            }
-            else
-            {
-                if (startedWaiting == 0)
-                {
-                    startedWaiting = DateTime.Now.Ticks;
-                }
-            }
-            if (Convert.ToBoolean(requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('countdown') == null;").GetAwaiter().GetResult()))
-            {
-                startedWaiting = 0;
-                return 0;
             }
             long ticks = DateTime.Now.Ticks - startedWaiting;
             long millis = ticks / TimeSpan.TicksPerMillisecond;
@@ -89,7 +75,7 @@ namespace SeriesPlayer.Streamsites.Sites
                 {
                     ct.ThrowIfCancellationRequested();
                     await Task.Delay(100);
-                    progress.Report(GetRemainingWaitTime() / GetEstimateWaitTime() * 100);
+                    progress.Report((int)((float)(GetEstimateWaitTime() - GetRemainingWaitTime()) / (float)GetEstimateWaitTime() * 100F));
                     if (!requestBrowser.IsPageLoaded) continue;
                     //check if button exists
                     bool btn_downloadExists = Convert.ToBoolean(await requestBrowser.EvaluateJavaScriptRawAsync("document.getElementById('btn_download') != null;"));
@@ -148,12 +134,21 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            return await GetFile(progress, ct);
+            return await RequestFileAsync(progress, ct);
         }
 
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            return await GetFile(progress, ct);
+            try
+            {
+                return await GetFile(progress, ct);
+            }
+            catch (OperationCanceledException ex)
+            {
+                requestBrowser.LoadingStateChanged -= RequestBrowser_LoadingStateChanged;
+                requestBrowser.Load("about:blank");
+                throw ex;
+            }
         }
     }
 }

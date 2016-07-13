@@ -18,7 +18,7 @@ namespace SeriesPlayer
             }
         }
 
-        public static void CacheSeries(Series series)
+        public async static void CacheSeriesAsync(Series series)
         {
             string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), series.Provider + "." + series.LinkExtension + ".series");
             if (File.Exists(filepath))
@@ -27,12 +27,12 @@ namespace SeriesPlayer
             }
             using (StreamWriter sw = new StreamWriter(File.Create(filepath)))
             {
-                sw.WriteLine("seriesname." + series.Name);
-                sw.WriteLine("provider." + series.Provider);
-                sw.WriteLine("linkExtension." + series.LinkExtension);
-                sw.WriteLine("lastPlayedSeason." + series.LastPlayedSeason);
-                sw.WriteLine("lastPlayedEpisode." + series.LastPlayedEpisode);
-                sw.WriteLine("seriesLink." + series.EpisodeOverviewLink);
+                await sw.WriteLineAsync("seriesname." + series.Name);
+                await sw.WriteLineAsync("provider." + series.Provider);
+                await sw.WriteLineAsync("linkExtension." + series.LinkExtension);
+                await sw.WriteLineAsync("lastPlayedSeason." + series.LastPlayedSeason);
+                await sw.WriteLineAsync("lastPlayedEpisode." + series.LastPlayedEpisode);
+                await sw.WriteLineAsync("seriesLink." + series.EpisodeOverviewLink);
 
                 for (int s = 0; s < series.Count; s++)
                 {
@@ -40,23 +40,23 @@ namespace SeriesPlayer
                     sw.WriteLine("[Season " + (s + 1) + "]"); //[Season s]
                     foreach (Episode episode in season)
                     {
-                        sw.WriteLine("[Episode " + episode.Number + "]"); //[Episode e] 
-                        sw.WriteLine("name." + episode.Name);   //name.whatever
-                        sw.WriteLine("season." + episode.Season);   //season.whatever
-                        sw.WriteLine("episode." + episode.Number);
-                        sw.WriteLine("playLocation." + episode.PlayLocation);
+                        await sw.WriteLineAsync("[Episode " + episode.Number + "]"); //[Episode e] 
+                        await sw.WriteLineAsync("name." + episode.Name);   //name.whatever
+                        await sw.WriteLineAsync("season." + episode.Season);   //season.whatever
+                        await sw.WriteLineAsync("episode." + episode.Number);
+                        await sw.WriteLineAsync("playLocation." + episode.PlayLocation);
                         Dictionary<string, string> links = episode.GetAllAvailableLinks();
                         for (int i = 0; i < links.Count; i++)
                         {
                             KeyValuePair<string, string> link = links.ElementAt(i);
-                            sw.WriteLine("link." + link.Key + " " + link.Value);
+                            await sw.WriteLineAsync("link." + link.Key + " " + link.Value);
                         }
                     }
                 }
             }
         }
 
-        public static Series ReadCachedSeries(string providerName, string fileName)
+        public async static Task<Series> ReadCachedSeriesAsync(string providerName, string fileName)
         {
             string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), providerName + "." + fileName + ".series");
             if (!File.Exists(filepath)) return null;
@@ -71,7 +71,7 @@ namespace SeriesPlayer
                 Episode currEpisode = new Episode();
                 while (!sr.EndOfStream)
                 {
-                    string line = sr.ReadLine();
+                    string line = await sr.ReadLineAsync();
                     if (line.Contains("[Season "))
                     {
                         seasons.Add(new List<Episode>());

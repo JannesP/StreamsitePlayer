@@ -30,24 +30,24 @@ namespace SeriesPlayer.Streamsites.Providers
             return VALID_SITES;
         }
 
-        public override int LoadSeries(string siteLinkExtension, Control threadAnchor)
+        public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
         {
-            series = Seriescache.ReadCachedSeries(NAME, siteLinkExtension);
+            series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             base.siteLinkExtension = siteLinkExtension;
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
 
-            string htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension).GetAwaiter().GetResult();
+            string htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension);
             int seriesCount = ScanForSeasonCount(htmlEpisodeOverview, siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ExtractEpisodesFromHtml(1, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             for (int i = 2; i <= seriesCount; i++)
             {
-                htmlEpisodeOverview = Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension + "/" + i).GetAwaiter().GetResult();
+                htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension + "/" + i);
                 seasons.Add(ExtractEpisodesFromHtml(i, htmlEpisodeOverview, siteLinkExtension, threadAnchor));
             }
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "<h2>", "<");
             series = new Series(seasons, seriesName, NAME, siteLinkExtension, URL_PRE + siteLinkExtension);
-            Seriescache.CacheSeries(series);
+            Seriescache.CacheSeriesAsync(series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -134,7 +134,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://bs.to/andere-serien";
+            return "http://bs.to/serie-alphabet";
         }
 
         public override SearchMode SupportedSearchMode
@@ -164,7 +164,7 @@ namespace SeriesPlayer.Streamsites.Providers
             const string END_LINK = "\">";
             const string END_NAME = "</a></li>";
 
-            int searchIndex = site.IndexOf("<div id=\"seriesContainer\">");
+            int searchIndex = site.IndexOf("<ul id='series-alphabet-list'>");
             while (searchIndex != -1)
             {
                 string seriesExtension = site.GetSubstringBetween(searchIndex, SERIES_SEARCH, END_LINK, out searchIndex);
