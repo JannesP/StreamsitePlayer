@@ -38,7 +38,7 @@ namespace SeriesPlayer.Streamsites.Sites
             }
         }
 
-        private async Task<string> FindLink()
+        private async Task<string> FindLink(CancellationToken ct)
         {
             if (!continued)
             {
@@ -58,13 +58,13 @@ namespace SeriesPlayer.Streamsites.Sites
             Logger.Log("VivoLoading", "fileUrl: " + fileUrl);
             if (fileUrl != "")
             {
+                ct.ThrowIfCancellationRequested();
                 return fileUrl;
             }
             else
             {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                return (await Task.Delay(500).ContinueWith(t => FindLink())).Result;
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                ct.ThrowIfCancellationRequested();
+                return (await Task.Delay(500).ContinueWith(t => FindLink(ct))).Result;
             }
         }
 
@@ -95,14 +95,24 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            requestBrowser.Load(base.link);
-            return await FindLink();
+            return await RequestFileAsync(progress, ct);
         }
 
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
             requestBrowser.Load(base.link);
-            return await FindLink();
+            try
+            {
+                ct.ThrowIfCancellationRequested();
+                return await FindLink(ct);
+            }
+            catch (OperationCanceledException ex)
+            {
+                requestBrowser.Load("about:blank");
+                requestBrowser = null;
+                throw ex;
+            }
+            
         }
     }
 }

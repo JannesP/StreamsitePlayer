@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -82,10 +83,16 @@ namespace SeriesPlayer.Streamsites.Providers
             return "http://www.dubbedanimehd.co/dubbed-anime";
         }
 
-        private async Task<Dictionary<string, string>> GetSearchIndex()
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync(CancellationToken ct)
         {
             var index = new Dictionary<string, string>();
             string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink());
+            ct.ThrowIfCancellationRequested();
 
             const string SERIES_SEARCH = "<li><a href='http://www.dubbedanimehd.co/watch/";
             const string END_LINK = "' title='";
@@ -109,18 +116,8 @@ namespace SeriesPlayer.Streamsites.Providers
                     index.Add(name, seriesExtension);
                 }
             }
-
+            ct.ThrowIfCancellationRequested();
             return index;
-        }
-
-        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync()
-        {
-            return await Task.Run(() => GetSearchIndex());
         }
     }
 }

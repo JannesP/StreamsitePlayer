@@ -56,7 +56,7 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             }
         }
 
-        public async Task<object> EvaluateJavaScript(string function, params string[] args)
+        public async Task<object> EvaluateJavaScriptAsync(string function, params string[] args)
         {
             object result = null;
             if (IsPageLoaded)
@@ -97,37 +97,37 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             return call;
         }
 
-        public bool EvaluateJavaScriptForBool(string function, params string[] args)
+        public async Task<bool> EvaluateJavaScriptForBool(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
+            object jsResult = await EvaluateJavaScriptAsync(function, args);
             bool result = Convert.ToBoolean(jsResult);
             return result;
         }
 
-        public string EvaluateJavaScriptForString(string function, params string[] args)
+        public async Task<string> EvaluateJavaScriptForString(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
+            object jsResult = await EvaluateJavaScriptAsync(function, args);
             string result = Convert.ToString(jsResult);
             return result;
         }
 
-        public long EvaluateJavaScriptForLong(string function, params string[] args)
+        public async Task<long> EvaluateJavaScriptForLong(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
+            object jsResult = await EvaluateJavaScriptAsync(function, args);
             long result = Convert.ToInt64(jsResult);
             return result;
         }
 
-        public int EvaluateJavaScriptForInt(string function, params string[] args)
+        public async Task<int> EvaluateJavaScriptForInt(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
+            object jsResult = await EvaluateJavaScriptAsync(function, args);
             int result = Convert.ToInt32(jsResult);
             return result;
         }
 
-        public double EvaluateJavaScriptForDouble(string function, params string[] args)
+        public async Task<double> EvaluateJavaScriptForDouble(string function, params string[] args)
         {
-            object jsResult = EvaluateJavaScript(function, args).GetAwaiter().GetResult();
+            object jsResult = await EvaluateJavaScriptAsync(function, args);
             double result = Convert.ToDouble(jsResult);
             return result;
         }

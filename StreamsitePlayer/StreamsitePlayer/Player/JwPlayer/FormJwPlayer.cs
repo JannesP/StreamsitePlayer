@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace SeriesPlayer
 {
-    public partial class FormJwPlayer : Form, ISitePlayer, ScriptingInterface.IJwEventListener, IUserInformer, IProgress<int>
+    public partial class FormJwPlayer : Form, ScriptingInterface.IJwEventListener, IUserInformer, IProgress<int>
     {
         public event OnEpisodeChangeHandler EpisodeChange;
 
@@ -96,14 +96,6 @@ namespace SeriesPlayer
             {
                 Settings.WriteValue(Settings.AUTOPLAY, value);
                 Settings.SaveFileSettings();
-            }
-        }
-
-        public bool IsPlaying
-        {
-            get
-            {
-                return jwPlayer.IsPlaying;
             }
         }
 
@@ -200,32 +192,56 @@ namespace SeriesPlayer
             }
         }
 
-        public byte BufferPercent
+        public async Task<bool> GetIsPlayingAsync()
         {
-            get
+            try
             {
-                return jwPlayer.BufferPercent;
+                return await jwPlayer.GetIsPlayingAsync();
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        public long Position
+        public async Task<byte> GetBufferPercentAsync()
         {
-            get
+            try
             {
-                return jwPlayer.Position;
+                return await jwPlayer.GetBufferPercentAsync();
             }
-
-            set
+            catch
             {
-                jwPlayer.Position = value;
+                return 0;
             }
         }
 
-        public long Duration
+        public async Task<long> GetPositionAsync()
         {
-            get
+            try
             {
-                return jwPlayer.Duration;
+                return await jwPlayer.GetPositionAsync();
+            }
+            catch
+            {
+                return 0L;
+            }
+        }
+
+        public void SetPosition(long position)
+        {
+            jwPlayer.SetPosition(position);
+        }
+
+        public async Task<long> GetDurationAsync()
+        {
+            try
+            {
+                return await jwPlayer.GetDurationAsync();
+            }
+            catch
+            {
+                return 0L;
             }
         }
 
@@ -252,17 +268,21 @@ namespace SeriesPlayer
             }
         }
 
-        public int Volume
+        public async Task<int> GetVolumeAsync()
         {
-            get
+            try
             {
-                return jwPlayer.Volume;
+                return await jwPlayer.GetVolumeAsync();
             }
+            catch
+            {
+                return Settings.GetNumber(Settings.VOLUME);
+            }
+        }
 
-            set
-            {
-                jwPlayer.Volume = value;
-            }
+        public void SetVolume(int volume)
+        {
+            jwPlayer.SetVolume(volume);
         }
 
         public void Next()
@@ -416,14 +436,14 @@ namespace SeriesPlayer
         }
 
         private int pointsOnMessage = 1;
-        public void JwLinkStatusUpdate(int remainingTime, int max, int requestId)
+        public async void JwLinkStatusUpdate(int remainingTime, int max, int requestId)
         {
             if (requestId == playNextId)
             {
                 bool isPlaying;
                 try
                 {
-                    isPlaying = IsPlaying;
+                    isPlaying = await GetIsPlayingAsync();
                 }
                 catch { isPlaying = false; }
                 progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;
@@ -469,13 +489,8 @@ namespace SeriesPlayer
             }
         }
 
-        public void ReceiveJwLinks(string file)
+        public async void ReceiveJwLinks(string file)
         {
-            if (jwPlayer.InvokeRequired)
-            {
-                jwPlayer.Invoke((MethodInvoker)(() => ReceiveJwLinks(file)));
-                return;
-            }
             if (file == "")
             {
                 Logger.Log("JwLink", "Got no file link");
@@ -486,20 +501,22 @@ namespace SeriesPlayer
             else
             {
                 Logger.Log("JwLink", "Received link for playNextId " + playNextId + " with the file " + file);
-                nextFullscreen = jwPlayer.Maximized;
+                nextFullscreen = await jwPlayer.GetIsMaximizedAsync();
                 Episode newEpisode = streamProvider.GetEpisode(currentSeason, currentEpisode);
                 string displayTitle = (newEpisode.Season == 0 ? "" : "Season " + newEpisode.Season + " ");
                 string episodeString = "Episode " + newEpisode.Number;
                 displayTitle += episodeString;
                 displayTitle += episodeString == newEpisode.Name ? "" : " - " + newEpisode.Name;
-                jwPlayer.Play(file, displayTitle);
-                jwPlayer.Visible = true;
-                jwPlayer.Focus();
+                this.Invoke((MethodInvoker)(() => {
+                    jwPlayer.Play(file, displayTitle);
+                    jwPlayer.Visible = true;
+                    jwPlayer.Focus();
 
-                progressBarRequestingStatus.Visible = false;
-                labelRequestingStatus.Visible = false;
-                progressBarLoadingNext.Visible = false;
-                this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
+                    progressBarRequestingStatus.Visible = false;
+                    labelRequestingStatus.Visible = false;
+                    progressBarLoadingNext.Visible = false;
+                    this.Text = streamProvider.GetEpisodeName(currentSeason, currentEpisode) + " - " + streamProvider.GetSeriesName();
+                }));
             }
             nextRequested = false;
         }
@@ -555,17 +572,17 @@ namespace SeriesPlayer
             Logger.Log("JwPlayerJS", "OnStartupError: " + message);
         }
 
-        public void OnReady()
+        public async void OnReady()
         {
-            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + jwPlayer.Position + "\n\tLength: " + jwPlayer.Duration);
+            Logger.Log("JwPlayerOnReady", "Event fired at:\n\tPosition: " + await jwPlayer.GetPositionAsync() + "\n\tLength: " + await jwPlayer.GetDurationAsync());
             CheckForLateStart();
-            jwPlayer.Volume = Settings.GetNumber(Settings.VOLUME);
-            jwPlayer.Muted = Settings.GetBool(Settings.MUTED);
-            jwPlayer.Maximized = nextFullscreen;
+            jwPlayer.SetVolume(Settings.GetNumber(Settings.VOLUME));
+            jwPlayer.SetMute(Settings.GetBool(Settings.MUTED));
+            jwPlayer.SetMaximizedAsync(nextFullscreen);
             jwPlayer.Focus();
         }
 
-        private void CheckForLateStart()
+        private async void CheckForLateStart()
         {
             int skipMilliSeconds = Settings.GetNumber(Settings.SKIP_BEGINNING) * 1000;
             long episodeLocation = streamProvider.GetEpisode(currentSeason, currentEpisode).PlayLocation;
@@ -573,9 +590,9 @@ namespace SeriesPlayer
             if (!nextRequested && playSinceLast && episodeLocation > skipMilliSeconds)
             {
                 episodeLocation = episodeLocation > 5000L ? episodeLocation - 5000L : 0L;   //start playback 5 seconds before
-                if (jwPlayer.Duration > episodeLocation)
+                if (await jwPlayer.GetDurationAsync() > episodeLocation)
                 {
-                    jwPlayer.Position = episodeLocation;
+                    jwPlayer.SetPosition(episodeLocation);
                     Util.ShowUserInformation("Playing from last position.");
                 }
             }
@@ -583,9 +600,9 @@ namespace SeriesPlayer
             {
             if (skipMilliSeconds != 0)
             {
-                if (jwPlayer.Duration > skipMilliSeconds)
+                if (await jwPlayer.GetDurationAsync() > skipMilliSeconds)
                 {
-                    jwPlayer.Position = skipMilliSeconds;
+                    jwPlayer.SetPosition(skipMilliSeconds);
                 }
             }
         }
@@ -610,31 +627,27 @@ namespace SeriesPlayer
             Util.RemoveUserInformer(this);
         }
 
-        public void ShowUserMessage(string message)
+        public async void ShowUserMessage(string message)
         {
-            if (labelUserInformer.InvokeRequired)
+            Color backColor, foreColor;
+            if (await GetIsPlayingAsync())
             {
-                if (!labelUserInformer.IsDisposed && labelUserInformer.IsHandleCreated)
-                {
-                    labelUserInformer.Invoke((MethodInvoker)(() => ShowUserMessage(message)));
-                }
+                backColor = Color.Black;
+                foreColor = Color.White;
             }
             else
             {
-                if (IsPlaying)
-                {
-                    labelUserInformer.BackColor = Color.Black;
-                    labelUserInformer.ForeColor = Color.White;
-                }
-                else
-                {
-                    labelUserInformer.BackColor = Color.FromKnownColor(KnownColor.Control);
-                    labelUserInformer.ForeColor = Color.Black;
-                }
+                backColor = Color.FromKnownColor(KnownColor.Control);
+                foreColor = Color.Black;
+            }
 
+            if (labelUserInformer != null && !labelUserInformer.IsDisposed)
+            labelUserInformer.Invoke((MethodInvoker)(() => {
+                labelUserInformer.BackColor = backColor;
+                labelUserInformer.ForeColor = foreColor;
                 labelUserInformer.Text = message;
                 labelUserInformer.Visible = true;
-            }
+            }));
         }
 
         public void HideUserMessage()
@@ -743,7 +756,7 @@ namespace SeriesPlayer
             Invoke(method);
         }
 
-        public void Report(int value)
+        public async void Report(int value)
         {
             if (labelRequestingStatus.InvokeRequired)
             {
@@ -753,7 +766,7 @@ namespace SeriesPlayer
             bool isPlaying;
             try
             {
-                isPlaying = IsPlaying;
+                isPlaying = await GetIsPlayingAsync();
             }
             catch { isPlaying = false; }
             progressBarRequestingStatus.CurrentState = StateProgressBar.State.NORMAL;

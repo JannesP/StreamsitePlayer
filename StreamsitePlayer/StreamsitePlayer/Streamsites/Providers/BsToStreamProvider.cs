@@ -145,20 +145,11 @@ namespace SeriesPlayer.Streamsites.Providers
             }
         }
 
-        public async override Task<Dictionary<string,string>> RequestSearchIndexAsync()
-        {
-            return await Task.Run(() => GetSearchIndex());
-        }
-
-        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task<Dictionary<string, string>> GetSearchIndex()
+        public async override Task<Dictionary<string,string>> RequestSearchIndexAsync(CancellationToken ct)
         {
             var index = new Dictionary<string, string>();
             string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink());
+            ct.ThrowIfCancellationRequested();
 
             const string SERIES_SEARCH = "<li><a href=\"serie/";
             const string END_LINK = "\">";
@@ -175,10 +166,13 @@ namespace SeriesPlayer.Streamsites.Providers
                     index.Add(name, seriesExtension);
                 }
             }
-
+            ct.ThrowIfCancellationRequested();
             return index;
         }
 
-        
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

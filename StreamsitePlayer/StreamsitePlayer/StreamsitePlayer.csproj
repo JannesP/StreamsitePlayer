@@ -166,6 +166,7 @@
     <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Streamsites\Providers\DubbedanimehdCoProvider.cs" />
     <Compile Include="Streamsites\Providers\CartooncrazyStreamProvider.cs" />
+    <Compile Include="Streamsites\Providers\KissAnimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
     <Compile Include="Streamsites\Sites\BsToVivoStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\BsToStreamcloudStreamingSite.cs" />

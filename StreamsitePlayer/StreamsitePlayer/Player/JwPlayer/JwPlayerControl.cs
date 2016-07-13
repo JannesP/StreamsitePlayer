@@ -24,39 +24,33 @@ namespace SeriesPlayer.JwPlayer
 
         public readonly float AspectRatio = 16F / 9F;
 
-        public bool IsPlaying
+        public async Task<bool> GetIsPlayingAsync()
         {
-            get
+            try
             {
-                try
-                {
-                    return EvaluateJavaScriptForBool("IsPlaying");
-                }
-                catch
-                {
-                    return false;
-                }
+                return await EvaluateJavaScriptForBool("IsPlaying");
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        public bool Maximized
+        public async Task<bool> GetIsMaximizedAsync()
         {
-            get
+            try
             {
-                try
-                {
-                    return EvaluateJavaScriptForBool("Maximized");
-                }
-                catch
-                {
-                    return false;
-                }
+                return await EvaluateJavaScriptForBool("Maximized");
             }
+            catch
+            {
+                return false;
+            }
+        }
 
-            set
-            {
-                if (this.Maximized != value) ClickOnFullscreen();
-            }
+        public async void SetMaximizedAsync(bool newState)
+        {
+            if (await GetIsMaximizedAsync() != newState) ClickOnFullscreen();
         }
 
         public void Pause()
@@ -74,88 +68,72 @@ namespace SeriesPlayer.JwPlayer
             ExecuteJavaScriptAsync("ClickOnFullscreen");
         }
 
-        public long Position
+        public async Task<long> GetPositionAsync()
         {
-            get
+            try
             {
-                try
-                {
-                    return (long)(EvaluateJavaScriptForDouble("GetPosition") * 1000d);
-                }
-                catch
-                {
-                    return 0L;
-                }
+                return (long)(await EvaluateJavaScriptForDouble("GetPosition") * 1000d);
             }
-            set
+            catch
             {
-                try
-                {
-                    ExecuteJavaScriptAsync("SetPosition", Convert.ToString((double)value / 1000d));
-                }
-                catch { };
+                return 0L;
             }
         }
 
-        public long Duration
+        public void SetPosition(long position)
         {
-            get
+            ExecuteJavaScriptAsync("SetPosition", Convert.ToString((double)position / 1000d));
+        }
+
+        public async Task<long> GetDurationAsync()
+        {
+            try
             {
-                try
-                {
-                    return (long)(EvaluateJavaScriptForDouble("GetDuration") * 1000d);
-                }
-                catch
-                {
-                    return 0L;
-                }
+                return (long)(await EvaluateJavaScriptForDouble("GetDuration") * 1000d);
+            }
+            catch
+            {
+                return 0L;
             }
         }
 
-        public byte BufferPercent
+        public async Task<byte> GetBufferPercentAsync()
         {
-            get
+            try
             {
-                try
-                {
-                    return (byte)(EvaluateJavaScriptForInt("GetBuffer"));
-                }
-                catch
-                {
-                    return 0;
-                }
+                return (byte)(await EvaluateJavaScriptForInt("GetBuffer"));
+            }
+            catch
+            {
+                return 0;
             }
         }
 
-        public int Volume
+        public async Task<int> GetVolumeAsync()
         {
-            get
+            try
             {
-                try
-                {
-                    return EvaluateJavaScriptForInt("GetVolume");
-                }
-                catch
-                {
-                    return Settings.GetNumber(Settings.VOLUME);
-                }
+                return await EvaluateJavaScriptForInt("GetVolume");
             }
-            set
+            catch
             {
-                ExecuteJavaScriptAsync("SetVolume", Convert.ToString(value));
+                return Settings.GetNumber(Settings.VOLUME);
             }
         }
 
-        public bool Muted
+        public void SetVolume(int volume)
         {
-            get
-            {
-                return EvaluateJavaScriptForBool("GetMuted");
-            }
-            set
-            {
-                ExecuteJavaScriptAsync("SetMute", Convert.ToString(value).ToLower());
-            }
+            ExecuteJavaScriptAsync("SetVolume", Convert.ToString(volume));
+        }
+
+        public async Task<bool> GetMutedAsync()
+        {
+            return await EvaluateJavaScriptForBool("GetMuted");
+        }
+
+        public void SetMute(bool mute)
+        {
+            ExecuteJavaScriptAsync("SetMute", Convert.ToString(mute).ToLower());
         }
 
         public new void Focus()

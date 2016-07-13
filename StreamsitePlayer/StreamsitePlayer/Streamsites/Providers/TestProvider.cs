@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -64,12 +65,12 @@ namespace SeriesPlayer.Streamsites.Providers
             return await Task.Run(() => { return StreamProvider.RESULT_OK; });
         }
 
-        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<Dictionary<string, string>> RequestSearchIndexAsync()
+        public override Task<Dictionary<string, string>> RequestSearchIndexAsync(CancellationToken ct)
         {
             return Task.Run(() => { return new Dictionary<string, string>(); } );
         }

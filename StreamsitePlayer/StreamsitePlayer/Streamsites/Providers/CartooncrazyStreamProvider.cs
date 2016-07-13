@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,36 +28,6 @@ namespace SeriesPlayer.Streamsites.Providers
         public override string GetReadableSiteName()
         {
             return "cartooncrazy.net";
-        }
-
-        private async Task<Dictionary<string, string>> GetSearchIndex()
-        {
-            var index = new Dictionary<string, string>();
-
-            string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "cartoon-list/");
-            index.AddAll(ParseSeriesOverview(site));
-            int nextIndex = site.IndexOf("next page-numbers");
-            while (nextIndex != -1)
-            {
-                Application.DoEvents();
-                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
-                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
-                index.AddAll(ParseSeriesOverview(site));
-                nextIndex = site.IndexOf("next page-numbers");
-            }
-            site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "anime-dubbed/");
-            index.AddAll(ParseSeriesOverview(site));
-            nextIndex = site.IndexOf("next page-numbers");
-            while (nextIndex != -1)
-            {
-                Application.DoEvents();
-                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
-                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
-                index.AddAll(ParseSeriesOverview(site));
-                nextIndex = site.IndexOf("next page-numbers");
-            }
-
-            return index;
         }
 
         private Dictionary<string, string> ParseSeriesOverview(string pagesource)
@@ -172,14 +143,41 @@ namespace SeriesPlayer.Streamsites.Providers
             return orderedList;
         }
 
-        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync()
+        public override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
             throw new NotImplementedException();
         }
 
-        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync()
+        public async override Task<Dictionary<string, string>> RequestSearchIndexAsync(CancellationToken ct)
         {
-            return await Task.Run(() => GetSearchIndex());
+            var index = new Dictionary<string, string>();
+
+            string site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "cartoon-list/");
+            ct.ThrowIfCancellationRequested();
+            index.AddAll(ParseSeriesOverview(site));
+            int nextIndex = site.IndexOf("next page-numbers");
+            while (nextIndex != -1)
+            {
+                ct.ThrowIfCancellationRequested();
+                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
+                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
+                index.AddAll(ParseSeriesOverview(site));
+                nextIndex = site.IndexOf("next page-numbers");
+            }
+            ct.ThrowIfCancellationRequested();
+            site = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "anime-dubbed/");
+            index.AddAll(ParseSeriesOverview(site));
+            nextIndex = site.IndexOf("next page-numbers");
+            while (nextIndex != -1)
+            {
+                ct.ThrowIfCancellationRequested();
+                string nextPage = site.GetSubstringBetween(nextIndex, "href=\"", "\"");
+                site = await Util.RequestSimplifiedHtmlSiteAsync(nextPage);
+                index.AddAll(ParseSeriesOverview(site));
+                nextIndex = site.IndexOf("next page-numbers");
+            }
+            ct.ThrowIfCancellationRequested();
+            return index;
         }
     }
 }

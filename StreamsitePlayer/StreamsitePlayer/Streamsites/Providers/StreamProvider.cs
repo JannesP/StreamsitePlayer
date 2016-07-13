@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,14 +26,11 @@ namespace SeriesPlayer.Streamsites
             Logger.Log("START", "Adding streaming providers.");
             VALID_PROVIDERS = new List<string>();
             VALID_PROVIDERS.Add(BsToStreamProvider.NAME);
-            Logger.Log("START", "Added " + BsToStreamProvider.NAME);
             VALID_PROVIDERS.Add(DubbedanimehdCoProvider.NAME);
-            Logger.Log("START", "Added " + DubbedanimehdCoProvider.NAME);
             VALID_PROVIDERS.Add(CartooncrazyStreamProvider.NAME);
-            Logger.Log("START", "Added " + CartooncrazyStreamProvider.NAME);
+            VALID_PROVIDERS.Add(KissAnimeStreamProvider.NAME);
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
-            Logger.Log("START", "Added " + TestProvider.NAME);
 #endif
         }
 
@@ -53,6 +51,8 @@ namespace SeriesPlayer.Streamsites
                     return new DubbedanimehdCoProvider();
                 case CartooncrazyStreamProvider.NAME:
                     return new CartooncrazyStreamProvider();
+                case KissAnimeStreamProvider.NAME:
+                    return new KissAnimeStreamProvider();
                 default:
                     return null;
             }
@@ -166,13 +166,13 @@ namespace SeriesPlayer.Streamsites
         /// Returns the search result.
         /// </summary>
         /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
-        public abstract Task<Dictionary<string, string>> RequestRemoteSearchAsync();
+        public abstract Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct);
 
         /// <summary>
         /// Returns the complete search index for the streamprovider regardless of the sites available.
         /// </summary>
         /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
-        public abstract Task<Dictionary<string, string>> RequestSearchIndexAsync();
+        public abstract Task<Dictionary<string, string>> RequestSearchIndexAsync(CancellationToken ct);
 
         public void LoadSeries(Series series)
         {

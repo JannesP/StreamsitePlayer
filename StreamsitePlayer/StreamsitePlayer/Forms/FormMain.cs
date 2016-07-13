@@ -28,7 +28,7 @@ namespace SeriesPlayer
         private int selectedSeason = 1;
         private List<Button> seasonButtons;
         private List<Button> episodeButtons;
-        private ISitePlayer player = null;
+        private FormJwPlayer player = null;
         private bool autoUpdate = false;
         private TcpServer tcpServer;
 
@@ -79,18 +79,28 @@ namespace SeriesPlayer
             switch (e.EventId)
             {
                 case NetworkRequestEvent.PlayerStatus:
-                    PlayerStatusMessage psm;
-                    if (player != null && !player.IsDisposed && player.IsLoaded)
+                    Task.Run(async () =>
                     {
-                        //just cut off the position and length because they SHOULD never exceed the maximum int
-                        psm = new PlayerStatusMessage(e.MessageId, player.IsPlaying, (int)player.Position, (int)player.Duration, player.BufferPercent, (byte)player.Volume);
-                    }
-                    else
-                    {
-                        byte volume = (byte)Settings.GetNumber(Settings.VOLUME);
-                        psm = new PlayerStatusMessage(e.MessageId, false, 0, 0, 0, volume);
-                    }
-                    source.SendToClient(e.Socket, psm);
+                        PlayerStatusMessage psm;
+                        if (player != null && !player.IsDisposed && player.IsLoaded)
+                        {
+                            //just cut off the position and length because they SHOULD never exceed the maximum int
+                            psm = new PlayerStatusMessage(e.MessageId, await player.GetIsPlayingAsync(), (int)await player.GetPositionAsync(), (int)await player.GetDurationAsync(), await player.GetBufferPercentAsync(), (byte)await player.GetVolumeAsync());
+                        }
+                        else
+                        {
+                            byte volume = (byte)Settings.GetNumber(Settings.VOLUME);
+                            psm = new PlayerStatusMessage(e.MessageId, false, 0, 0, 0, volume);
+                        }
+                        if (source.IsRunning)
+                        {
+                            source.SendToClient(e.Socket, psm);
+                        }
+                        else
+                        {
+                            Logger.Log("TCP", "Trying to send PlayerStatusMessage with closed tcp server!");
+                        }
+                    });
                     break;
                 case NetworkRequestEvent.EpisodeList:
                     if (currentProvider != null)
@@ -128,14 +138,17 @@ namespace SeriesPlayer
                 switch (e.EventId)
                 {
                     case NetworkControlEvent.PlayPause:
-                        if (player.IsPlaying)
+                        Task.Run(async () =>
                         {
-                            player.Pause();
-                        }
-                        else
-                        {
-                            player.Play();
-                        }
+                            if (await player.GetIsPlayingAsync())
+                            {
+                                player.Pause();
+                            }
+                            else
+                            {
+                                player.Play();
+                            }
+                        });
                         break;
                     case NetworkControlEvent.Next:
                         player.Next();
@@ -151,13 +164,13 @@ namespace SeriesPlayer
                         break;
                     case NetworkControlEvent.SeekTo:
                         int pos = e.Data.ReadInt(0);
-                        player.Position = pos;
+                        player.SetPosition(pos);
                         break;
                     case NetworkControlEvent.ToggleFullscreen:
                         player.Maximized = !player.Maximized;
                         break;
                     case NetworkControlEvent.Volume:
-                        player.Volume = e.Data[0];
+                        player.SetVolume(e.Data[0]);
                         break;
                 }
             }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SeriesPlayer.Utility.Extensions;
+using System.Threading;
 
 namespace SeriesPlayer.Forms
 {
@@ -18,6 +19,27 @@ namespace SeriesPlayer.Forms
         private const string TAG = "FormAddNewSeries";
 
         private FormMain parent;
+
+        private CancellationTokenSource _currentCancellationTokenSource = null;
+        private CancellationTokenSource CurrentCancellationTokenSource
+        {
+            get
+            {
+                if (_currentCancellationTokenSource == null)
+                {
+                    _currentCancellationTokenSource = new CancellationTokenSource();
+                }
+                return _currentCancellationTokenSource;
+            }
+            set
+            {
+                if (_currentCancellationTokenSource != null && !_currentCancellationTokenSource.IsCancellationRequested)
+                {
+                    _currentCancellationTokenSource.Cancel();
+                }
+                _currentCancellationTokenSource = value;
+            }
+        }
 
         private Dictionary<string, string> _searchDictionary = null;
         private Dictionary<string, string> SearchDictionary {
@@ -89,6 +111,7 @@ namespace SeriesPlayer.Forms
 
         private void FormAddNewSeries_FormClosed(object sender, FormClosedEventArgs e)
         {
+            CurrentCancellationTokenSource.Cancel();
             SearchDictionary = null;
             cachedRemoteSearches = null;
             parent.Enabled = true;
@@ -103,14 +126,22 @@ namespace SeriesPlayer.Forms
             {
                 case StreamProvider.SearchMode.LOCAL:
                     FormLoadingIndicator.ShowDialog(this, "Loading autocomplete list, please be patient ...");
-                    currentProvider.RequestSearchIndexAsync().ContinueWith((indexTask) => {
+                    currentProvider.RequestSearchIndexAsync(CurrentCancellationTokenSource.Token).ContinueWith((indexTask) => {
                         textBoxSeries.Invoke((MethodInvoker)(() => {
-                            SearchDictionary = indexTask.Result;
-                            textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Index;
-                            textBoxSeries.FuzzyAutoCompleteSource = SearchDictionary.Keys.ToList();
-                            buttonOpenOverview.Enabled = true;
-                            textBoxSeries.Enabled = true;
-                            textBoxSeries.Select();
+                            if (indexTask.IsCanceled || indexTask.IsFaulted)
+                            {
+                                Util.ShowUserInformation("Couldn't load search index!");
+                                textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.None;
+                            }
+                            else
+                            {
+                                SearchDictionary = indexTask.Result;
+                                textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Index;
+                                textBoxSeries.FuzzyAutoCompleteSource = SearchDictionary.Keys.ToList();
+                                buttonOpenOverview.Enabled = true;
+                                textBoxSeries.Enabled = true;
+                                textBoxSeries.Select();
+                            }
                             FormLoadingIndicator.CloseDialog();
                         }));
                     });
@@ -118,6 +149,7 @@ namespace SeriesPlayer.Forms
                 case StreamProvider.SearchMode.REMOTE:
                     textBoxSeries.Invoke((MethodInvoker)(() =>
                     {
+                        cachedRemoteSearches = new Dictionary<string, Dictionary<string, string>>();
                         textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
                         textBoxSeries.FuzzyAutoCompleteSource = new List<string>();
                         buttonOpenOverview.Enabled = true;
@@ -144,12 +176,24 @@ namespace SeriesPlayer.Forms
                     {
                         string currentTextBoxSeriesText = textBoxSeries.Text;
                         cachedRemoteSearches.Add(currentTextBoxSeriesText, new Dictionary<string, string>());
-                        currentProvider.RequestRemoteSearchAsync().ContinueWith((requestedSearchTask) => {
-                            cachedRemoteSearches[currentTextBoxSeriesText] = requestedSearchTask.Result;
-                            if (currentTextBoxSeriesText == textBoxSeries.Text)
+                        currentProvider.RequestRemoteSearchAsync(currentTextBoxSeriesText, CurrentCancellationTokenSource.Token).ContinueWith((requestedSearchTask) => {
+                            textBoxSeries.Invoke((MethodInvoker)(() =>
                             {
-                                SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
-                            }
+                                if (requestedSearchTask.IsCanceled || requestedSearchTask.IsFaulted)
+                                {
+                                    Util.ShowUserInformation("Couldn't load remote search results!");
+                                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.None;
+                                }
+                                else
+                                {
+                                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
+                                    cachedRemoteSearches[currentTextBoxSeriesText] = requestedSearchTask.Result;
+                                    if (currentTextBoxSeriesText == textBoxSeries.Text)
+                                    {
+                                        SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
+                                    }
+                                }
+                            }));
                         });
                     }
                     else

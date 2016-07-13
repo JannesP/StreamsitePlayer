@@ -40,18 +40,19 @@ namespace SeriesPlayer.Streamsites.Sites
             return true;
         }
 
-        private async Task<string> GetFileLink()
+        private async Task<string> GetFileLink(CancellationToken ct)
         {
             string link = "";
 
             string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
             string iFrame = page.GetSubstringBetween(0, "<iframe src=\"", "\" ");
-            link = await CheckNextIframeForLink(iFrame);
+            ct.ThrowIfCancellationRequested();
+            link = await CheckNextIframeForLink(iFrame, ct);
 
             return link;
         }
 
-        private async Task<string> CheckNextIframeForLink(string iFrameLink)
+        private async Task<string> CheckNextIframeForLink(string iFrameLink, CancellationToken ct)
         {
             if (iFrameLink == "")
             {
@@ -74,7 +75,8 @@ namespace SeriesPlayer.Streamsites.Sites
             }
             if (link == "")
             {
-                return await CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframesrc=\"", "\""));
+                ct.ThrowIfCancellationRequested();
+                return await CheckNextIframeForLink(page.GetSubstringBetween(0, "<iframesrc=\"", "\""), ct);
             }
             else
             {
@@ -84,12 +86,16 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            return (await GetFileLink()) + "\",\ntype: \"mp4";
+            string result = (await GetFileLink(ct)) + "\",\ntype: \"mp4";
+            ct.ThrowIfCancellationRequested();
+            return result;
         }
 
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
-            return await GetFileLink();
+            string result = (await GetFileLink(ct)) + "\",\ntype: \"mp4";
+            ct.ThrowIfCancellationRequested();
+            return result;
         }
     }
 }

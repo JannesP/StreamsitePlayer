@@ -64,9 +64,7 @@ namespace SeriesPlayer.Streamsites.Sites
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
         {
-            string link = await HandleRequest(ct);
-            ct.ThrowIfCancellationRequested();
-            return link;
+            return await RequestFileAsync(progress, ct);
         }
 
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
