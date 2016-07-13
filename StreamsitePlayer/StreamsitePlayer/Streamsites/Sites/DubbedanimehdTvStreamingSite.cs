@@ -13,7 +13,6 @@ namespace SeriesPlayer.Streamsites.Sites
 {
     class DubbedanimehdTvStreamingSite : StreamingSite
     {
-        private OffscreenChromiumBrowser requestBrowser;
         public DubbedanimehdTvStreamingSite(string link) : base(link)
         {
             base.link = link.Replace("dubbedanimehd.org", "dubbedanimehd.co")
@@ -42,10 +41,6 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             return true;
         }
-
-        private bool iFrameNavigated = false;
-        private string iFrameUrl = "";
-
         
         public override bool IsFileDownloadSupported()
         {

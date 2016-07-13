@@ -15,8 +15,6 @@ namespace SeriesPlayer.Streamsites.Sites
         public const string NAME = "Vivo";
 
         private bool continued = false;
-        private int fileRequestId = int.MaxValue;
-        private int jwRequestId = int.MaxValue;
         private OffscreenChromiumBrowser requestBrowser;
 
         public VivoStreamingSite(string link) : base(link)

@@ -50,7 +50,9 @@ namespace SeriesPlayer
             numericUpDownSkipEnd.Value = Settings.GetNumber(Settings.SKIP_END);
             numericUpDownSkipStart.Value = Settings.GetNumber(Settings.SKIP_BEGINNING);
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             LoadCachedSeriesAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             if (Settings.GetBool(Settings.REMOTE_CONTROL_ACTIVATED))
             {
                 CreateTcp();
