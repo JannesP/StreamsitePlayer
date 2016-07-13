@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SeriesPlayer.Utility.ChromiumBrowsers;
+using SeriesPlayer.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,6 +15,42 @@ namespace SeriesPlayer.Streamsites.Providers
     class KissAnimeStreamProvider : StreamProvider
     {
         public const string NAME = "kissanime";
+        private OffscreenChromiumBrowser requestBrowser;
+        private AjaxResponseHandler ajaxResponseHandler;
+
+        public KissAnimeStreamProvider()
+        {
+            requestBrowser = new OffscreenChromiumBrowser("http://www.kissanime.to/");
+            ajaxResponseHandler = new AjaxResponseHandler();
+            requestBrowser.RegisterJsObject("ajaxResponseHandler", ajaxResponseHandler);
+            requestBrowser.WaitForInit();
+        }
+
+        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
+        private class AjaxResponseHandler
+        {
+            public Dictionary<string, string> SearchResponses
+            {
+                private set;
+                get;
+            } = new Dictionary<string, string>();
+            public void OnSearchResponse(string search, string response)
+            {
+                SearchResponses.Add(search, response);
+            }
+            
+            public async Task<string> WaitForSearchResponseAsync(string key, CancellationToken ct)
+            {
+                while (!SearchResponses.Keys.Contains(key))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(100, ct);
+                }
+                string response = SearchResponses[key];
+                SearchResponses.Remove(key);
+                return response;
+            }
+        }
 
         public override SearchMode SupportedSearchMode
         {
@@ -44,30 +82,61 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public async override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
+            if (requestBrowser == null)
+            {
+                requestBrowser.Load("http://www.kissanime.to/");
+                await Task.Run(async () =>
+                {
+                    while (!requestBrowser.IsPageLoaded)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await Task.Delay(500);
+                    }
+                });
+                ct.ThrowIfCancellationRequested();
+            }
             if (keyword.Length > 1)
             {
-                string responseString = "";
-                using (var client = new HttpClient())
-                {
-                    var values = new Dictionary<string, string>
-                    {
-                        { "type", "Anime" },
-                        { "keyword", keyword }
-                    };
-
-                    var content = new FormUrlEncodedContent(values);
-                    try
-                    {
-                        var response = await client.PostAsync("http://kissanime.to/Search/SearchSuggest", content, ct);
-                        responseString = await response.Content.ReadAsStringAsync();
+                //await requestBrowser.ExecuteJavaScriptRawAsync(@"ajaxResponseHandler.onSearchResponse('message');");
+                string script = @"$.ajax({
+                    type: 'POST',
+                    url: '/Search/SearchSuggest',
+                    data: 'type=Anime' + '&keyword=" + keyword + @"',
+                    success: function(message) {
+                        ajaxResponseHandler.onSearchResponse('" + keyword + @"', message);
                     }
-                    catch (HttpRequestException ex)
+                });";
+                await requestBrowser.ExecuteJavaScriptRawAsync(script);
+                string response = await ajaxResponseHandler.WaitForSearchResponseAsync(keyword, ct);
+                var result = new Dictionary<string, string>();
+
+                const string SERIES_SEARCH = "<a href=\"http://kissanime.to/";
+                const string END_LINK = "\">";
+                const string END_NAME = "</a>";
+
+                int searchIndex = response != "" ? 0 : -1;
+                while (searchIndex != -1)
+                {
+                    string seriesExtension = response.GetSubstringBetween(searchIndex, SERIES_SEARCH, END_LINK, out searchIndex);
+                    if (searchIndex == -1) continue;
+                    string name = response.GetSubstringBetween(searchIndex, END_LINK, END_NAME, out searchIndex);
+                    if (searchIndex != -1)
                     {
-                        Logger.Log(ex);
+                        if (seriesExtension.ToLower().Contains("dub") && !name.ToLower().Contains("dub"))
+                        {
+                            name += " (dub)";
+                        }
+                        if (!result.Keys.Contains(name))
+                        {
+                            result.Add(name, seriesExtension);
+                        }
+                        else
+                        {
+                            Logger.Log("KISSANIME", "A series with the name: " + name + " for the link: " + seriesExtension + "already exists!");
+                        }
                     }
                 }
-                ct.ThrowIfCancellationRequested();
-                return new Dictionary<string, string>();
+                return result;
             }
             else
             {

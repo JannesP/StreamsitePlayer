@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SeriesPlayer.Utility.ChromiumBrowsers
@@ -50,6 +51,24 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             long startTime = DateTime.Now.Ticks;
             while (!IsBrowserInitialized) { System.Windows.Forms.Application.DoEvents(); }
             Logger.Log(TAG, "Waited " + ((DateTime.Now.Ticks - startTime) / TimeSpan.TicksPerMillisecond) + " ms for initialization of the instance.");
+        }
+
+        public async Task ExecuteJavaScriptRawAsync(string script)
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(10000);
+            await Task.Run(async () =>
+            {
+                while (!IsPageLoaded)
+                {
+                    await Task.Delay(500);
+                    cts.Token.ThrowIfCancellationRequested();
+                }
+            }, cts.Token);
+            if (IsPageLoaded)
+            {
+                base.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
+            }
         }
 
         public async Task<object> EvaluateJavaScriptRawAsync(string script)
