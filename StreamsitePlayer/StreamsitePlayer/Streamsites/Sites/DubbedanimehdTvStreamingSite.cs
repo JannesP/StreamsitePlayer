@@ -57,7 +57,17 @@ namespace SeriesPlayer.Streamsites.Sites
 
             htmlText = await Util.RequestSimplifiedHtmlSiteAsync(iframeUrl);
             string file = htmlText.GetSubstringBetween(0, "var x04c = unescape('", "');");
+            if (file == "")
+            {
+                file = htmlText.GetSubstringBetween(0, "var x04c = unescape(atob('", "'");
+            }
+            string fileBeforeDecode = file;
             file = WebUtility.UrlDecode(file);
+            if (file == fileBeforeDecode)
+            {
+                file = Util.DecodeBase64(file);
+                file = WebUtility.UrlDecode(file);
+            }
             Logger.Log("SITE_REQUEST_DAHD", "Found file at: " + file);
             return file;
         }

@@ -49,7 +49,7 @@ namespace SeriesPlayer.Streamsites.Sites
             string encodedFileUrl = page.GetSubstringBetween(index, "option value=\"", "\"");
             byte[] data = Convert.FromBase64String(encodedFileUrl);
             string decodedFileUrl = Encoding.UTF8.GetString(data);
-            return decodedFileUrl;
+            return Util.DecodeBase64(encodedFileUrl);
         }
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)

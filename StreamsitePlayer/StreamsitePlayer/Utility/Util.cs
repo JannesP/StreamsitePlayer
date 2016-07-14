@@ -192,5 +192,11 @@ namespace SeriesPlayer
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
+
+        public static string DecodeBase64(string encoded)
+        {
+            byte[] data = Convert.FromBase64String(encoded);
+            return Encoding.UTF8.GetString(data);
+        }
     }
 }
