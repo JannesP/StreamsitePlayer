@@ -18,6 +18,11 @@ namespace SeriesPlayer.Utility.Extensions
         /// <returns>returns an empty string if either first or second were not found</returns>
         public static string GetSubstringBetween(this string stringToSearch, int startIndex, string first, string second, out int endIndex)
         {
+            if (startIndex >= stringToSearch.Length || startIndex <= -1)
+            {
+                endIndex = -1;
+                return "";
+            }
             int firstIndex = stringToSearch.IndexOf(first, startIndex);
             if ((firstIndex) == -1)
             {

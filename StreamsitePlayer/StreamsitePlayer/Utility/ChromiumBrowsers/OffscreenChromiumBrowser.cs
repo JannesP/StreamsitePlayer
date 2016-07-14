@@ -26,6 +26,28 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
         {
             base.JsDialogHandler = this;
             base.LifeSpanHandler = this;
+            base.FrameLoadEnd += OffscreenChromiumBrowser_FrameLoadEnd;
+        }
+
+        private void OffscreenChromiumBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
+        {
+            if (e.Frame.IsMain)
+            {
+                Logger.Log(TAG, "Main Frame loaded!");
+                e.Frame.ExecuteJavaScriptAsync(
+                    @"(function() {
+	                var muteAllVideos = function() {
+		                var videoTags = document.getElementsByTagName('video');
+                        for (var i = 0; i < videoTags.length; i++)
+                            {
+                                videoTags[i].volume = 0;
+                            }
+                            setTimeout(muteAllVideos, 100);
+                        }
+                        muteAllVideos();
+                    })();"
+                );
+            }
         }
 
         public async Task<string> GetHtmlSourceAsync()
@@ -73,7 +95,7 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             {
                 try
                 {
-                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 10));
+                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script);
                     await task.ContinueWith(res => {
                         if (!res.IsFaulted && !res.IsCanceled && res.IsCompleted)
                         {

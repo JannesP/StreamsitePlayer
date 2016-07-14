@@ -84,6 +84,18 @@ namespace SeriesPlayer.Streamsites.Providers
 
             string seriesPage = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() +"Anime/" + siteLinkExtension);
 
+            if (seriesPage.Contains("The service is unavailable."))
+            {
+                return RESULT_NET_FAILED;
+            }
+
+            int titleStartIndex = seriesPage.IndexOf("bigChar\" href=");
+            string name = "";
+            if (titleStartIndex != -1)
+            {
+                name = seriesPage.GetSubstringBetween(titleStartIndex, "\">", "</a>");
+            }
+
             List<Episode> episodes = new List<Episode>();
 
             int startIndex = seriesPage.IndexOf("<table class=\"listing\">");
@@ -95,7 +107,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 Episode e = new Episode();
                 string link = GetWebsiteLink() + seriesPage.GetSubstringBetween(currentIndex, "href=\"/", "\"", out currentIndex);
                 e.AddLink(KissAnimeStreamingSite.NAME, link);
-                string epName = seriesPage.GetSubstringBetween(currentIndex, ">", "</a>", out currentIndex);
+                string epName = seriesPage.GetSubstringBetween(currentIndex, ">", "</a>", out currentIndex).Replace(name + " ", "");
                 e.Name = epName;
                 e.Season = 1;
                 if (currentIndex < endIndex)
@@ -108,13 +120,7 @@ namespace SeriesPlayer.Streamsites.Providers
             {
                 episodes[i].Number = i + 1;
             }
-
-            int titleStartIndex = seriesPage.IndexOf("bigChar\" href=");
-            string name = "";
-            if (titleStartIndex != -1)
-            {
-                name = seriesPage.GetSubstringBetween(titleStartIndex, "\">", "</a>");
-            }
+            
             List<List<Episode>> seasons = new List<List<Episode>>() { episodes };
             Series s = new Series(seasons, name, NAME, siteLinkExtension, GetWebsiteLink() + "Anime/" + siteLinkExtension);
             base.series = s;

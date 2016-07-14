@@ -416,7 +416,7 @@ namespace SeriesPlayer
             site.RequestJwDataAsync(this, CurrentCancellationTokenSource.Token).ContinueWith((jwDataTask) => {
                 if (!jwDataTask.IsCanceled)
                 {
-                    if (jwDataTask.IsFaulted)
+                    if (jwDataTask.IsFaulted || jwDataTask.Result == "")
                     {
                         ShowUserMessage("Requesting link failed, retrying . . .");
                         StartJwDataRequest(site);
@@ -575,11 +575,11 @@ namespace SeriesPlayer
         public async void OnReady()
         {
             //TODO: Fix crashes!
-            /*Logger.Log("JwPlayerOnReady", "Event fired at:");
+            Logger.Log("JwPlayerOnReady", "Event fired at:");
             long pos = await jwPlayer.GetPositionAsync();
             Logger.Log("JwPlayerOnReady", "Position: " + pos);
             long duration = await jwPlayer.GetDurationAsync();
-            Logger.Log("JwPlayerOnReady", "Length: " + duration);*/
+            Logger.Log("JwPlayerOnReady", "Length: " + duration);
             CheckForLateStart();
             jwPlayer.SetVolume(Settings.GetNumber(Settings.VOLUME));
             jwPlayer.SetMute(Settings.GetBool(Settings.MUTED));

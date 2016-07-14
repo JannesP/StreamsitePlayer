@@ -65,7 +65,7 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
 
                 try
                 {
-                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script, new TimeSpan(TimeSpan.TicksPerMillisecond * 10));
+                    var task = GetBrowser().MainFrame.EvaluateScriptAsync(script);
                     await task.ContinueWith(res => {
                         if (!res.IsFaulted && !res.IsCanceled && res.IsCompleted)
                         {
