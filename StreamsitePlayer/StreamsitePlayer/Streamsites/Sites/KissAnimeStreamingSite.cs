@@ -46,7 +46,7 @@ namespace SeriesPlayer.Streamsites.Sites
         {
             string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
             int index = page.IndexOf("<select id=\"selectQuality\">");
-            string encodedFileUrl = page.GetSubstringBetween(index, "option value=\"", "\">");
+            string encodedFileUrl = page.GetSubstringBetween(index, "option value=\"", "\"");
             byte[] data = Convert.FromBase64String(encodedFileUrl);
             string decodedFileUrl = Encoding.UTF8.GetString(data);
             return decodedFileUrl;
