@@ -24,6 +24,8 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
         public OffscreenChromiumBrowser() : this("about:blank") { }
         public OffscreenChromiumBrowser(string address) : this(address, settings)
         {
+            base.BrowserSettings.ImageLoading = CefState.Disabled;
+            base.BrowserSettings.JavascriptAccessClipboard = CefState.Disabled;
             base.JsDialogHandler = this;
             base.LifeSpanHandler = this;
             base.FrameLoadEnd += OffscreenChromiumBrowser_FrameLoadEnd;
