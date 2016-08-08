@@ -133,18 +133,18 @@ namespace SeriesPlayer
         private async static Task<string> WaitForLoadingBrowser(OffscreenChromiumBrowser browser)
         {
             ShowUserInformation("Waiting for Cloudflare protection ...");
-            long timeout = 20 * TimeSpan.TicksPerSecond;
+            long timeout = 10 * TimeSpan.TicksPerSecond;
             long startTime = DateTime.Now.Ticks;
             while (true)
             {
-                Application.DoEvents();
-                Thread.Sleep(100);
+                await Task.Delay(100);
                 
                 if ((DateTime.Now.Ticks - startTime) > timeout)
                 {
-                    return "";
+                    string s = await browser.GetHtmlSourceAsync();
+                    return s;
                 }
-                else if (!browser.IsLoading && browser.GetBrowser().HasDocument && !(await browser.GetHtmlSourceAsync()).Contains("Checking your browser before accessing"))
+                else if (browser.IsPageLoaded && !(await browser.GetHtmlSourceAsync()).Contains("Checking your browser before accessing"))
                 {
                     break;
                 }
