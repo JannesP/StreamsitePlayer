@@ -27,6 +27,7 @@ namespace SeriesPlayer
         public const string REMOTE_CONTROL_PORT = "remoteControlPort";
         public const string REMOTE_CONTROL_ACTIVATED = "remoteControlActive";
         public const string REMEMBER_PLAY_LOCATION = "rememberPlayLocation";
+        public const string LAST_PLAYBACK_RATE = "lastPlaybackRate";
 
         private static class Defaults
         {
@@ -50,6 +51,7 @@ namespace SeriesPlayer
                 defaults.Add(REMOTE_CONTROL_PORT, "8003");
                 defaults.Add(REMOTE_CONTROL_ACTIVATED, "False");
                 defaults.Add(REMEMBER_PLAY_LOCATION, "True");
+                defaults.Add(LAST_PLAYBACK_RATE, "1");
             }
 
             public static string GetValue(string key)
@@ -130,6 +132,11 @@ namespace SeriesPlayer
             WriteValue(key, value.ToString());
         }
 
+        public static void WriteValue(string key, double value)
+        {
+            WriteValue(key, value.ToString());
+        }
+
         public static void WriteValue(string key, string value)
         {
             Logger.Log("SETTINGS", "Writing the value: " + value + " for the key: " + key);
@@ -188,6 +195,21 @@ namespace SeriesPlayer
             {
                 RestoreDefault(key);
                 return GetNumber(key);
+            }
+        }
+
+        public static double GetDouble(string key)
+        {
+            double res = -1;
+            bool succeeded = double.TryParse(GetString(key), out res);
+            if (succeeded)
+            {
+                return res;
+            }
+            else
+            {
+                RestoreDefault(key);
+                return GetDouble(key);
             }
         }
 

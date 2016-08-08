@@ -583,6 +583,7 @@ namespace SeriesPlayer
             CheckForLateStart();
             jwPlayer.SetVolume(Settings.GetNumber(Settings.VOLUME));
             jwPlayer.SetMute(Settings.GetBool(Settings.MUTED));
+            jwPlayer.SetPlaybackRate(Settings.GetNumber(Settings.LAST_PLAYBACK_RATE));
             jwPlayer.SetMaximizedAsync(nextFullscreen);
             jwPlayer.Focus();
         }
@@ -629,6 +630,7 @@ namespace SeriesPlayer
             CurrentCancellationTokenSource.Cancel();
             WinAPIHelper.AllowIdle();
             WinAPIHelper.ResumeDrawing(this.Handle);
+            Settings.SaveFileSettings();
             Util.RemoveUserInformer(this);
         }
 
@@ -810,6 +812,11 @@ namespace SeriesPlayer
                 labelRequestingStatus.Text = baseMsg + pointsString;
                 base.Text = baseTitle + pointsString;
             }));
+        }
+
+        public void OnPlaybackRateChanged(int rate)
+        {
+            Settings.WriteValue(Settings.LAST_PLAYBACK_RATE, rate);
         }
     }
 }

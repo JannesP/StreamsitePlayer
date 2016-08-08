@@ -21,6 +21,7 @@ namespace SeriesPlayer.JwPlayer
             void OnMuteChange(bool muted);
             void OnPrevious();
             void OnNext();
+            void OnPlaybackRateChanged(int rate);
             bool InvokeRequired
             {
                 get;
@@ -50,6 +51,21 @@ namespace SeriesPlayer.JwPlayer
                 else
                 {
                     receiver.OnPlaylocationChanged(timePlayed, timeLeft, timeTotal);
+                }
+            }
+        }
+
+        public void OnPlaybackRateChange(int playbackRate)
+        {
+            if (receiver != null)
+            {
+                if (receiver.InvokeRequired)
+                {
+                    receiver.Invoke((System.Windows.Forms.MethodInvoker)(() => OnPlaybackRateChange(playbackRate)));
+                }
+                else
+                {
+                    receiver.OnPlaybackRateChanged(playbackRate);
                 }
             }
         }

@@ -216,5 +216,9 @@ namespace SeriesPlayer.JwPlayer
             base.Load(addr);
         }
 
+        public void SetPlaybackRate(int rate)
+        {
+            ExecuteJavaScriptAsync("setPlaybackRate", rate.ToString(), "true");
+        }
     }
 }
