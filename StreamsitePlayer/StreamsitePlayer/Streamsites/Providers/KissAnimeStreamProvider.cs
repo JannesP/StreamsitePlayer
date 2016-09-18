@@ -99,6 +99,7 @@ namespace SeriesPlayer.Streamsites.Providers
             List<Episode> episodes = new List<Episode>();
 
             int startIndex = seriesPage.IndexOf("<table class=\"listing\">");
+            if (startIndex == -1) return StreamProvider.RESULT_NET_FAILED;
             int endIndex = seriesPage.IndexOf("</table>", startIndex);
 
             int currentIndex = startIndex;
@@ -152,7 +153,7 @@ namespace SeriesPlayer.Streamsites.Providers
             {
                 string script = @"$.ajax({
                     type: 'POST',
-                    url: '/Search/SearchSuggest',
+                    url: '/Search/SearchSuggestx',
                     data: 'type=Anime' + '&keyword=" + keyword + @"',
                     success: function(message) {
                         ajaxResponseHandler.onSearchResponse('" + keyword + @"', message);
