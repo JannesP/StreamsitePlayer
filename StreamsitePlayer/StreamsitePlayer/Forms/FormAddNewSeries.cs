@@ -176,24 +176,27 @@ namespace SeriesPlayer.Forms
                     {
                         cachedRemoteSearches.Add(currentTextBoxSeriesText, new Dictionary<string, string>());
                         currentProvider.RequestRemoteSearchAsync(currentTextBoxSeriesText, CurrentCancellationTokenSource.Token).ContinueWith((requestedSearchTask) => {
-                            textBoxSeries.Invoke((MethodInvoker)(() =>
+                            if (!requestedSearchTask.IsCanceled)
                             {
-                                if (requestedSearchTask.IsCanceled || requestedSearchTask.IsFaulted)
+                                textBoxSeries.Invoke((MethodInvoker)(() =>
                                 {
-                                    Util.ShowUserInformation("Couldn't load remote search results!");
-                                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.None;
-                                }
-                                else
-                                {
-                                    textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
-                                    cachedRemoteSearches[currentTextBoxSeriesText] = requestedSearchTask.Result;
-                                    if (currentTextBoxSeriesText == textBoxSeries.Text)
+                                    if (requestedSearchTask.IsCanceled || requestedSearchTask.IsFaulted)
                                     {
-                                        SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
+                                        Util.ShowUserInformation("Couldn't load remote search results!");
+                                        textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.None;
                                     }
-                                }
-                                buttonAdd.Enabled = SearchDictionary.ContainsKey(currentTextBoxSeriesText);
-                            }));
+                                    else
+                                    {
+                                        textBoxSeries.UsedAutoCompleteMode = CustomTextBoxTest.CustomAutoCompleteTextBox.AutoCompleteMode.Suggestions;
+                                        cachedRemoteSearches[currentTextBoxSeriesText] = requestedSearchTask.Result;
+                                        if (currentTextBoxSeriesText == textBoxSeries.Text)
+                                        {
+                                            SearchDictionary = cachedRemoteSearches[currentTextBoxSeriesText];
+                                        }
+                                    }
+                                    buttonAdd.Enabled = SearchDictionary.ContainsKey(currentTextBoxSeriesText);
+                                }));
+                            }
                         });
                     }
                     else
