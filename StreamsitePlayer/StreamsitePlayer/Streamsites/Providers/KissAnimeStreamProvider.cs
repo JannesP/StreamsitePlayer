@@ -153,8 +153,8 @@ namespace SeriesPlayer.Streamsites.Providers
             {
                 string script = @"$.ajax({
                     type: 'POST',
-                    url: '/Search/SearchSuggestx',
-                    data: 'type=Anime' + '&keyword=" + keyword + @"',
+                    url: '/Search/Anime',
+                    data: 'keyword=" + keyword + @"',
                     success: function(message) {
                         ajaxResponseHandler.onSearchResponse('" + keyword + @"', message);
                     }
@@ -163,7 +163,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 string response = await ajaxResponseHandler.WaitForSearchResponseAsync(keyword, ct);
                 var result = new Dictionary<string, string>();
 
-                const string SERIES_SEARCH = "<a href=\"http://kissanime.to/Anime/";
+                const string SERIES_SEARCH = "<a class=\"bigChar\" href=\"/Anime/";
                 const string END_LINK = "\">";
                 const string END_NAME = "</a>";
 
