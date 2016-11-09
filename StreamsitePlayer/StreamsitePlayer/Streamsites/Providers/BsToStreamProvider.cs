@@ -20,7 +20,8 @@ namespace SeriesPlayer.Streamsites.Providers
         private const string OPENLOAD_SEARCH = "<a class=\"icon OpenLoad\" title=\"OpenLoad\"   href=\"";
         private const string OPENLOAD_HD_SEARCH = "<a class=\"icon OpenLoadHD\" title=\"OpenLoadHD\"   href=\"";
 
-        private readonly string[] VALID_SITES = { BsToOpenLoadHDSite.NAME, BsToOpenLoadSite.NAME, BsToVivoStreamingSite.NAME, StreamcloudStreamingSite.NAME };
+        //disabled commented because they are buggy or got removed.
+        private readonly string[] VALID_SITES = { BsToOpenLoadHDSite.NAME, BsToOpenLoadSite.NAME, /*BsToVivoStreamingSite.NAME, StreamcloudStreamingSite.NAME*/ };
 
         public override string GetReadableSiteName()
         {
@@ -108,6 +109,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 }
                 e = new Episode(seasonNumber, i + 1, name);
 
+                /*
                 int indexVivo = html.IndexOf(VIVO_SEARCH, index);
                 if (indexVivo != -1)    //check if a vivo link is found
                 {
@@ -127,11 +129,12 @@ namespace SeriesPlayer.Streamsites.Providers
                         e.AddLink(BsToStreamcloudStreamingSite.NAME, streamcloudSite);
                     }
                 }
+                */
 
                 int indexOpenload = html.IndexOf(OPENLOAD_SEARCH, index);
                 if (indexOpenload != -1)    //check if a streamcloud link is found
                 {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexStreamcloud < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexOpenload < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
                         string openloadSite = "http://bs.to/" + html.GetSubstringBetween(indexOpenload, OPENLOAD_SEARCH, "\"");
                         e.AddLink(BsToOpenLoadSite.NAME, openloadSite);
@@ -141,7 +144,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 int indexOpenloadHD = html.IndexOf(OPENLOAD_HD_SEARCH, index);
                 if (indexOpenloadHD != -1)    //check if a streamcloud link is found
                 {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexStreamcloud < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
+                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexOpenloadHD < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
                     {
                         string openloadHDSite = "http://bs.to/" + html.GetSubstringBetween(indexOpenloadHD, OPENLOAD_HD_SEARCH, "\"");
                         e.AddLink(BsToOpenLoadHDSite.NAME, openloadHDSite);
