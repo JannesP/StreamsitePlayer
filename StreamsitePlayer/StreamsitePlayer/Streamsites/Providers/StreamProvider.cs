@@ -24,11 +24,13 @@ namespace SeriesPlayer.Streamsites
         static StreamProvider()
         {
             Logger.Log("START", "Adding streaming providers.");
-            VALID_PROVIDERS = new List<string>();
-            VALID_PROVIDERS.Add(BsToStreamProvider.NAME);
-            VALID_PROVIDERS.Add(DubbedanimehdCoProvider.NAME);
-            VALID_PROVIDERS.Add(CartooncrazyStreamProvider.NAME);
-            VALID_PROVIDERS.Add(KissAnimeStreamProvider.NAME);
+            VALID_PROVIDERS = new List<string>()
+            {
+                BsToStreamProvider.NAME,
+                DubbedanimehdCoProvider.NAME,
+                CartooncrazyStreamProvider.NAME,
+                KissAnimeStreamProvider.NAME
+            };
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
 #endif

@@ -168,11 +168,13 @@
     <Compile Include="Streamsites\Providers\CartooncrazyStreamProvider.cs" />
     <Compile Include="Streamsites\Providers\KissAnimeStreamProvider.cs" />
     <Compile Include="Streamsites\Series.cs" />
+    <Compile Include="Streamsites\Sites\BsToOpenloadHDSite.cs" />
     <Compile Include="Streamsites\Sites\BsToVivoStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\BsToStreamcloudStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\DubbedanimehdTvStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\CartooncrazyStreamingSite.cs" />
     <Compile Include="Streamsites\Sites\KissAnimeStreamingSite.cs" />
+    <Compile Include="Streamsites\Sites\BsToOpenLoadSite.cs" />
     <Compile Include="Streamsites\Sites\VivoStreamingSite.cs" />
     <Compile Include="Utility\AutoClosingMessageBox.cs" />
     <Compile Include="Utility\ChromiumBrowsers\OffscreenChromiumBrowser.cs" />
