@@ -18,14 +18,20 @@ namespace SeriesPlayer
             }
         }
 
-        public async static void CacheSeriesAsync(Series series)
+        public async static Task CacheSeriesAsync(Series series)
         {
             string filepath = Path.Combine(Util.GetRalativePath(Settings.NOSETTING_CACHE_PATH), series.Provider + "." + series.LinkExtension + ".series");
+            FileStream fs;
             if (File.Exists(filepath))
             {
-                File.Delete(filepath);
+                File.WriteAllText(filepath, string.Empty);
+                fs = File.OpenWrite(filepath);
             }
-            using (StreamWriter sw = new StreamWriter(File.Create(filepath)))
+            else
+            {
+                fs = File.Create(filepath);
+            }
+            using (StreamWriter sw = new StreamWriter(fs))
             {
                 await sw.WriteLineAsync("seriesname." + series.Name);
                 await sw.WriteLineAsync("provider." + series.Provider);

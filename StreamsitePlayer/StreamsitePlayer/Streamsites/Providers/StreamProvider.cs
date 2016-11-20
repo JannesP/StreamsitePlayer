@@ -74,6 +74,11 @@ namespace SeriesPlayer.Streamsites
         /// <param name="siteLinkExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
         public abstract Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor);
         /// <summary>
+        /// Initilizes the class and requests all the series data.
+        /// </summary>
+        /// <param name="siteLinkExtension">Show <see cref="GetLinkInstructions"/> to the user. He should know what it needs!</param>
+        public abstract Task<int> ReloadSeriesAsync(string siteLinkExtension, Control threadAnchor);
+        /// <summary>
         /// Requests the cound of episodes in the given series.
         /// </summary>
         /// <param name="season">the number of the series !1-based!</param>
@@ -175,18 +180,5 @@ namespace SeriesPlayer.Streamsites
         /// </summary>
         /// <returns>Dictionary with names as keys and linkExtensions as values</returns>
         public abstract Task<Dictionary<string, string>> RequestSearchIndexAsync(CancellationToken ct);
-
-        public void LoadSeries(Series series)
-        {
-            if (series != null)
-            {
-                this.series = series;
-            }
-            else
-            {
-                throw new ArgumentNullException("series");
-            }
-            
-        }
     }
 }

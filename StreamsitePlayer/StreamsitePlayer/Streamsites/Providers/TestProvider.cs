@@ -65,6 +65,11 @@ namespace SeriesPlayer.Streamsites.Providers
             return await Task.Run(() => { return StreamProvider.RESULT_OK; });
         }
 
+        public async override Task<int> ReloadSeriesAsync(string siteLinkNameExtension, Control threadAnchor)
+        {
+            return await Task.Run(() => { return StreamProvider.RESULT_OK; });
+        }
+
         public override Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
             throw new NotImplementedException();

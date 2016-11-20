@@ -38,7 +38,11 @@ namespace SeriesPlayer.Streamsites.Providers
             base.siteLinkExtension = siteLinkExtension;
             series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
+            return await ReloadSeriesAsync(siteLinkExtension, threadAnchor);
+        }
 
+        public async override Task<int> ReloadSeriesAsync(string siteLinkExtension, Control threadAnchor)
+        {
             string htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension);
             int seriesCount = ScanForSeasonCount(htmlEpisodeOverview, siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
@@ -50,7 +54,7 @@ namespace SeriesPlayer.Streamsites.Providers
             }
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "<h2>", "<");
             series = new Series(seasons, seriesName, NAME, siteLinkExtension, URL_PRE + siteLinkExtension);
-            Seriescache.CacheSeriesAsync(series);
+            await Seriescache.CacheSeriesAsync(series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }
@@ -199,5 +203,7 @@ namespace SeriesPlayer.Streamsites.Providers
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

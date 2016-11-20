@@ -74,7 +74,11 @@ namespace SeriesPlayer.Streamsites.Providers
             base.siteLinkExtension = siteLinkExtension;
             base.series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""));
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
+            return await ReloadSeriesAsync(siteLinkExtension, threadAnchor);
+        }
 
+        public async override Task<int> ReloadSeriesAsync(string siteLinkExtension, Control threadAnchor)
+        {
             int result = StreamProvider.RESULT_OK;
             string seriesUrl = GetWebsiteLink().Remove(GetWebsiteLink().Length - 1) + siteLinkExtension;
             string page = await Util.RequestSimplifiedHtmlSiteAsync(seriesUrl);
@@ -90,10 +94,10 @@ namespace SeriesPlayer.Streamsites.Providers
                 .Replace(" English", "").Replace(" Dubbed", "").Replace(" at cartooncrazy.me", "")
                 .Replace(" Episodes", "");
 
-            List <List<Episode>> seasons = new List<List<Episode>>();
+            List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(await ScanForEpisodes(page, seriesName));
             base.series = new Series(seasons, seriesName, NAME, siteLinkExtension.Replace("/anime/", "&001").Replace("/cartoon/", "&002").Replace("/", ""), seriesUrl);
-            Seriescache.CacheSeriesAsync(base.series);
+            await Seriescache.CacheSeriesAsync(base.series);
             FormMain.SeriesOpenCallback(null);
 
             return result;

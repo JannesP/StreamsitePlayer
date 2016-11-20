@@ -81,8 +81,12 @@ namespace SeriesPlayer.Streamsites.Providers
             base.siteLinkExtension = siteLinkExtension;
             series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             if (series != null) return StreamProvider.RESULT_USE_CACHED;
+            return await ReloadSeriesAsync(siteLinkExtension, threadAnchor);
+        }
 
-            string seriesPage = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() +"Anime/" + siteLinkExtension);
+        public async override Task<int> ReloadSeriesAsync(string siteLinkExtension, Control threadAnchor)
+        {
+            string seriesPage = await Util.RequestSimplifiedHtmlSiteAsync(GetWebsiteLink() + "Anime/" + siteLinkExtension);
 
             if (seriesPage.Contains("The service is unavailable."))
             {
@@ -121,11 +125,11 @@ namespace SeriesPlayer.Streamsites.Providers
             {
                 episodes[i].Number = i + 1;
             }
-            
+
             List<List<Episode>> seasons = new List<List<Episode>>() { episodes };
             Series s = new Series(seasons, name, NAME, siteLinkExtension, GetWebsiteLink() + "Anime/" + siteLinkExtension);
             base.series = s;
-            Seriescache.CacheSeriesAsync(s);
+            await Seriescache.CacheSeriesAsync(s);
 
             return StreamProvider.RESULT_OK;
         }

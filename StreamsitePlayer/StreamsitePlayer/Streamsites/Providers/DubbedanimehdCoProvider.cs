@@ -40,13 +40,18 @@ namespace SeriesPlayer.Streamsites.Providers
             base.series = await Seriescache.ReadCachedSeriesAsync(NAME, siteLinkExtension);
             base.siteLinkExtension = siteLinkExtension;
             if (base.series != null) return StreamProvider.RESULT_USE_CACHED;
+            return await ReloadSeriesAsync(siteLinkExtension, threadAnchor);
+            
+        }
 
+        public async override Task<int> ReloadSeriesAsync(string siteLinkExtension, Control threadAnchor)
+        {
             string htmlEpisodeOverview = await Util.RequestSimplifiedHtmlSiteAsync(URL_PRE + siteLinkExtension);
             List<List<Episode>> seasons = new List<List<Episode>>();
             seasons.Add(ScanForEpisodes(htmlEpisodeOverview, siteLinkExtension));
             string seriesName = htmlEpisodeOverview.GetSubstringBetween(0, "wp-post-image\" alt=\"", "\" />");
             base.series = new Series(seasons, seriesName, NAME, siteLinkExtension, URL_PRE + siteLinkExtension);
-            Seriescache.CacheSeriesAsync(base.series);
+            await Seriescache.CacheSeriesAsync(base.series);
             FormMain.SeriesOpenCallback(null);
             return StreamProvider.RESULT_OK;
         }

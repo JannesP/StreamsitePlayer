@@ -285,10 +285,10 @@ namespace SeriesPlayer
             }
         }
 
-        public void OpenSeries(Series series)
+        public async void OpenSeries(Series series)
         {
             currentProvider = StreamProvider.Create(series.Provider);
-            currentProvider.LoadSeries(series);
+            await currentProvider.LoadSeriesAsync(series.LinkExtension, comboBoxChangeSeries);
             if (currentProvider.GetSeasonCount() != 0) selectedSeason = 1;
             if (player != null)
             {
@@ -354,14 +354,18 @@ namespace SeriesPlayer
             }));
         }
 
-        private void RefreshSeries(Series series)
+        private async void RefreshSeries(Series series)
         {
             downloadToolStripMenuItem.Enabled = false;
             refreshToolStripMenuItem.Enabled = false;
             seriesToolStripMenuItem.Enabled = false;
-            Seriescache.RemoveCachedSeries(series);
-            comboBoxChangeSeries.Items.Remove(series);
-            CreateAndSelectSeries(series.LinkExtension);
+            FormLoadingIndicator.ShowDialog(this, "Reloading series. This usually shouldn't take any longer then 30 seconds.");
+            await currentProvider.ReloadSeriesAsync(series.LinkExtension, comboBoxChangeSeries);
+            FormLoadingIndicator.CloseDialog();
+            currentProvider.GetSeries().LastPlayedSeason = series.LastPlayedSeason;
+            currentProvider.GetSeries().LastPlayedEpisode = series.LastPlayedEpisode;
+            await Seriescache.CacheSeriesAsync(currentProvider.GetSeries());
+            ComboBoxChangeSeries_SelectedIndexChanged(comboBoxChangeSeries, null);
         }
 
         private void RemoveSeries(Series series)
@@ -427,7 +431,10 @@ namespace SeriesPlayer
             flowPanelSeriesButtons.Controls.AddRange(seasonButtons.ToArray());
             flowPanelEpisodeButtons.Controls.AddRange(episodeButtons.ToArray());
 
-            seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
+            if (seasonButtons.Count > 0)
+            {
+                seasonButtons[selectedSeason - 1].Enabled = false;  //disable current series
+            }
 
             flowPanelEpisodeButtons.ResumeLayout();
             flowPanelSeriesButtons.ResumeLayout();
@@ -751,12 +758,8 @@ namespace SeriesPlayer
         {
             if (comboBoxChangeSeries.SelectedIndex != -1 && (comboBoxChangeSeries.SelectedIndex != comboBoxChangeSeries.Items.Count - 1))
             {
-                DialogResult dr = MessageBox.Show("This will reset your currently played episode. Also if the refresh fails the episode is gone and you have to look for it again!\n Do you still want to refresh?", "Know the risks?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-                if (dr == DialogResult.Yes)
-                {
-                    var currSeries = (Series)comboBoxChangeSeries.SelectedItem;
-                    RefreshSeries(currSeries);
-                }
+                var currSeries = currentProvider.GetSeries();
+                RefreshSeries(currSeries);
             }
         }
 
