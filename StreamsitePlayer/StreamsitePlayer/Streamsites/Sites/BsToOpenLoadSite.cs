@@ -48,7 +48,7 @@ namespace SeriesPlayer.Streamsites.Sites
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
             string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
-            string frameSearch = "height='390' allowfullscreen='ture' webkitallowfullscreen='true' mozallowfullscreen='true' src='";
+            string frameSearch = "height='390' allowfullscreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' src='";
             string frameSearchEnd = "'";
             int startIndex = page.IndexOf(frameSearch) + frameSearch.Length;
             string iFrameUrl = page.GetSubstringBetween(0, frameSearch, frameSearchEnd);
