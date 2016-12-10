@@ -45,11 +45,10 @@ namespace SeriesPlayer.Streamsites.Sites
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
             string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
-            int index = page.IndexOf("<select id=\"selectQuality\">");
-            string encodedFileUrl = page.GetSubstringBetween(index, "option value=\"", "\"");
-            byte[] data = Convert.FromBase64String(encodedFileUrl);
-            string decodedFileUrl = Encoding.UTF8.GetString(data);
-            return Util.DecodeBase64(encodedFileUrl);
+            string jwplaylisturl = page.GetSubstringBetween(0, "load_player('//", "');");
+            string jwPlaylist = (await Util.RequestSimplifiedHtmlSiteAsync("http://" + jwplaylisturl)).Replace("\\/", "/");
+            string file = jwPlaylist.GetSubstringBetween(0, "file\":\"", "\"");
+            return file;
         }
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)

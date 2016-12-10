@@ -21,7 +21,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public KissAnimeStreamProvider()
         {
-            requestBrowser = new OffscreenChromiumBrowser("http://www.kissanime.to/");
+            requestBrowser = new OffscreenChromiumBrowser("http://www.kissanime.io/");
             ajaxResponseHandler = new AjaxResponseHandler();
             requestBrowser.RegisterJsObject("ajaxResponseHandler", ajaxResponseHandler);
             requestBrowser.WaitForInit();
@@ -73,7 +73,7 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "http://kissanime.to/";
+            return "http://kissanime.io/";
         }
 
         public async override Task<int> LoadSeriesAsync(string siteLinkExtension, Control threadAnchor)
@@ -102,15 +102,15 @@ namespace SeriesPlayer.Streamsites.Providers
 
             List<Episode> episodes = new List<Episode>();
 
-            int startIndex = seriesPage.IndexOf("<table class=\"listing\">");
+            int startIndex = seriesPage.IndexOf("<div class=\"listing");
             if (startIndex == -1) return StreamProvider.RESULT_NET_FAILED;
-            int endIndex = seriesPage.IndexOf("</table>", startIndex);
+            int endIndex = seriesPage.IndexOf("</div></div></div>", startIndex);
 
             int currentIndex = startIndex;
             while (currentIndex < endIndex && currentIndex > -1)
             {
                 Episode e = new Episode();
-                string link = GetWebsiteLink() + seriesPage.GetSubstringBetween(currentIndex, "href=\"/", "\"", out currentIndex);
+                string link = "http:" + seriesPage.GetSubstringBetween(currentIndex, "href=\"", "\"", out currentIndex);
                 e.AddLink(KissAnimeStreamingSite.NAME, link);
                 string epName = seriesPage.GetSubstringBetween(currentIndex, ">", "</a>", out currentIndex).Replace(name + " ", "");
                 e.Name = epName;
