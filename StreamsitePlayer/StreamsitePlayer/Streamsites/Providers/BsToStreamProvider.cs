@@ -113,28 +113,6 @@ namespace SeriesPlayer.Streamsites.Providers
                 }
                 e = new Episode(seasonNumber, i + 1, name);
 
-                /*
-                int indexVivo = html.IndexOf(VIVO_SEARCH, index);
-                if (indexVivo != -1)    //check if a vivo link is found
-                {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexVivo < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
-                    {
-                        string vivoSite = "http://bs.to/" + html.GetSubstringBetween(indexVivo, VIVO_SEARCH, "\"");
-                        e.AddLink(BsToVivoStreamingSite.NAME, vivoSite);
-                    }
-                }
-
-                int indexStreamcloud = html.IndexOf(STREAMCLOUD_SEARCH, index);
-                if (indexStreamcloud != -1)    //check if a streamcloud link is found
-                {
-                    if (!(i + 1 < episodeIndices.Count) || ((i + 1 < episodeIndices.Count) && (indexStreamcloud < episodeIndices[i + 1])))  //check if the streamcloud link is before the next episode.
-                    {
-                        string streamcloudSite = "http://bs.to/" + html.GetSubstringBetween(indexStreamcloud, STREAMCLOUD_SEARCH, "\"");
-                        e.AddLink(BsToStreamcloudStreamingSite.NAME, streamcloudSite);
-                    }
-                }
-                */
-
                 int indexOpenload = html.IndexOf(OPENLOAD_SEARCH, index);
                 if (indexOpenload != -1)    //check if a streamcloud link is found
                 {
@@ -181,15 +159,16 @@ namespace SeriesPlayer.Streamsites.Providers
             ct.ThrowIfCancellationRequested();
 
             const string SERIES_SEARCH = "<li><a href=\"serie/";
-            const string END_LINK = "\">";
+            const string END_LINK = "\"";
+            const string START_NAME = "\">";
             const string END_NAME = "</a></li>";
 
-            int searchIndex = site.IndexOf("<ul id='series-alphabet-list'>");
+            int searchIndex = site.IndexOf("id=\"seriesContainer\"");
             while (searchIndex != -1)
             {
                 string seriesExtension = site.GetSubstringBetween(searchIndex, SERIES_SEARCH, END_LINK, out searchIndex);
                 if (searchIndex == -1) continue;
-                string name = site.GetSubstringBetween(searchIndex, END_LINK, END_NAME, out searchIndex);
+                string name = site.GetSubstringBetween(searchIndex, START_NAME, END_NAME, out searchIndex);
                 if (searchIndex != -1)
                 {
                     index.Add(name, seriesExtension);
