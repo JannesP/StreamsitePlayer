@@ -69,8 +69,9 @@ namespace SeriesPlayer.Streamsites.Sites
             }
             if (embed)
             {
-                Util.ShowUserInformation("Embedded kissanime.io series aren't supported at the moment, sorry.");
-                return "";
+                string url = "http://" + value.GetSubstringBetween(0, "src=\"//", "\"");
+                OpenloadSite site = new OpenloadSite(url);
+                return await site.RequestFileAsync(progress, ct);
             }
             else
             {

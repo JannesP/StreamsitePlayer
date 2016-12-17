@@ -11,7 +11,7 @@ namespace SeriesPlayer.Streamsites.Sites
 {
     class BsToOpenLoadHDSite : BsToOpenLoadSite
     {
-        public new const string NAME = "OpenLoadHD";
+        public new const string NAME = "BSOpenLoadHD";
 
         public BsToOpenLoadHDSite(string link) : base(link) { }
     }

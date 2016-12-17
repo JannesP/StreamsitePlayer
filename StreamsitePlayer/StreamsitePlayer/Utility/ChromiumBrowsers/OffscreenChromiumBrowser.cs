@@ -29,10 +29,17 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
             base.JsDialogHandler = this;
             base.LifeSpanHandler = this;
             base.FrameLoadEnd += OffscreenChromiumBrowser_FrameLoadEnd;
+            base.FrameLoadStart += OffscreenChromiumBrowser_FrameLoadStart;
+        }
+
+        private void OffscreenChromiumBrowser_FrameLoadStart(object sender, FrameLoadStartEventArgs e)
+        {
+            Logger.Log(TAG, "FrameLoadStart from: " + e.Url);
         }
 
         private void OffscreenChromiumBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
+            Logger.Log(TAG, "FrameLoadEnd from: " + e.Url);
             if (e.Frame.IsMain)
             {
                 Logger.Log(TAG, "Main Frame loaded!");
@@ -126,7 +133,11 @@ namespace SeriesPlayer.Utility.ChromiumBrowsers
         { }
 
         public bool OnBeforePopup(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, string targetFrameName, WindowOpenDisposition targetDisposition, bool userGesture, IPopupFeatures popupFeatures, IWindowInfo windowInfo, IBrowserSettings browserSettings, ref bool noJavascriptAccess, out IWebBrowser newBrowser)
-        { newBrowser = null; return true; }
+        {
+            newBrowser = null;
+            Logger.Log(TAG, "popup removed: " + targetUrl);
+            return true;
+        }
 
         public void OnDialogClosed(IWebBrowser browserControl, IBrowser browser)
         { }
