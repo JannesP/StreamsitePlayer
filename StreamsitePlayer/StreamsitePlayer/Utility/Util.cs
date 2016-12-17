@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
@@ -162,6 +163,17 @@ namespace SeriesPlayer
             Console.WriteLine("Cutting unnececcery things out took: " + ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond) + " ms");
             requestedRaw = WebUtility.HtmlDecode(requestedRaw);
             return requestedRaw;
+        }
+
+        public async static Task<string> PostRequestAsync(string url, Dictionary<string, string> data)
+        {
+            HttpResponseMessage response = null;
+            using (var client = new HttpClient())
+            {
+                var content = new FormUrlEncodedContent(data);
+                response = await client.PostAsync(url, content);
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         public static bool CheckWriteAccess(string path)

@@ -1,4 +1,5 @@
-﻿using SeriesPlayer.Utility.Extensions;
+﻿using Newtonsoft.Json;
+using SeriesPlayer.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,10 +46,39 @@ namespace SeriesPlayer.Streamsites.Sites
         public async override Task<string> RequestFileAsync(IProgress<int> progress, CancellationToken ct)
         {
             string page = await Util.RequestSimplifiedHtmlSiteAsync(base.link);
-            string jwplaylisturl = page.GetSubstringBetween(0, "load_player('//", "');");
-            string jwPlaylist = (await Util.RequestSimplifiedHtmlSiteAsync("http://" + jwplaylisturl)).Replace("\\/", "/");
-            string file = jwPlaylist.GetSubstringBetween(0, "file\":\"", "\"");
-            return file;
+            string episodeId = page.GetSubstringBetween(0, "episode_id = '", "';");
+            string response = await Util.PostRequestAsync("http://kissanime.io/ajax/anime/load_episodes/", new Dictionary<string, string>
+            {
+                { "episode_id", episodeId } 
+            });
+            dynamic jsonObj = JsonConvert.DeserializeObject(response);
+            var embed = false;
+            var value = "";
+            try
+            {
+                embed = jsonObj.embed;
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+            try
+            {
+                value = jsonObj.value;
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            {
+                throw new Exception("Error loading file url.");
+            }
+            if (embed)
+            {
+                Util.ShowUserInformation("Embedded kissanime.io series aren't supported at the moment, sorry.");
+                return "";
+            }
+            else
+            {
+                string jwPlaylist = (await Util.RequestSimplifiedHtmlSiteAsync("http:" + value)).Replace("\\/", "/");
+                string file = jwPlaylist.GetSubstringBetween(0, "file\":\"", "\"");
+                return file;
+            }
+
         }
 
         public async override Task<string> RequestJwDataAsync(IProgress<int> progress, CancellationToken ct)
