@@ -221,8 +221,8 @@ namespace SeriesPlayer
             for (int i = 0; i < cachedSeriesFiles.Count; i++)
             {
                 cachedSeriesFiles[i] = cachedSeriesFiles[i].Replace(".series", "");
-                string seriesExtension = cachedSeriesFiles[i].Substring(cachedSeriesFiles[i].LastIndexOf('.') + 1);
-                string provider = cachedSeriesFiles[i].Substring(0, cachedSeriesFiles[i].LastIndexOf('.'));
+                string seriesExtension = cachedSeriesFiles[i].Substring(cachedSeriesFiles[i].IndexOf('.') + 1);
+                string provider = cachedSeriesFiles[i].Substring(0, cachedSeriesFiles[i].IndexOf('.'));
                 Series s = await Seriescache.ReadCachedSeriesAsync(provider, seriesExtension);
                 if (s != null)
                 {
