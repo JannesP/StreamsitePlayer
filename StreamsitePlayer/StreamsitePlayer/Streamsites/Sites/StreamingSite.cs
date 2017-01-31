@@ -34,6 +34,8 @@ namespace SeriesPlayer.Streamsites
                     return new BsToOpenLoadHDSite(link);
                 case BsToOpenLoadSite.NAME:
                     return new BsToOpenLoadSite(link);
+                case NineAnimeStreamingSite.NAME:
+                    return new NineAnimeStreamingSite(link);
                 default:
                     Logger.Log("ERROR!", "Failed creating StreamingSite for: " + name);
                     return null;

@@ -29,7 +29,8 @@ namespace SeriesPlayer.Streamsites
                 BsToStreamProvider.NAME,
                 DubbedanimehdCoProvider.NAME,
                 CartooncrazyStreamProvider.NAME,
-                KissAnimeStreamProvider.NAME
+                KissAnimeStreamProvider.NAME,
+                NineAnimeStreamProvider.NAME
             };
 #if DEBUG
             VALID_PROVIDERS.Add(TestProvider.NAME);
@@ -55,6 +56,8 @@ namespace SeriesPlayer.Streamsites
                     return new CartooncrazyStreamProvider();
                 case KissAnimeStreamProvider.NAME:
                     return new KissAnimeStreamProvider();
+                case NineAnimeStreamProvider.NAME:
+                    return new NineAnimeStreamProvider();
                 default:
                     return null;
             }

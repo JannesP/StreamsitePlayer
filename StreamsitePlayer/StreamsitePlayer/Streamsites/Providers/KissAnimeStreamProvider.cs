@@ -16,16 +16,8 @@ namespace SeriesPlayer.Streamsites.Providers
     class KissAnimeStreamProvider : StreamProvider
     {
         public const string NAME = "kissanime";
-        private OffscreenChromiumBrowser requestBrowser;
+        private OffscreenChromiumBrowser requestBrowser = null;
         private AjaxResponseHandler ajaxResponseHandler;
-
-        public KissAnimeStreamProvider()
-        {
-            requestBrowser = new OffscreenChromiumBrowser("http://www.kissanime.io/");
-            ajaxResponseHandler = new AjaxResponseHandler();
-            requestBrowser.RegisterJsObject("ajaxResponseHandler", ajaxResponseHandler);
-            requestBrowser.WaitForInit();
-        }
 
         [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         private class AjaxResponseHandler
@@ -51,6 +43,14 @@ namespace SeriesPlayer.Streamsites.Providers
                 SearchResponses.Remove(key);
                 return response;
             }
+        }
+
+        private void LoadBrowser()
+        {
+            requestBrowser = new OffscreenChromiumBrowser("http://www.kissanime.io/");
+            ajaxResponseHandler = new AjaxResponseHandler();
+            requestBrowser.RegisterJsObject("ajaxResponseHandler", ajaxResponseHandler);
+            requestBrowser.WaitForInit();
         }
 
         public override SearchMode SupportedSearchMode
@@ -140,6 +140,10 @@ namespace SeriesPlayer.Streamsites.Providers
             {
                 Util.ShowUserInformation("Don't use \" or ' in your search!");
                 return new Dictionary<string, string>();
+            }
+            if (this.requestBrowser == null)
+            {
+                LoadBrowser();
             }
             if (!requestBrowser.IsPageLoaded)
             {
