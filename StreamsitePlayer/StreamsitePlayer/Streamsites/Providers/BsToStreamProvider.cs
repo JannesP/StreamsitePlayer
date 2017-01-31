@@ -13,7 +13,7 @@ namespace SeriesPlayer.Streamsites.Providers
 {
     class BsToStreamProvider : StreamProvider
     {
-        public const string NAME = "bs.to";
+        public const string NAME = "bsto";
         private const string URL_PRE = "http://bs.to/serie/";
         private const string STREAMCLOUD_SEARCH = "<a class=\"icon Streamcloud\" title=\"Streamcloud\"   href=\"";
         private const string VIVO_SEARCH = "<a class=\"icon Vivo\" title=\"Vivo\"   href=\"";
