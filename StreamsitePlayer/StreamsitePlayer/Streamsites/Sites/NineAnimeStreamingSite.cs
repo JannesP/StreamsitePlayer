@@ -53,13 +53,17 @@ namespace SeriesPlayer.Streamsites.Sites
             string[] parts = base.link.Split('/');
             string videoId = parts[parts.Length - 1];
             string infoResponse =
-                await Util.RequestSimplifiedHtmlSiteAsync($"https://9anime.to/ajax/episode/info?id={videoId}&update=0");
+                await Util.RequestSimplifiedHtmlSiteAsync($"https://9anime.is/ajax/episode/info?id={videoId}&update=0");
             var requestUrl = "";
             try
             {
                 dynamic infoObj = JsonConvert.DeserializeObject(infoResponse);
                 dynamic parameters = infoObj.@params;
-                requestUrl = "https:" + infoObj.grabber + "?";
+                if (((string)infoObj.grabber).IndexOf("https:", StringComparison.Ordinal) != 0 && ((string)infoObj.grabber).IndexOf("//", StringComparison.Ordinal) == 0)
+                {
+                    requestUrl += "https:";
+                }
+                requestUrl += infoObj.grabber + "?";
                 requestUrl += "id=" + parameters.id;
                 string token = parameters.token;
                 requestUrl += "&token=" + WebUtility.UrlEncode(token);

@@ -67,13 +67,13 @@ namespace SeriesPlayer.Streamsites.Providers
 
         public override string GetWebsiteLink()
         {
-            return "https://9anime.to/";
+            return "https://9anime.is/";
         }
 
         public override SearchMode SupportedSearchMode { get; } = SearchMode.REMOTE;
         public override async Task<Dictionary<string, string>> RequestRemoteSearchAsync(string keyword, CancellationToken ct)
         {
-            string response = await Util.RequestSimplifiedHtmlSiteAsync("https://9anime.to/ajax/film/search?sort=year%3Adesc&keyword=" + keyword);
+            string response = await Util.RequestSimplifiedHtmlSiteAsync("https://9anime.is/ajax/film/search?sort=year%3Adesc&keyword=" + keyword);
             var result = new Dictionary<string, string>();
             dynamic jsonObj = JsonConvert.DeserializeObject(response);
             var html = "";
@@ -87,7 +87,7 @@ namespace SeriesPlayer.Streamsites.Providers
                 int currIndex = 0;
                 while (currIndex != -1)
                 {
-                    string link = html.GetSubstringBetween(currIndex, "://9anime.to/watch/", "\">", out currIndex);
+                    string link = html.GetSubstringBetween(currIndex, "://9anime.is/watch/", "\">", out currIndex);
                     string name = html.GetSubstringBetween(currIndex, ">", "</a>", out currIndex);
                     currIndex = html.IndexOf("class=\"name\"", currIndex, StringComparison.Ordinal);
                     result.Add(name, link);
