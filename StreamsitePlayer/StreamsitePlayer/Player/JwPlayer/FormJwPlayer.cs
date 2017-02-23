@@ -332,7 +332,7 @@ namespace SeriesPlayer
             {
                 if (newEpisode == 1)
                 {
-                    if (newSeason == 1)
+                    if (newSeason == 1 || newSeason == 0)
                     {
                         Util.ShowUserInformation("Already playing the first episode.");
                     }
